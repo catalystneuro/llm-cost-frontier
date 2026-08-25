@@ -1,0 +1,14 @@
+[
+ {
+  "slug_prefix": "gpt-5-6-luna",
+  "multiplier_before": 5.0,
+  "cut_date": "2026-07-30",
+  "note": "OpenAI cut GPT-5.6 Luna from $1.00/$6.00 to $0.20/$1.20 per 1M tokens on 2026-07-30"
+ },
+ {
+  "slug_prefix": "gpt-5-6-terra",
+  "multiplier_before": 1.25,
+  "cut_date": "2026-07-30",
+  "note": "OpenAI cut GPT-5.6 Terra from $2.50/$15 to $2.00/$12 per 1M tokens on 2026-07-30"
+ }
+]

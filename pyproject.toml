@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "llm-cost-frontier"
+version = "0.1.0"
+description = "Track the Pareto frontier of LLM intelligence against measured cost per task"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "CatalystNeuro" }]
+keywords = ["llm", "pareto frontier", "cost per task", "artificial analysis", "intelligence index"]
+dependencies = []
+
+[project.urls]
+Homepage = "https://catalystneuro.com/llm-cost-frontier/"
+Source = "https://github.com/catalystneuro/llm-cost-frontier"
+Background = "https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/"
+
+[project.scripts]
+llm-cost-frontier = "llm_cost_frontier.update:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/llm_cost_frontier"]

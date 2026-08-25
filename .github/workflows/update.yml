@@ -1,0 +1,38 @@
+name: Update frontier data
+
+on:
+  schedule:
+    # Nightly at 06:00 UTC (02:00 US Eastern). The website syncs an hour later.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-frontier-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Refresh data from Artificial Analysis
+        run: python -m llm_cost_frontier
+        env:
+          PYTHONPATH: src
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/history.json build/llm-frontier.json build/feed.xml
+          if git diff --cached --quiet; then
+            echo "No data changes."
+          else
+            git commit -m "Update frontier data ($(date -u +%Y-%m-%d))"
+            git push
+          fi
