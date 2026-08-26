@@ -29,9 +29,10 @@ from .update import (
 
 DEFAULT_IMAGES = Path("build/images")
 
-# MiMo-V2.5 took over the frontier below index 38 on this date; cards after it
-# crop the y axis at 30, since the region below holds no frontier action.
-Y_MIN_30_AFTER = "2026-04-22"
+# MiMo-V2.5 took over the frontier below index 38 on this date. Cards after it
+# crop the y axis at 10, trimming empty space while keeping the cheap end of
+# the frontier visible, where small models like Granite 4.2 3B still land.
+Y_MIN_10_AFTER = "2026-04-22"
 
 # Palette shared with the dashboard at catalystneuro.com/llm-cost-frontier/.
 C = dict(
@@ -339,7 +340,7 @@ def render_group(group: list, models: dict, timeline: list, path: Path):
     fig, ax = new_figure(" · ".join(parts), title, summary_lines, table)
     highlights = {a["slug"] for a in group}
     xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights,
-                          y_min=30 if date > Y_MIN_30_AFTER else 0)
+                          y_min=10 if date > Y_MIN_10_AFTER else 0)
     draw_highlights(ax, group, state, xlo, xhi)
     add_legend(ax, price_change=any(a["kind"] == "price change" and a["previous_cost"] for a in group))
     save(fig, path)
@@ -357,7 +358,7 @@ def render_current(out: dict, models: dict, timeline: list, path: Path):
         summary += (f" Index ≥ 50 cost has fallen {s50['collapse']:g}x since "
                     f"{first.strftime('%B %Y')}, halving about every {s50['halving_days']} days.")
     fig, ax = new_figure(f"Updated {long_date(out['updated'])}", "The LLM Cost Frontier", wrap(summary))
-    draw_chart(ax, state, models, front, y_min=30 if out["updated"] > Y_MIN_30_AFTER else 0)
+    draw_chart(ax, state, models, front, y_min=10 if out["updated"] > Y_MIN_10_AFTER else 0)
     save(fig, path)
 
 
