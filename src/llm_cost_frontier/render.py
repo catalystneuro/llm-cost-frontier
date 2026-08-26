@@ -80,19 +80,26 @@ def group_summary(group: list) -> str:
     the same date. A single advance keeps its per-model sentence."""
     if len(group) == 1:
         return card_summary(group[0])
-    lo = min(a["owns_from"] for a in group)
-    hi = max(a["owns_to"] for a in group)
-    span = f"index {lo:.1f} to {hi:.1f}"
+    # Merge each level's owned range into contiguous intervals; the union can
+    # have gaps where another model still owns a stretch in between.
+    spans = sorted([a["owns_from"], a["owns_to"]] for a in group)
+    merged = [spans[0]]
+    for lo, hi in spans[1:]:
+        if lo <= merged[-1][1] + 1e-6:
+            merged[-1][1] = max(merged[-1][1], hi)
+        else:
+            merged.append([lo, hi])
+    span = join_and([f"index {lo:.1f} to {hi:.1f}" for lo, hi in merged])
     cmin = min(a["cost_per_task"] for a in group)
     cmax = max(a["cost_per_task"] for a in group)
     costs = f"{fmt_cost(cmin)} to {fmt_cost(cmax)} per task"
     ceiling = group[0].get("ceiling_from")
     if all(a["kind"] == "price change" for a in group):
-        s = f"Prices cut on all {len(group)} levels; now the cheapest way to reach {span}, at {costs}."
+        s = f"Prices cut on all {len(group)} levels, together the cheapest way to reach {span}, at {costs}."
     elif ceiling is not None:
-        s = f"Pushed the intelligence ceiling from {ceiling:.1f} to {hi:.1f}; now the cheapest way to reach {span}, at {costs}."
+        s = f"Pushed the intelligence ceiling from {ceiling:.1f} to {merged[-1][1]:.1f}; its levels are together the cheapest way to reach {span}, at {costs}."
     else:
-        s = f"Now the cheapest way to reach {span}, at {costs}."
+        s = f"Its reasoning levels are together the cheapest way to reach {span}, at {costs}."
     records = sorted({t for a in group for t in a["records"]})
     if records:
         s += " New cost record for " + join_and([f"index ≥ {t}" for t in records]) + "."
