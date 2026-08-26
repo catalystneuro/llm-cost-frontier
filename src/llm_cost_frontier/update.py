@@ -389,6 +389,10 @@ def taken_clause(taken: list, departed: list) -> str:
     return out
 
 
+def slugify(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
 def xml_escape(t: str) -> str:
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
@@ -425,8 +429,11 @@ def write_feed(out: dict, feed_path: Path, site: str) -> None:
              "  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>"]
     for a in entries:
         title = f"{a['date']}: {a['model']} ({'price change' if a['kind'] == 'price change' else 'new model'}, index {a['intelligence_index']:.1f})"
+        # The advance's social card, rendered per (date, base model) group.
+        card = f"{site}/llm-cost-frontier/images/advances/{a['date']}-{slugify(a['base'])}.png"
         lines += ["  <entry>", f"    <title>{xml_escape(title)}</title>",
                   f'    <link href="{site}/llm-cost-frontier/#advances" />',
+                  f'    <link rel="enclosure" type="image/png" href="{card}" />',
                   f"    <id>{site}/llm-cost-frontier/advance/{a['date']}/{a['slug']}</id>",
                   f"    <updated>{a['date']}T00:00:00Z</updated>",
                   f"    <summary>{xml_escape(describe(a))}</summary>", "  </entry>"]

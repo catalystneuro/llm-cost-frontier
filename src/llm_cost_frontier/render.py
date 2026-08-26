@@ -13,7 +13,6 @@ install the package with the [render] extra).
 import argparse
 import datetime as dt
 import json
-import re
 from pathlib import Path
 
 from .update import (
@@ -24,6 +23,7 @@ from .update import (
     join_and,
     pareto,
     price_timeline,
+    slugify,
     split_variant,
 )
 
@@ -49,10 +49,6 @@ def fmt_cost(c: float) -> str:
 def long_date(iso: str) -> str:
     d = dt.date.fromisoformat(iso)
     return f"{d.strftime('%B')} {d.day}, {d.year}"
-
-
-def slugify(name: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
 
 def card_summary(a: dict) -> str:
