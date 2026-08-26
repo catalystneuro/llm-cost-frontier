@@ -325,7 +325,7 @@
    "retired": false
   },
   "deepseek-v4-flash-0420": {
-   "cost_per_task": 0.0673,
+   "cost_per_task": 0.054486,
    "creator": "DeepSeek",
    "first_seen": "2026-08-19",
    "intelligence_index": 42.1,
@@ -336,6 +336,11 @@
      "2026-08-19",
      0.0673,
      42.1
+    ],
+    [
+     "2026-08-26",
+     0.054486,
+     42.1
     ]
    ],
    "open_weights": true,
@@ -343,7 +348,7 @@
    "retired": false
   },
   "deepseek-v4-flash-0420-high": {
-   "cost_per_task": 0.048824,
+   "cost_per_task": 0.052891,
    "creator": "DeepSeek",
    "first_seen": "2026-08-19",
    "intelligence_index": 39.0,
@@ -358,6 +363,11 @@
     [
      "2026-08-25",
      0.048824,
+     39.0
+    ],
+    [
+     "2026-08-26",
+     0.052891,
      39.0
     ]
    ],
@@ -384,7 +394,7 @@
    "retired": false
   },
   "deepseek-v4-pro": {
-   "cost_per_task": 0.254076,
+   "cost_per_task": 0.265268,
    "creator": "DeepSeek",
    "first_seen": "2026-08-19",
    "intelligence_index": 53.2,
@@ -400,6 +410,11 @@
      "2026-08-25",
      0.254076,
      53.2
+    ],
+    [
+     "2026-08-26",
+     0.265268,
+     53.2
     ]
    ],
    "open_weights": true,
@@ -407,7 +422,7 @@
    "retired": false
   },
   "deepseek-v4-pro-0424": {
-   "cost_per_task": 0.047403,
+   "cost_per_task": 0.049752,
    "creator": "DeepSeek",
    "first_seen": "2026-08-19",
    "intelligence_index": 45.3,
@@ -417,6 +432,11 @@
     [
      "2026-08-19",
      0.047403,
+     45.3
+    ],
+    [
+     "2026-08-26",
+     0.049752,
      45.3
     ]
    ],
@@ -677,7 +697,7 @@
    "retired": false
   },
   "glm-5-1": {
-   "cost_per_task": 0.27462,
+   "cost_per_task": 0.286622,
    "creator": "Z AI",
    "first_seen": "2026-08-19",
    "intelligence_index": 41.0,
@@ -692,6 +712,11 @@
     [
      "2026-08-26",
      0.27462,
+     41.0
+    ],
+    [
+     "2026-08-26",
+     0.286622,
      41.0
     ]
    ],
@@ -735,8 +760,26 @@
    "release_date": "2026-08-18",
    "retired": false
   },
+  "glm-5-3-flash": {
+   "cost_per_task": 0.086853,
+   "creator": "Z AI",
+   "first_seen": "2026-08-26",
+   "intelligence_index": 57.5,
+   "last_seen": "2026-08-26",
+   "name": "GLM-5.3-Flash",
+   "observations": [
+    [
+     "2026-08-26",
+     0.086853,
+     57.5
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-08-26",
+   "retired": false
+  },
   "gpt-4-1-mini": {
-   "cost_per_task": 0.063774,
+   "cost_per_task": 0.054862,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 14.8,
@@ -746,6 +789,11 @@
     [
      "2026-08-19",
      0.063774,
+     14.8
+    ],
+    [
+     "2026-08-26",
+     0.054862,
      14.8
     ]
    ],
@@ -772,7 +820,7 @@
    "retired": false
   },
   "gpt-5": {
-   "cost_per_task": 0.257159,
+   "cost_per_task": 0.24366,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 35.3,
@@ -782,6 +830,11 @@
     [
      "2026-08-19",
      0.257159,
+     35.3
+    ],
+    [
+     "2026-08-26",
+     0.24366,
      35.3
     ]
    ],
@@ -808,7 +861,7 @@
    "retired": false
   },
   "gpt-5-4": {
-   "cost_per_task": 1.103797,
+   "cost_per_task": 1.120338,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 53.1,
@@ -819,6 +872,11 @@
      "2026-08-19",
      1.103797,
      53.1
+    ],
+    [
+     "2026-08-26",
+     1.120338,
+     53.1
     ]
    ],
    "open_weights": false,
@@ -826,7 +884,7 @@
    "retired": false
   },
   "gpt-5-4-mini": {
-   "cost_per_task": 0.49476,
+   "cost_per_task": 0.494783,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 40.9,
@@ -837,6 +895,11 @@
      "2026-08-19",
      0.49476,
      40.9
+    ],
+    [
+     "2026-08-26",
+     0.494783,
+     40.9
     ]
    ],
    "open_weights": false,
@@ -844,7 +907,7 @@
    "retired": false
   },
   "gpt-5-4-nano": {
-   "cost_per_task": 0.149265,
+   "cost_per_task": 0.149069,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 39.7,
@@ -855,6 +918,11 @@
      "2026-08-19",
      0.149265,
      39.7
+    ],
+    [
+     "2026-08-26",
+     0.149069,
+     39.7
     ]
    ],
    "open_weights": false,
@@ -862,7 +930,7 @@
    "retired": false
   },
   "gpt-5-5": {
-   "cost_per_task": 1.174707,
+   "cost_per_task": 1.191003,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 56.3,
@@ -873,6 +941,11 @@
      "2026-08-19",
      1.174707,
      56.3
+    ],
+    [
+     "2026-08-26",
+     1.191003,
+     56.3
     ]
    ],
    "open_weights": false,
@@ -880,7 +953,7 @@
    "retired": false
   },
   "gpt-5-5-high": {
-   "cost_per_task": 0.803311,
+   "cost_per_task": 0.815452,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 54.7,
@@ -891,6 +964,11 @@
      "2026-08-19",
      0.803311,
      54.7
+    ],
+    [
+     "2026-08-26",
+     0.815452,
+     54.7
     ]
    ],
    "open_weights": false,
@@ -898,7 +976,7 @@
    "retired": false
   },
   "gpt-5-5-instant-06-26": {
-   "cost_per_task": 0.536439,
+   "cost_per_task": 0.537431,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 29.2,
@@ -909,6 +987,11 @@
      "2026-08-19",
      0.536439,
      29.2
+    ],
+    [
+     "2026-08-26",
+     0.537431,
+     29.2
     ]
    ],
    "open_weights": false,
@@ -916,7 +999,7 @@
    "retired": false
   },
   "gpt-5-5-low": {
-   "cost_per_task": 0.258866,
+   "cost_per_task": 0.26156,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 44.5,
@@ -927,6 +1010,11 @@
      "2026-08-19",
      0.258866,
      44.5
+    ],
+    [
+     "2026-08-26",
+     0.26156,
+     44.5
     ]
    ],
    "open_weights": false,
@@ -934,7 +1022,7 @@
    "retired": false
   },
   "gpt-5-5-medium": {
-   "cost_per_task": 0.500169,
+   "cost_per_task": 0.507987,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 51.4,
@@ -944,6 +1032,11 @@
     [
      "2026-08-19",
      0.500169,
+     51.4
+    ],
+    [
+     "2026-08-26",
+     0.507987,
      51.4
     ]
    ],
@@ -970,7 +1063,7 @@
    "retired": false
   },
   "gpt-5-6-luna": {
-   "cost_per_task": 0.047128,
+   "cost_per_task": 0.048659,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 52.3,
@@ -981,6 +1074,11 @@
      "2026-08-19",
      0.047128,
      52.3
+    ],
+    [
+     "2026-08-26",
+     0.048659,
+     52.3
     ]
    ],
    "open_weights": false,
@@ -988,7 +1086,7 @@
    "retired": false
   },
   "gpt-5-6-luna-high": {
-   "cost_per_task": 0.021587,
+   "cost_per_task": 0.022344,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 47.0,
@@ -999,6 +1097,11 @@
      "2026-08-19",
      0.021587,
      47.0
+    ],
+    [
+     "2026-08-26",
+     0.022344,
+     47.0
     ]
    ],
    "open_weights": false,
@@ -1006,7 +1109,7 @@
    "retired": false
   },
   "gpt-5-6-luna-low": {
-   "cost_per_task": 0.008795,
+   "cost_per_task": 0.008977,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 33.9,
@@ -1017,6 +1120,11 @@
      "2026-08-19",
      0.008795,
      33.9
+    ],
+    [
+     "2026-08-26",
+     0.008977,
+     33.9
     ]
    ],
    "open_weights": false,
@@ -1024,7 +1132,7 @@
    "retired": false
   },
   "gpt-5-6-luna-medium": {
-   "cost_per_task": 0.011269,
+   "cost_per_task": 0.011576,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 38.9,
@@ -1034,6 +1142,11 @@
     [
      "2026-08-19",
      0.011269,
+     38.9
+    ],
+    [
+     "2026-08-26",
+     0.011576,
      38.9
     ]
    ],
@@ -1060,7 +1173,7 @@
    "retired": false
   },
   "gpt-5-6-luna-xhigh": {
-   "cost_per_task": 0.031637,
+   "cost_per_task": 0.032756,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 50.1,
@@ -1071,6 +1184,11 @@
      "2026-08-19",
      0.031637,
      50.1
+    ],
+    [
+     "2026-08-26",
+     0.032756,
+     50.1
     ]
    ],
    "open_weights": false,
@@ -1078,7 +1196,7 @@
    "retired": false
   },
   "gpt-5-6-sol": {
-   "cost_per_task": 0.960429,
+   "cost_per_task": 1.005604,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 60.9,
@@ -1094,6 +1212,11 @@
      "2026-08-25",
      0.960429,
      60.9
+    ],
+    [
+     "2026-08-26",
+     1.005604,
+     60.9
     ]
    ],
    "open_weights": false,
@@ -1101,7 +1224,7 @@
    "retired": false
   },
   "gpt-5-6-sol-high": {
-   "cost_per_task": 0.432041,
+   "cost_per_task": 0.456021,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 57.3,
@@ -1117,6 +1240,11 @@
      "2026-08-25",
      0.432041,
      57.3
+    ],
+    [
+     "2026-08-26",
+     0.456021,
+     57.3
     ]
    ],
    "open_weights": false,
@@ -1124,7 +1252,7 @@
    "retired": false
   },
   "gpt-5-6-sol-low": {
-   "cost_per_task": 0.18668,
+   "cost_per_task": 0.194771,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 50.7,
@@ -1140,6 +1268,11 @@
      "2026-08-25",
      0.18668,
      50.7
+    ],
+    [
+     "2026-08-26",
+     0.194771,
+     50.7
     ]
    ],
    "open_weights": false,
@@ -1147,7 +1280,7 @@
    "retired": false
   },
   "gpt-5-6-sol-medium": {
-   "cost_per_task": 0.29847,
+   "cost_per_task": 0.313644,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 55.6,
@@ -1162,6 +1295,11 @@
     [
      "2026-08-25",
      0.29847,
+     55.6
+    ],
+    [
+     "2026-08-26",
+     0.313644,
      55.6
     ]
    ],
@@ -1193,7 +1331,7 @@
    "retired": false
   },
   "gpt-5-6-sol-xhigh": {
-   "cost_per_task": 0.63733,
+   "cost_per_task": 0.671068,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 59.0,
@@ -1209,6 +1347,11 @@
      "2026-08-25",
      0.63733,
      59.0
+    ],
+    [
+     "2026-08-26",
+     0.671068,
+     59.0
     ]
    ],
    "open_weights": false,
@@ -1216,7 +1359,7 @@
    "retired": false
   },
   "gpt-5-6-terra": {
-   "cost_per_task": 0.508019,
+   "cost_per_task": 0.526035,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 56.6,
@@ -1227,6 +1370,11 @@
      "2026-08-19",
      0.508019,
      56.6
+    ],
+    [
+     "2026-08-26",
+     0.526035,
+     56.6
     ]
    ],
    "open_weights": false,
@@ -1234,7 +1382,7 @@
    "retired": false
   },
   "gpt-5-6-terra-high": {
-   "cost_per_task": 0.218282,
+   "cost_per_task": 0.227565,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 50.1,
@@ -1245,6 +1393,11 @@
      "2026-08-19",
      0.218282,
      50.1
+    ],
+    [
+     "2026-08-26",
+     0.227565,
+     50.1
     ]
    ],
    "open_weights": false,
@@ -1252,7 +1405,7 @@
    "retired": false
   },
   "gpt-5-6-terra-low": {
-   "cost_per_task": 0.093947,
+   "cost_per_task": 0.096154,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 41.3,
@@ -1263,6 +1416,11 @@
      "2026-08-19",
      0.093947,
      41.3
+    ],
+    [
+     "2026-08-26",
+     0.096154,
+     41.3
     ]
    ],
    "open_weights": false,
@@ -1270,7 +1428,7 @@
    "retired": false
   },
   "gpt-5-6-terra-medium": {
-   "cost_per_task": 0.119024,
+   "cost_per_task": 0.123172,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 46.8,
@@ -1280,6 +1438,11 @@
     [
      "2026-08-19",
      0.119024,
+     46.8
+    ],
+    [
+     "2026-08-26",
+     0.123172,
      46.8
     ]
    ],
@@ -1306,7 +1469,7 @@
    "retired": false
   },
   "gpt-5-6-terra-xhigh": {
-   "cost_per_task": 0.305022,
+   "cost_per_task": 0.318221,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 52.8,
@@ -1317,6 +1480,11 @@
      "2026-08-19",
      0.305022,
      52.8
+    ],
+    [
+     "2026-08-26",
+     0.318221,
+     52.8
     ]
    ],
    "open_weights": false,
@@ -1324,7 +1492,7 @@
    "retired": false
   },
   "gpt-5-mini": {
-   "cost_per_task": 0.035972,
+   "cost_per_task": 0.036595,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 25.8,
@@ -1334,6 +1502,11 @@
     [
      "2026-08-19",
      0.035972,
+     25.8
+    ],
+    [
+     "2026-08-26",
+     0.036595,
      25.8
     ]
    ],
@@ -1437,7 +1610,7 @@
    "retired": false
   },
   "grok-4-5": {
-   "cost_per_task": 0.360087,
+   "cost_per_task": 0.425594,
    "creator": "SpaceXAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 55.8,
@@ -1448,6 +1621,11 @@
      "2026-08-19",
      0.360087,
      55.8
+    ],
+    [
+     "2026-08-26",
+     0.425594,
+     55.8
     ]
    ],
    "open_weights": false,
@@ -1455,7 +1633,7 @@
    "retired": false
   },
   "grok-4-6": {
-   "cost_per_task": 0.836671,
+   "cost_per_task": 0.937217,
    "creator": "SpaceXAI",
    "first_seen": "2026-08-19",
    "intelligence_index": 60.9,
@@ -1466,6 +1644,11 @@
      "2026-08-19",
      0.836671,
      60.9
+    ],
+    [
+     "2026-08-26",
+     0.937217,
+     60.9
     ]
    ],
    "open_weights": false,
@@ -1473,7 +1656,7 @@
    "retired": false
   },
   "grok-4-6-low": {
-   "cost_per_task": 0.220707,
+   "cost_per_task": 0.25453,
    "creator": "SpaceXAI",
    "first_seen": "2026-08-22",
    "intelligence_index": 51.7,
@@ -1484,6 +1667,11 @@
      "2026-08-22",
      0.220707,
      51.7
+    ],
+    [
+     "2026-08-26",
+     0.25453,
+     51.7
     ]
    ],
    "open_weights": false,
@@ -1491,7 +1679,7 @@
    "retired": false
   },
   "grok-4-6-medium": {
-   "cost_per_task": 0.667871,
+   "cost_per_task": 0.782884,
    "creator": "SpaceXAI",
    "first_seen": "2026-08-22",
    "intelligence_index": 59.0,
@@ -1502,6 +1690,11 @@
      "2026-08-22",
      0.667871,
      59.0
+    ],
+    [
+     "2026-08-26",
+     0.782884,
+     59.0
     ]
    ],
    "open_weights": false,
@@ -1509,7 +1702,7 @@
    "retired": false
   },
   "grok-4-6-xhigh": {
-   "cost_per_task": 1.041173,
+   "cost_per_task": 1.230412,
    "creator": "SpaceXAI",
    "first_seen": "2026-08-22",
    "intelligence_index": 60.0,
@@ -1519,6 +1712,11 @@
     [
      "2026-08-22",
      1.041173,
+     60.0
+    ],
+    [
+     "2026-08-26",
+     1.230412,
      60.0
     ]
    ],
@@ -1635,7 +1833,7 @@
    "retired": false
   },
   "kimi-k2-6": {
-   "cost_per_task": 0.365321,
+   "cost_per_task": 0.388612,
    "creator": "Kimi",
    "first_seen": "2026-08-19",
    "intelligence_index": 45.1,
@@ -1645,6 +1843,11 @@
     [
      "2026-08-19",
      0.365321,
+     45.1
+    ],
+    [
+     "2026-08-26",
+     0.388612,
      45.1
     ]
    ],
@@ -1820,7 +2023,7 @@
    "retired": false
   },
   "mercury-2": {
-   "cost_per_task": 0.079807,
+   "cost_per_task": 0.079815,
    "creator": "Inception",
    "first_seen": "2026-08-19",
    "intelligence_index": 21.9,
@@ -1830,6 +2033,11 @@
     [
      "2026-08-19",
      0.079807,
+     21.9
+    ],
+    [
+     "2026-08-26",
+     0.079815,
      21.9
     ]
    ],
@@ -2000,7 +2208,7 @@
    "retired": false
   },
   "mistral-medium-3-5": {
-   "cost_per_task": 0.463738,
+   "cost_per_task": 0.406038,
    "creator": "Mistral",
    "first_seen": "2026-08-19",
    "intelligence_index": 30.4,
@@ -2010,6 +2218,11 @@
     [
      "2026-08-19",
      0.463738,
+     30.4
+    ],
+    [
+     "2026-08-26",
+     0.406038,
      30.4
     ]
    ],
@@ -2072,7 +2285,7 @@
    "retired": false
   },
   "muse-glimmer": {
-   "cost_per_task": 0.073171,
+   "cost_per_task": 0.060453,
    "creator": "Meta",
    "first_seen": "2026-08-19",
    "intelligence_index": 35.1,
@@ -2082,6 +2295,11 @@
     [
      "2026-08-19",
      0.073171,
+     35.1
+    ],
+    [
+     "2026-08-26",
+     0.060453,
      35.1
     ]
    ],
@@ -2126,7 +2344,7 @@
    "retired": false
   },
   "nemotron-3-5-lightning": {
-   "cost_per_task": 0.076357,
+   "cost_per_task": 0.077321,
    "creator": "NVIDIA",
    "first_seen": "2026-08-19",
    "intelligence_index": 23.6,
@@ -2136,6 +2354,11 @@
     [
      "2026-08-19",
      0.076357,
+     23.6
+    ],
+    [
+     "2026-08-26",
+     0.077321,
      23.6
     ]
    ],
@@ -2414,7 +2637,7 @@
    "retired": false
   },
   "qwen3-7-max": {
-   "cost_per_task": 0.541331,
+   "cost_per_task": 0.679233,
    "creator": "Alibaba",
    "first_seen": "2026-08-19",
    "intelligence_index": 46.7,
@@ -2425,6 +2648,11 @@
      "2026-08-19",
      0.541331,
      46.7
+    ],
+    [
+     "2026-08-26",
+     0.679233,
+     46.7
     ]
    ],
    "open_weights": false,
@@ -2432,7 +2660,7 @@
    "retired": false
   },
   "qwen3-7-plus": {
-   "cost_per_task": 0.242415,
+   "cost_per_task": 0.170287,
    "creator": "Alibaba",
    "first_seen": "2026-08-19",
    "intelligence_index": 39.4,
@@ -2443,6 +2671,11 @@
      "2026-08-19",
      0.242415,
      39.4
+    ],
+    [
+     "2026-08-26",
+     0.170287,
+     39.4
     ]
    ],
    "open_weights": false,
@@ -2450,7 +2683,7 @@
    "retired": false
   },
   "qwen3-8-2-4t-a95b": {
-   "cost_per_task": 1.091913,
+   "cost_per_task": 0.807078,
    "creator": "Alibaba",
    "first_seen": "2026-08-19",
    "intelligence_index": 57.7,
@@ -2461,6 +2694,11 @@
      "2026-08-19",
      1.091913,
      57.7
+    ],
+    [
+     "2026-08-26",
+     0.807078,
+     57.7
     ]
    ],
    "open_weights": true,
@@ -2468,7 +2706,7 @@
    "retired": false
   },
   "qwen3-8-27b": {
-   "cost_per_task": 0.253403,
+   "cost_per_task": 0.933512,
    "creator": "Alibaba",
    "first_seen": "2026-08-21",
    "intelligence_index": 52.0,
@@ -2484,6 +2722,11 @@
      "2026-08-22",
      0.253403,
      52.0
+    ],
+    [
+     "2026-08-26",
+     0.933512,
+     52.0
     ]
    ],
    "open_weights": true,
@@ -2491,7 +2734,7 @@
    "retired": false
   },
   "qwen3-8-27b-low": {
-   "cost_per_task": 0.168641,
+   "cost_per_task": 0.734707,
    "creator": "Alibaba",
    "first_seen": "2026-08-22",
    "intelligence_index": 42.9,
@@ -2507,6 +2750,11 @@
      "2026-08-25",
      0.168641,
      42.9
+    ],
+    [
+     "2026-08-26",
+     0.734707,
+     42.9
     ]
    ],
    "open_weights": true,
@@ -2514,7 +2762,7 @@
    "retired": false
   },
   "qwen3-8-27b-medium": {
-   "cost_per_task": 0.187804,
+   "cost_per_task": 0.753753,
    "creator": "Alibaba",
    "first_seen": "2026-08-22",
    "intelligence_index": 44.5,
@@ -2524,6 +2772,11 @@
     [
      "2026-08-22",
      0.187804,
+     44.5
+    ],
+    [
+     "2026-08-26",
+     0.753753,
      44.5
     ]
    ],
@@ -2550,7 +2803,7 @@
    "retired": false
   },
   "qwen3-8-max": {
-   "cost_per_task": 1.132038,
+   "cost_per_task": 0.913337,
    "creator": "Alibaba",
    "first_seen": "2026-08-19",
    "intelligence_index": 58.1,
@@ -2560,6 +2813,11 @@
     [
      "2026-08-19",
      1.132038,
+     58.1
+    ],
+    [
+     "2026-08-26",
+     0.913337,
      58.1
     ]
    ],
@@ -2622,7 +2880,7 @@
    "retired": false
   },
   "solar-pro-3": {
-   "cost_per_task": 0.145748,
+   "cost_per_task": 0.131567,
    "creator": "Upstage",
    "first_seen": "2026-08-19",
    "intelligence_index": 14.5,
@@ -2633,6 +2891,11 @@
      "2026-08-19",
      0.145748,
      14.5
+    ],
+    [
+     "2026-08-26",
+     0.131567,
+     14.5
     ]
    ],
    "open_weights": false,
@@ -2640,7 +2903,7 @@
    "retired": false
   },
   "solar-pro4": {
-   "cost_per_task": 0.22308,
+   "cost_per_task": 0.303461,
    "creator": "Upstage",
    "first_seen": "2026-08-19",
    "intelligence_index": 41.6,
@@ -2650,6 +2913,11 @@
     [
      "2026-08-19",
      0.22308,
+     41.6
+    ],
+    [
+     "2026-08-26",
+     0.303461,
      41.6
     ]
    ],
