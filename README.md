@@ -13,6 +13,8 @@ The background, the method, and the argument for why the cheap end of the range 
 | `data/overrides.json` | Hand-maintained corrections to upstream fields, currently the open weights flag; applied to the outputs, never to the history |
 | `build/llm-frontier.json` | What the dashboard renders: model rows, frontier snapshots, tier records, halving times, and frontier advances |
 | `build/feed.xml` | Atom feed of the last 60 frontier advances |
+| `build/images/advances/` | A 1200x630 social card per advancing model per date, reasoning levels grouped, named `{date}-{base model}.png` |
+| `build/images/frontier-card.png` | A social card of the current frontier, for the dashboard page's link preview |
 
 The website syncs the two files in `build/` an hour after this repository updates them, so the dashboard and the feed are served from catalystneuro.com, not from GitHub.
 
@@ -54,6 +56,16 @@ llm-cost-frontier --history data/history.json --out build/llm-frontier.json \
 ```
 
 A run refuses to rewrite the history if it parses fewer than 50 live models, which guards against a change in the source page's layout quietly emptying the dataset.
+
+## Advance Cards
+
+Each frontier advance also gets a 1200x630 PNG suitable for social sharing: the scatter of every model as it stood on the advance date, the frontier before and after, and the advancing model highlighted, with the region it took from the previous frontier shaded. Reasoning levels of the same base model that advance on the same date share one card, so a release that lands three variants on the frontier produces one image, not three. The shaded region and the dashed line show the frontier as it would stand without that model's change, so on a date with several advancing models each card credits only its own model. Because the state is reconstructed as of the advance date, a card never changes once rendered, so the renderer skips existing files and only new advances cost anything on the nightly run. This is the one part of the pipeline that needs a dependency:
+
+```bash
+pip install matplotlib
+PYTHONPATH=src python -m llm_cost_frontier.render           # render new cards
+PYTHONPATH=src python -m llm_cost_frontier.render --force   # re-render everything
+```
 
 ## Schedule
 

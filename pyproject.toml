@@ -13,6 +13,9 @@ authors = [{ name = "CatalystNeuro" }]
 keywords = ["llm", "pareto frontier", "cost per task", "artificial analysis", "intelligence index"]
 dependencies = []
 
+[project.optional-dependencies]
+render = ["matplotlib"]
+
 [project.urls]
 Homepage = "https://catalystneuro.com/llm-cost-frontier/"
 Source = "https://github.com/catalystneuro/llm-cost-frontier"
@@ -20,6 +23,7 @@ Background = "https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/"
 
 [project.scripts]
 llm-cost-frontier = "llm_cost_frontier.update:main"
+llm-cost-frontier-render = "llm_cost_frontier.render:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/llm_cost_frontier"]
