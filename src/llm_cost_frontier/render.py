@@ -173,8 +173,11 @@ def draw_push_region(ax, state: dict, front: set, state_before: dict, front_befo
     xs = sorted({p[0] for p in new_pts} | {p[0] for p in old_pts}) + [x_right]
     y_new = [staircase_y(new_pts, x) for x in xs]
     y_old = [staircase_y(old_pts, x) for x in xs]
-    ax.fill_between(xs, y_old, y_new, where=[n > o for n, o in zip(y_new, y_old)],
-                    step="post", color=C["accent"], alpha=0.12, linewidth=0, zorder=1)
+    # The new frontier is at or above the old one everywhere, so filling
+    # between the staircases shades exactly the pushed region; a `where` mask
+    # would drop single-segment regions, which matplotlib cannot fill.
+    ax.fill_between(xs, y_old, y_new, step="post", color=C["accent"], alpha=0.12,
+                    linewidth=0, zorder=1)
 
 
 def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = None,
