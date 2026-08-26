@@ -75,37 +75,30 @@ def card_summary(a: dict) -> str:
     return s
 
 
-def group_summary(group: list) -> str:
-    """One summary for all of a base model's reasoning levels that advanced on
-    the same date. A single advance keeps its per-model sentence."""
-    if len(group) == 1:
-        return card_summary(group[0])
-    # Merge each level's owned range into contiguous intervals; the union can
-    # have gaps where another model still owns a stretch in between.
-    spans = sorted([a["owns_from"], a["owns_to"]] for a in group)
-    merged = [spans[0]]
-    for lo, hi in spans[1:]:
-        if lo <= merged[-1][1] + 1e-6:
-            merged[-1][1] = max(merged[-1][1], hi)
-        else:
-            merged.append([lo, hi])
-    span = join_and([f"index {lo:.1f} to {hi:.1f}" for lo, hi in merged])
-    cmin = min(a["cost_per_task"] for a in group)
-    cmax = max(a["cost_per_task"] for a in group)
-    costs = f"{fmt_cost(cmin)} to {fmt_cost(cmax)} per task"
+def group_table(group: list) -> list:
+    """Header and one row per reasoning level, ascending: the level, its cost
+    per task (old → new for a price change), and the index range it owns."""
+    rows = [("Reasoning level", "Cost per task", "Owns index range")]
+    for a in reversed(group):
+        cost = fmt_cost(a["cost_per_task"])
+        if a["kind"] == "price change" and a["previous_cost"]:
+            cost = f"{fmt_cost(a['previous_cost'])} → {cost}"
+        rows.append((a["variant"] or a["model"], cost, f"{a['owns_from']:.1f} to {a['owns_to']:.1f}"))
+    return rows
+
+
+def group_notes(group: list) -> str:
+    """What the table cannot carry: ceiling pushes, cost records, licensing."""
+    notes = []
     ceiling = group[0].get("ceiling_from")
-    if all(a["kind"] == "price change" for a in group):
-        s = f"Prices cut on all {len(group)} levels, together the cheapest way to reach {span}, at {costs}."
-    elif ceiling is not None:
-        s = f"Pushed the intelligence ceiling from {ceiling:.1f} to {merged[-1][1]:.1f}; its levels are together the cheapest way to reach {span}, at {costs}."
-    else:
-        s = f"Its reasoning levels are together the cheapest way to reach {span}, at {costs}."
+    if ceiling is not None:
+        notes.append(f"Pushed the intelligence ceiling from {ceiling:.1f} to {group[0]['owns_to']:.1f}.")
     records = sorted({t for a in group for t in a["records"]})
     if records:
-        s += " New cost record for " + join_and([f"index ≥ {t}" for t in records]) + "."
+        notes.append("New cost record for " + join_and([f"index ≥ {t}" for t in records]) + ".")
     if all(a["open_weights"] for a in group):
-        s += " Open weights."
-    return s
+        notes.append("Open weights.")
+    return " ".join(notes)
 
 
 def state_at(timeline: list, date: str, before: bool = False) -> dict:
@@ -130,17 +123,23 @@ def frontier_steps(state: dict, front: set, x_right: float) -> tuple:
     return xs, ys
 
 
-def new_figure(kicker: str, title: str, summary_lines: list, subtitle_lines: tuple = ()):
+def new_figure(kicker: str, title: str, summary_lines: list, table: list = None):
     import matplotlib.pyplot as plt
 
     fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI), dpi=DPI, facecolor=C["surface"])
     fig.text(0.048, 0.945, kicker.upper(), fontsize=12.5, color=C["muted"], va="top")
     fig.text(0.048, 0.895, title, fontsize=25, color=C["ink"], va="top", fontweight="bold")
     y = 0.820
-    for line in subtitle_lines[:2]:
-        fig.text(0.048, y, line, fontsize=15, color=C["muted"], va="top")
-        y -= 0.046
     last = y
+    if table:
+        cols = (0.048, 0.42, 0.62)
+        for r, row in enumerate(table):
+            style = dict(fontsize=11, color=C["muted"]) if r == 0 else dict(fontsize=12.5, color=C["ink2"])
+            for x, cell in zip(cols, row):
+                fig.text(x, y, cell, va="top", **style)
+            last = y
+            y -= 0.037
+        y -= 0.008
     for line in summary_lines[:2]:
         fig.text(0.048, y, line, fontsize=13.5, color=C["ink2"], va="top")
         last = y
@@ -333,13 +332,15 @@ def render_group(group: list, models: dict, timeline: list, path: Path):
     front_cf = pareto(state_cf)
     kinds = {a["kind"] for a in group}
     parts = ["Frontier advance", long_date(date)] + (sorted(kinds) if len(kinds) == 1 else []) + [a0["creator"]]
-    if len(group) > 1 and all(a["variant"] for a in group):
+    if len(group) > 1:
         title = base
-        subtitle_lines = wrap(" · ".join(a["variant"] for a in reversed(group)), 95)
+        table = group_table(group)
+        summary_lines = wrap(group_notes(group)) if group_notes(group) else []
     else:
         title = a0["model"]
-        subtitle_lines = ()
-    fig, ax = new_figure(" · ".join(parts), title, wrap(group_summary(group)), subtitle_lines)
+        table = None
+        summary_lines = wrap(card_summary(a0))
+    fig, ax = new_figure(" · ".join(parts), title, summary_lines, table)
     highlights = {a["slug"] for a in group}
     xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights,
                           y_min=30 if date > Y_MIN_30_AFTER else 0)
