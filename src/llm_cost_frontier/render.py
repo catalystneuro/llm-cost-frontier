@@ -29,6 +29,10 @@ from .update import (
 
 DEFAULT_IMAGES = Path("build/images")
 
+# MiMo-V2.5 took over the frontier below index 38 on this date; cards after it
+# crop the y axis at 30, since the region below holds no frontier action.
+Y_MIN_30_AFTER = "2026-04-22"
+
 # Palette shared with the dashboard at catalystneuro.com/llm-cost-frontier/.
 C = dict(
     surface="#ffffff", grid="#ecf1f8", axis="#dfe6f1",
@@ -119,20 +123,26 @@ def frontier_steps(state: dict, front: set, x_right: float) -> tuple:
     return xs, ys
 
 
-def new_figure(kicker: str, title: str, summary_lines: list):
+def new_figure(kicker: str, title: str, summary_lines: list, subtitle_lines: tuple = ()):
     import matplotlib.pyplot as plt
 
     fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI), dpi=DPI, facecolor=C["surface"])
     fig.text(0.048, 0.945, kicker.upper(), fontsize=12.5, color=C["muted"], va="top")
     fig.text(0.048, 0.895, title, fontsize=25, color=C["ink"], va="top", fontweight="bold")
-    for i, line in enumerate(summary_lines[:2]):
-        fig.text(0.048, 0.820 - 0.042 * i, line, fontsize=13.5, color=C["ink2"], va="top")
+    y = 0.820
+    for line in subtitle_lines[:2]:
+        fig.text(0.048, y, line, fontsize=15, color=C["muted"], va="top")
+        y -= 0.046
+    last = y
+    for line in summary_lines[:2]:
+        fig.text(0.048, y, line, fontsize=13.5, color=C["ink2"], va="top")
+        last = y
+        y -= 0.042
     fig.text(0.048, 0.028, "Data: Artificial Analysis · measured cost per Intelligence Index task",
              fontsize=11.5, color=C["muted"], va="bottom")
     fig.text(0.952, 0.028, "catalystneuro.com/llm-cost-frontier",
              fontsize=12.5, color=C["ink2"], va="bottom", ha="right", fontweight="bold")
-    top = 0.720 if len(summary_lines) < 2 else 0.685
-    ax = fig.add_axes([0.058, 0.135, 0.894, top - 0.135])
+    ax = fig.add_axes([0.058, 0.135, 0.894, (last - 0.100) - 0.135])
     return fig, ax
 
 
@@ -181,7 +191,7 @@ def draw_push_region(ax, state: dict, front: set, state_before: dict, front_befo
 
 
 def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = None,
-               front_before: set = None, highlights: set = frozenset()):
+               front_before: set = None, highlights: set = frozenset(), y_min: float = 0):
     import matplotlib.ticker as mticker
 
     costs = [c for c, _iq in state.values()]
@@ -191,7 +201,7 @@ def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = N
 
     ax.set_xscale("log")
     ax.set_xlim(xlo, xhi)
-    ax.set_ylim(0, yhi)
+    ax.set_ylim(y_min, yhi)
     ax.set_facecolor(C["surface"])
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
@@ -263,9 +273,10 @@ def draw_highlights(ax, group: list, state: dict, xlo: float, xhi: float):
             ax.annotate(label, xy=(cost, iq), xytext=(-14 if left else 14, 10),
                         textcoords="offset points", ha="right" if left else "left",
                         fontsize=12.5, color=C["accent"], fontweight="bold", zorder=7)
-        if len(group) > 1 and a["variant"]:
+        if len(group) > 1 and a["variant"] and max(len(g["variant"] or "") for g in group) <= 10:
             # Left of the dot is empty: the staircase rises at the dot's cost
-            # and any price arrow sits to its right.
+            # and any price arrow sits to its right. Long variant names would
+            # collide, so they stay in the subtitle only.
             ax.annotate(a["variant"], xy=(cost, iq), xytext=(-12, -3.5),
                         textcoords="offset points", ha="right", va="center",
                         fontsize=10.5, color=C["accent"], zorder=7)
@@ -316,12 +327,15 @@ def render_group(group: list, models: dict, timeline: list, path: Path):
     kinds = {a["kind"] for a in group}
     parts = ["Frontier advance", long_date(date)] + (sorted(kinds) if len(kinds) == 1 else []) + [a0["creator"]]
     if len(group) > 1 and all(a["variant"] for a in group):
-        title = f"{base} ({', '.join(a['variant'] for a in reversed(group))})"
+        title = base
+        subtitle_lines = wrap(" · ".join(a["variant"] for a in reversed(group)), 95)
     else:
         title = a0["model"]
-    fig, ax = new_figure(" · ".join(parts), title, wrap(group_summary(group)))
+        subtitle_lines = ()
+    fig, ax = new_figure(" · ".join(parts), title, wrap(group_summary(group)), subtitle_lines)
     highlights = {a["slug"] for a in group}
-    xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights)
+    xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights,
+                          y_min=30 if date > Y_MIN_30_AFTER else 0)
     draw_highlights(ax, group, state, xlo, xhi)
     add_legend(ax, price_change=any(a["kind"] == "price change" and a["previous_cost"] for a in group))
     save(fig, path)
@@ -339,7 +353,7 @@ def render_current(out: dict, models: dict, timeline: list, path: Path):
         summary += (f" Index ≥ 50 cost has fallen {s50['collapse']:g}x since "
                     f"{first.strftime('%B %Y')}, halving about every {s50['halving_days']} days.")
     fig, ax = new_figure(f"Updated {long_date(out['updated'])}", "The LLM Cost Frontier", wrap(summary))
-    draw_chart(ax, state, models, front)
+    draw_chart(ax, state, models, front, y_min=30 if out["updated"] > Y_MIN_30_AFTER else 0)
     save(fig, path)
 
 
