@@ -10,6 +10,7 @@ The background, the method, and the argument for why the cheap end of the range 
 |---|---|
 | `data/history.json` | Cumulative per-model record: release date, creator, open weights flag, retired flag, and every observed `(date, cost, index)` |
 | `data/price-events.json` | Hand-maintained price changes from before nightly observation began |
+| `data/overrides.json` | Hand-maintained corrections to upstream fields, currently the open weights flag; applied to the outputs, never to the history |
 | `build/llm-frontier.json` | What the dashboard renders: model rows, frontier snapshots, tier records, halving times, and frontier advances |
 | `build/feed.xml` | Atom feed of the last 60 frontier advances |
 
