@@ -2,7 +2,8 @@ name: Update frontier data
 
 on:
   schedule:
-    # Nightly at 06:00 UTC (02:00 US Eastern). The website syncs an hour later.
+    # Nightly at 06:00 UTC (02:00 US Eastern). A successful update triggers
+    # the website's sync workflow directly (see the last step).
     - cron: "0 6 * * *"
   workflow_dispatch:
 
@@ -32,13 +33,27 @@ jobs:
         env:
           PYTHONPATH: src
       - name: Commit if changed
+        id: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/history.json build/llm-frontier.json build/feed.xml build/images
           if git diff --cached --quiet; then
             echo "No data changes."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "Update frontier data ($(date -u +%Y-%m-%d))"
             git push
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # The site serves these artifacts, so a push here should start its sync
+      # right away instead of waiting for a staggered cron. Needs a
+      # WEBSITE_DISPATCH_TOKEN secret: a fine-grained PAT with read and write
+      # access to Actions on catalystneuro/catalystneuro.github.io. Skipped
+      # quietly until the secret exists.
+      - name: Trigger the website sync
+        if: steps.commit.outputs.pushed == 'true' && env.GH_TOKEN != ''
+        env:
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
+        run: gh workflow run sync-llm-frontier.yml --repo catalystneuro/catalystneuro.github.io
