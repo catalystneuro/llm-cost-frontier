@@ -13,6 +13,7 @@ install the package with the [render] extra).
 import argparse
 import datetime as dt
 import json
+import re
 from pathlib import Path
 
 from .update import (
@@ -23,6 +24,7 @@ from .update import (
     join_and,
     pareto,
     price_timeline,
+    split_variant,
 )
 
 DEFAULT_IMAGES = Path("build/images")
@@ -45,6 +47,10 @@ def long_date(iso: str) -> str:
     return f"{d.strftime('%B')} {d.day}, {d.year}"
 
 
+def slugify(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
 def card_summary(a: dict) -> str:
     """A shorter counterpart of update.describe, sized for two lines on the card."""
     cost = fmt_cost(a["cost_per_task"])
@@ -61,6 +67,32 @@ def card_summary(a: dict) -> str:
     if a["records"]:
         s += " New cost record for " + join_and([f"index ≥ {t}" for t in a["records"]]) + "."
     if a["open_weights"]:
+        s += " Open weights."
+    return s
+
+
+def group_summary(group: list) -> str:
+    """One summary for all of a base model's reasoning levels that advanced on
+    the same date. A single advance keeps its per-model sentence."""
+    if len(group) == 1:
+        return card_summary(group[0])
+    lo = min(a["owns_from"] for a in group)
+    hi = max(a["owns_to"] for a in group)
+    span = f"index {lo:.1f} to {hi:.1f}"
+    cmin = min(a["cost_per_task"] for a in group)
+    cmax = max(a["cost_per_task"] for a in group)
+    costs = f"{fmt_cost(cmin)} to {fmt_cost(cmax)} per task"
+    ceiling = group[0].get("ceiling_from")
+    if all(a["kind"] == "price change" for a in group):
+        s = f"Prices cut on all {len(group)} levels; now the cheapest way to reach {span}, at {costs}."
+    elif ceiling is not None:
+        s = f"Pushed the intelligence ceiling from {ceiling:.1f} to {hi:.1f}; now the cheapest way to reach {span}, at {costs}."
+    else:
+        s = f"Now the cheapest way to reach {span}, at {costs}."
+    records = sorted({t for a in group for t in a["records"]})
+    if records:
+        s += " New cost record for " + join_and([f"index ≥ {t}" for t in records]) + "."
+    if all(a["open_weights"] for a in group):
         s += " Open weights."
     return s
 
@@ -104,7 +136,49 @@ def new_figure(kicker: str, title: str, summary_lines: list):
     return fig, ax
 
 
-def draw_chart(ax, state: dict, models: dict, front: set, front_before: set = None, highlight: str = None):
+def staircase_y(pts: list, x: float) -> float:
+    """Height of the frontier staircase at x: the index of the most capable
+    member costing no more than x, or 0 left of the cheapest member."""
+    y = 0.0
+    for cost, iq in pts:
+        if cost <= x:
+            y = max(y, iq)
+        else:
+            break
+    return y
+
+
+def counterfactual(state: dict, state_before: dict, models: dict, base: str) -> dict:
+    """The state as it would stand on the date without this base model's
+    changes: its changed variants reverted to their prior value, or dropped
+    when the date introduced them. Other models' same-day changes remain, so
+    the shaded push region credits only this model."""
+    cf = {}
+    for slug, val in state.items():
+        if split_variant(models[slug]["name"])[0] == base and val != state_before.get(slug):
+            if slug in state_before:
+                cf[slug] = state_before[slug]
+        else:
+            cf[slug] = val
+    return cf
+
+
+def draw_push_region(ax, state: dict, front: set, state_before: dict, front_before: set, x_right: float):
+    """Shade the area this advance gained: between the new frontier and the
+    previous one, which bounds it left and right by where the frontier moved."""
+    if not front_before:
+        return
+    new_pts = sorted(state[s] for s in front)
+    old_pts = sorted(state_before[s] for s in front_before)
+    xs = sorted({p[0] for p in new_pts} | {p[0] for p in old_pts}) + [x_right]
+    y_new = [staircase_y(new_pts, x) for x in xs]
+    y_old = [staircase_y(old_pts, x) for x in xs]
+    ax.fill_between(xs, y_old, y_new, where=[n > o for n, o in zip(y_new, y_old)],
+                    step="post", color=C["accent"], alpha=0.12, linewidth=0, zorder=1)
+
+
+def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = None,
+               front_before: set = None, highlights: set = frozenset()):
     import matplotlib.ticker as mticker
 
     costs = [c for c, _iq in state.values()]
@@ -147,37 +221,51 @@ def draw_chart(ax, state: dict, models: dict, front: set, front_before: set = No
         if hollow:
             ax.scatter(*zip(*hollow), s=size, facecolors=C["surface"], edgecolors=color, linewidths=1.6, zorder=z)
 
-    dots([s for s in state if s not in front and s != highlight], C["deemph"], 26, 2)
+    dots([s for s in state if s not in front and s not in highlights], C["deemph"], 26, 2)
 
     if front_before:
-        xs, ys = frontier_steps(state, front_before, xhi)
+        xs, ys = frontier_steps(state_before, front_before, xhi)
         ax.plot(xs, ys, color=C["old"], linewidth=1.8, linestyle=(0, (5, 4)), zorder=3)
+        draw_push_region(ax, state, front, state_before, front_before, xhi)
     xs, ys = frontier_steps(state, front, xhi)
     ax.plot(xs, ys, color=C["blue"], linewidth=2.6, solid_joinstyle="round", zorder=4)
-    dots([s for s in front if s != highlight], C["blue"], 42, 5)
+    dots([s for s in front if s not in highlights], C["blue"], 42, 5)
     return xlo, xhi
 
 
-def draw_highlight(ax, a: dict, state: dict, xlo: float, xhi: float):
+def draw_highlights(ax, group: list, state: dict, xlo: float, xhi: float):
     import math
 
-    cost, iq = state[a["slug"]]
-    ax.axhspan(a["owns_from"], a["owns_to"], color=C["accent"], alpha=0.06, zorder=1)
-    if a["kind"] == "price change" and a["previous_cost"]:
-        ax.scatter([a["previous_cost"]], [iq], s=70, facecolors="none",
-                   edgecolors=C["accent"], linewidths=1.6, linestyle="--", zorder=6)
-        ax.annotate("", xy=(cost, iq), xytext=(a["previous_cost"], iq),
-                    arrowprops=dict(arrowstyle="->", color=C["accent"], linewidth=1.6,
-                                    linestyle="--", shrinkA=8, shrinkB=8), zorder=6)
-    if a["open_weights"]:
-        ax.scatter([cost], [iq], s=120, facecolors=C["surface"], edgecolors=C["accent"], linewidths=2.6, zorder=7)
-    else:
-        ax.scatter([cost], [iq], s=120, color=C["accent"], edgecolors=C["surface"], linewidths=1.6, zorder=7)
-    frac = (math.log10(cost) - math.log10(xlo)) / (math.log10(xhi) - math.log10(xlo))
-    on_right = frac > 0.62
-    ax.annotate(a["model"], xy=(cost, iq), xytext=(-14 if on_right else 14, 10),
-                textcoords="offset points", ha="right" if on_right else "left",
-                fontsize=12.5, color=C["accent"], fontweight="bold", zorder=7)
+    def label_left(cost):
+        # Above and left of a frontier point is empty by Pareto optimality, so
+        # prefer that side unless the dot is too close to the left edge.
+        frac = (math.log10(cost) - math.log10(xlo)) / (math.log10(xhi) - math.log10(xlo))
+        return frac > 0.25
+
+    for i, a in enumerate(group):
+        cost, iq = state[a["slug"]]
+        if a["kind"] == "price change" and a["previous_cost"]:
+            ax.scatter([a["previous_cost"]], [iq], s=70, facecolors="none",
+                       edgecolors=C["accent"], linewidths=1.6, linestyle="--", zorder=6)
+            ax.annotate("", xy=(cost, iq), xytext=(a["previous_cost"], iq),
+                        arrowprops=dict(arrowstyle="->", color=C["accent"], linewidth=1.6,
+                                        linestyle="--", shrinkA=8, shrinkB=8), zorder=6)
+        if a["open_weights"]:
+            ax.scatter([cost], [iq], s=120, facecolors=C["surface"], edgecolors=C["accent"], linewidths=2.6, zorder=7)
+        else:
+            ax.scatter([cost], [iq], s=120, color=C["accent"], edgecolors=C["surface"], linewidths=1.6, zorder=7)
+        left = label_left(cost)
+        if i == 0:  # the highest-index variant carries the model label
+            label = a["base"] if len(group) > 1 else a["model"]
+            ax.annotate(label, xy=(cost, iq), xytext=(-14 if left else 14, 10),
+                        textcoords="offset points", ha="right" if left else "left",
+                        fontsize=12.5, color=C["accent"], fontweight="bold", zorder=7)
+        if len(group) > 1 and a["variant"]:
+            # Left of the dot is empty: the staircase rises at the dot's cost
+            # and any price arrow sits to its right.
+            ax.annotate(a["variant"], xy=(cost, iq), xytext=(-12, -3.5),
+                        textcoords="offset points", ha="right", va="center",
+                        fontsize=10.5, color=C["accent"], zorder=7)
 
 
 def add_legend(ax, price_change: bool):
@@ -213,15 +301,26 @@ def wrap(text: str, width: int = 108) -> list:
     return textwrap.wrap(text, width=width)
 
 
-def render_advance(a: dict, models: dict, timeline: list, path: Path):
-    state = state_at(timeline, a["date"])
+def render_group(group: list, models: dict, timeline: list, path: Path):
+    """One card for all of a base model's advances on one date. The group is
+    ordered by descending intelligence index, matching the advances list."""
+    a0 = group[0]
+    date, base = a0["date"], a0["base"]
+    state = state_at(timeline, date)
     front = pareto(state)
-    front_before = pareto(state_at(timeline, a["date"], before=True))
-    kicker = f"Frontier advance · {long_date(a['date'])} · {a['kind']} · {a['creator']}"
-    fig, ax = new_figure(kicker, a["model"], wrap(card_summary(a)))
-    xlo, xhi = draw_chart(ax, state, models, front, front_before, highlight=a["slug"])
-    draw_highlight(ax, a, state, xlo, xhi)
-    add_legend(ax, price_change=a["kind"] == "price change" and bool(a["previous_cost"]))
+    state_cf = counterfactual(state, state_at(timeline, date, before=True), models, base)
+    front_cf = pareto(state_cf)
+    kinds = {a["kind"] for a in group}
+    parts = ["Frontier advance", long_date(date)] + (sorted(kinds) if len(kinds) == 1 else []) + [a0["creator"]]
+    if len(group) > 1 and all(a["variant"] for a in group):
+        title = f"{base} ({', '.join(a['variant'] for a in reversed(group))})"
+    else:
+        title = a0["model"]
+    fig, ax = new_figure(" · ".join(parts), title, wrap(group_summary(group)))
+    highlights = {a["slug"] for a in group}
+    xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights)
+    draw_highlights(ax, group, state, xlo, xhi)
+    add_legend(ax, price_change=any(a["kind"] == "price change" and a["previous_cost"] for a in group))
     save(fig, path)
 
 
@@ -271,12 +370,15 @@ def main(argv=None):
     timeline = price_timeline(models, events)
 
     rendered = skipped = 0
+    groups = {}
     for a in out["advances"]:
-        path = args.out / "advances" / f"{a['date']}-{a['slug']}.png"
+        groups.setdefault((a["date"], a["base"]), []).append(a)
+    for (date, base), group in groups.items():
+        path = args.out / "advances" / f"{date}-{slugify(base)}.png"
         if path.exists() and not args.force:
             skipped += 1
             continue
-        render_advance(a, models, timeline, path)
+        render_group(group, models, timeline, path)
         rendered += 1
     render_current(out, models, timeline, args.out / "frontier-card.png")
     print(f"rendered {rendered} advance cards ({skipped} already existed) and frontier-card.png in {args.out}")
