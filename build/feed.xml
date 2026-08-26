@@ -40,6 +40,14 @@
     <summary>GPT-5.6 Sol (medium): price moved from $0.372 to $0.30 per task; now the cheapest way to reach index 53.4 to 55.6, taking it from Grok 4.5. Proprietary.</summary>
   </entry>
   <entry>
+    <title>2026-08-25: Granite 4.2 3B (new model, index 14.3)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-08-25-granite-4-2-3b.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-08-25/granite-4-2-3b</id>
+    <updated>2026-08-25T00:00:00Z</updated>
+    <summary>Granite 4.2 3B: now the cheapest way to reach index 0.0 to 14.3 at $0.0047 per task, taking it from GPT-5.6 Luna. Open weights.</summary>
+  </entry>
+  <entry>
     <title>2026-08-18: GLM-5.3 (max) (new model, index 59.5)</title>
     <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
     <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-08-18-glm-5-3.png" />
@@ -478,13 +486,5 @@
     <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-08-05/gpt-oss-20b</id>
     <updated>2025-08-05T00:00:00Z</updated>
     <summary>gpt-oss-20b (high): now the cheapest way to reach index 14.9 to 15.2 at $0.025 per task, taking it from DeepSeek V3 0324, which left the frontier. Open weights.</summary>
-  </entry>
-  <entry>
-    <title>2025-08-05: gpt-oss-120b (low) (new model, index 14.9)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2025-08-05-gpt-oss-120b.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-08-05/gpt-oss-120b-low</id>
-    <updated>2025-08-05T00:00:00Z</updated>
-    <summary>gpt-oss-120b (low): now the cheapest way to reach index 10.3 to 14.9 at $0.020 per task, taking it from Mistral Small 3.1, Llama 4 Maverick, and DeepSeek V3, all of which left the frontier. Open weights.</summary>
   </entry>
 </feed>

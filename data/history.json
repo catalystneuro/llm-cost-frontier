@@ -774,7 +774,7 @@
      57.5
     ]
    ],
-   "open_weights": false,
+   "open_weights": true,
    "release_date": "2026-08-26",
    "retired": false
   },
@@ -1571,6 +1571,42 @@
    ],
    "open_weights": true,
    "release_date": "2025-08-05",
+   "retired": false
+  },
+  "granite-4-2-3b": {
+   "cost_per_task": 0.004739,
+   "creator": "IBM",
+   "first_seen": "2026-08-26",
+   "intelligence_index": 14.3,
+   "last_seen": "2026-08-26",
+   "name": "Granite 4.2 3B",
+   "observations": [
+    [
+     "2026-08-26",
+     0.004739,
+     14.3
+    ]
+   ],
+   "open_weights": true,
+   "release_date": "2026-08-25",
+   "retired": false
+  },
+  "granite-4-2-8b": {
+   "cost_per_task": 0.025242,
+   "creator": "IBM",
+   "first_seen": "2026-08-26",
+   "intelligence_index": 19.6,
+   "last_seen": "2026-08-26",
+   "name": "Granite 4.2 8B",
+   "observations": [
+    [
+     "2026-08-26",
+     0.025242,
+     19.6
+    ]
+   ],
+   "open_weights": true,
+   "release_date": "2026-08-25",
    "retired": false
   },
   "grok-4-3": {
@@ -2706,7 +2742,7 @@
    "retired": false
   },
   "qwen3-8-27b": {
-   "cost_per_task": 0.933512,
+   "cost_per_task": 0.369022,
    "creator": "Alibaba",
    "first_seen": "2026-08-21",
    "intelligence_index": 52.0,
@@ -2727,6 +2763,11 @@
      "2026-08-26",
      0.933512,
      52.0
+    ],
+    [
+     "2026-08-26",
+     0.369022,
+     52.0
     ]
    ],
    "open_weights": true,
@@ -2734,7 +2775,7 @@
    "retired": false
   },
   "qwen3-8-27b-low": {
-   "cost_per_task": 0.734707,
+   "cost_per_task": 0.264872,
    "creator": "Alibaba",
    "first_seen": "2026-08-22",
    "intelligence_index": 42.9,
@@ -2755,6 +2796,11 @@
      "2026-08-26",
      0.734707,
      42.9
+    ],
+    [
+     "2026-08-26",
+     0.264872,
+     42.9
     ]
    ],
    "open_weights": true,
@@ -2762,7 +2808,7 @@
    "retired": false
   },
   "qwen3-8-27b-medium": {
-   "cost_per_task": 0.753753,
+   "cost_per_task": 0.284016,
    "creator": "Alibaba",
    "first_seen": "2026-08-22",
    "intelligence_index": 44.5,
@@ -2778,6 +2824,11 @@
      "2026-08-26",
      0.753753,
      44.5
+    ],
+    [
+     "2026-08-26",
+     0.284016,
+     44.5
     ]
    ],
    "open_weights": true,
@@ -2785,7 +2836,7 @@
    "retired": false
   },
   "qwen3-8-27b-non-reasoning": {
-   "cost_per_task": 0.214448,
+   "cost_per_task": 0.426025,
    "creator": "Alibaba",
    "first_seen": "2026-08-25",
    "intelligence_index": 34.7,
@@ -2795,6 +2846,11 @@
     [
      "2026-08-25",
      0.214448,
+     34.7
+    ],
+    [
+     "2026-08-26",
+     0.426025,
      34.7
     ]
    ],
