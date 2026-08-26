@@ -16,7 +16,7 @@ The background, the method, and the argument for why the cheap end of the range 
 | `build/images/advances/` | A 1200x630 social card per advancing model per date, reasoning levels grouped, named `{date}-{base model}.png` |
 | `build/images/frontier-card.png` | A social card of the current frontier, for the dashboard page's link preview |
 
-The website syncs the two files in `build/` an hour after this repository updates them, so the dashboard and the feed are served from catalystneuro.com, not from GitHub.
+A successful update triggers the website's sync workflow, which copies everything in `build/` into the site, so the dashboard, the feed, and the cards are served from catalystneuro.com, not from GitHub.
 
 ## Method
 
@@ -69,7 +69,7 @@ PYTHONPATH=src python -m llm_cost_frontier.render --force   # re-render everythi
 
 ## Schedule
 
-`.github/workflows/update.yml` runs the updater every night at 06:00 UTC and commits `data/history.json` and the two build artifacts when they change. It can also be triggered by hand from the Actions tab.
+`.github/workflows/update.yml` runs the updater every night at 06:00 UTC, commits `data/history.json` and the build artifacts when they change, and then triggers the website's sync workflow so the site republishes right away. The trigger needs a `WEBSITE_DISPATCH_TOKEN` secret (a fine-grained personal access token with read and write access to Actions on the website repository) and is skipped quietly when the secret is absent. The workflow can also be run by hand from the Actions tab.
 
 ## Caveats
 
