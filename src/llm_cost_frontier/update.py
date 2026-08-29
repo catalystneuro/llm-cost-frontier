@@ -34,6 +34,10 @@ SOURCE_PAGE = "https://artificialanalysis.ai/models/gpt-5-6-luna-xhigh"
 TIERS = [30, 40, 50, 60]
 SNAPSHOT_COUNT = 8
 SNAPSHOT_MONTHS = 2
+# A price change on a model already on the frontier is only reported as an
+# advance when it moved by at least this much, so sub-cent wiggles from
+# nightly cost measurement don't flood the advances list and the feed.
+MIN_PRICE_MOVE = 0.02
 
 # Per-capability metrics read from the same payload, each chosen because it
 # translates to a class of application better than the aggregate index does.
@@ -272,7 +276,7 @@ def frontier_advances(models: dict, events: list, records: dict) -> list:
             changed[slug] = ("price change" if note and ("cut" in note or "change" in note) else "new model", prev[0] if prev else None)
         prev_front = current
         new_front = pareto(state)
-        entered = [s for s in new_front if s in changed and (s not in current or (changed[s][0] == "price change" and changed[s][1] is not None and state[s][0] < changed[s][1]))]
+        entered = [s for s in new_front if s in changed and (s not in current or (changed[s][0] == "price change" and changed[s][1] is not None and changed[s][1] - state[s][0] >= MIN_PRICE_MOVE))]
         # A model "leaves the frontier" only when none of its reasoning variants remains on it.
         remaining_bases = {base_of(o) for o in new_front}
         left_bases = {}
@@ -335,6 +339,20 @@ def frontier_advances(models: dict, events: list, records: dict) -> list:
     return advances
 
 
+def capability_models(models: dict, key: str) -> dict:
+    """The models measured on one capability, with the capability score standing
+    in for the intelligence index so the frontier machinery applies unchanged."""
+    out = {}
+    for slug, m in models.items():
+        v = (m.get("capabilities") or {}).get(key)
+        if v is None:
+            continue
+        mm = dict(m)
+        mm["intelligence_index"] = v
+        out[slug] = mm
+    return out
+
+
 def tier_summary(records: dict) -> dict:
     out = {}
     for t, recs in records.items():
@@ -366,8 +384,10 @@ def build_output(history: dict, events: list) -> dict:
         rows.append(row)
     records = tier_records(models, events)
     advances = frontier_advances(models, events, records)
+    cap_advances = {c["key"]: frontier_advances(capability_models(models, c["key"]), events, {}) for c in CAPABILITIES}
     return dict(
         advances=advances,
+        cap_advances=cap_advances,
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
