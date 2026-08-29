@@ -19,6 +19,8 @@ The website syncs the two files in `build/` an hour after this repository update
 
 Any model page on artificialanalysis.ai embeds the full comparison dataset for every model they currently benchmark, including `intelligenceIndexCostPerTask`, the average billed cost to run one task from their evaluation suite with the input, reasoning, and answer tokens the run actually used. The updater fetches one page, parses that payload, and merges it into the history.
 
+Beyond the aggregate Intelligence Index, the updater also records a set of per-capability scores from the same payload, each chosen because it maps onto a class of application better than the aggregate does: Terminal-Bench 2.1 (agentic coding), the Agentic Index (tool use), AA-LCR (long context), IFBench (instruction following), Omniscience (factual recall with hallucinations penalized), GPQA Diamond (scientific reasoning), GDPval-AA (office work products), and MMMU-Pro (multimodal input). The dashboard renders these as tabs that switch the vertical axis of the frontier chart. Capability scores are stored as their latest measured values; only prices are tracked over time. Metrics measured for only a small fraction of models (LiveCodeBench, AIME) are left out.
+
 Three properties follow from keeping a history instead of a snapshot:
 
 - **Models that leave keep their data.** When Artificial Analysis retires a model from live benchmarking, its observations stay and it is marked retired, so the record only grows.

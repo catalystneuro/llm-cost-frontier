@@ -35,6 +35,30 @@ TIERS = [30, 40, 50, 60]
 SNAPSHOT_COUNT = 8
 SNAPSHOT_MONTHS = 2
 
+# Per-capability metrics read from the same payload, each chosen because it
+# translates to a class of application better than the aggregate index does.
+# "percent" metrics arrive as 0-1 fractions and are stored as 0-100. Metrics
+# measured for only a small fraction of models (LiveCodeBench, AIME) are left
+# out. The blurb is shown on the dashboard when the capability's tab is active.
+CAPABILITIES = [
+    dict(key="coding", field="terminalbenchV21", label="Coding", metric="Terminal-Bench 2.1", percent=True,
+         blurb="Completion rate on Terminal-Bench 2.1: real software engineering tasks run agentically in a terminal. The axis to watch when picking a model for a coding assistant or an autonomous software agent."),
+    dict(key="agentic", field="agenticIndex", label="Agentic Tool Use", metric="AA Agentic Index", percent=False,
+         blurb="Artificial Analysis's Agentic Index, a composite of tool calling and multi-step task completion evaluations. Relevant for models that orchestrate tools and workflows rather than answer single prompts."),
+    dict(key="longcontext", field="lcr", label="Long Context", metric="AA-LCR", percent=True,
+         blurb="Accuracy on Artificial Analysis's long context reasoning suite, which requires answers grounded in roughly 100k tokens of source material. Relevant for document analysis, retrieval pipelines, and codebase-scale prompts."),
+    dict(key="instruction", field="ifbench", label="Instruction Following", metric="IFBench", percent=True,
+         blurb="Accuracy on IFBench, which checks precise compliance with constraints on the output. Relevant for structured output, templated generation, and any pipeline that parses what the model returns."),
+    dict(key="knowledge", field="omniscience", label="Factual Recall", metric="AA Omniscience", percent=False,
+         blurb="Artificial Analysis's Omniscience index: factual recall with hallucinated answers penalized, on a scale from -100 to 100, where zero means as many hallucinated answers as correct ones. Relevant for question answering and customer-facing assistants, where a made-up answer is worse than no answer."),
+    dict(key="science", field="gpqa", label="Scientific Reasoning", metric="GPQA Diamond", percent=True,
+         blurb="Accuracy on GPQA Diamond, graduate-level science questions written to resist lookup. Relevant for research assistance and technical question answering."),
+    dict(key="knowledgework", field="gdpvalNormalized", label="Knowledge Work", metric="GDPval-AA", percent=True,
+         blurb="Artificial Analysis's automated grading of GDPval deliverables: documents, spreadsheets, slides, and analysis drawn from real occupational tasks. Relevant for office work products beyond chat."),
+    dict(key="multimodal", field="mmmuPro", label="Multimodal", metric="MMMU-Pro", percent=True,
+         blurb="Accuracy on MMMU-Pro, college-level problems that require reading images, diagrams, and figures. Relevant for applications with visual input."),
+]
+
 
 def fetch_payload(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (catalystneuro.com llm-frontier updater)"})
@@ -97,6 +121,11 @@ def extract_models(payload: str) -> dict:
             continue
         if float(cost) <= 0:
             continue  # free or promotional endpoints distort the cost axis
+        caps = {}
+        for cap in CAPABILITIES:
+            v = o.get(cap["field"])
+            if v is not None:
+                caps[cap["key"]] = round(float(v) * 100, 1) if cap["percent"] else round(float(v), 1)
         models[o["slug"]] = dict(
             name=o["name"],
             creator=(o.get("creator") or {}).get("name") or "",
@@ -105,6 +134,7 @@ def extract_models(payload: str) -> dict:
             cost_per_task=round(float(cost), 6),
             open_weights=bool(o.get("isOpenWeights")),
             deprecated=bool(o.get("deprecated")),
+            capabilities=caps,
         )
     return models
 
@@ -126,6 +156,7 @@ def merge(history: dict, live: dict, today: str) -> dict:
             intelligence_index=rec["intelligence_index"],
             cost_per_task=rec["cost_per_task"],
             open_weights=rec["open_weights"],
+            capabilities=rec.get("capabilities") or prev.get("capabilities") or {},
             retired=False,
             first_seen=prev.get("first_seen", today),
             last_seen=today,
@@ -328,9 +359,10 @@ def build_output(history: dict, events: list) -> dict:
     rows = []
     for slug, m in sorted(models.items(), key=lambda kv: (kv[1]["release_date"], kv[1]["name"])):
         changes = [[d, round(c, 6)] for d, c, _n in cost_changes(slug, m, events)]
-        row = [m["name"], m["creator"], m["release_date"], m["intelligence_index"], m["cost_per_task"], int(m["retired"]), int(m["open_weights"])]
-        if len(changes) > 1:
-            row.append(changes)
+        caps = m.get("capabilities") or {}
+        row = [m["name"], m["creator"], m["release_date"], m["intelligence_index"], m["cost_per_task"], int(m["retired"]), int(m["open_weights"]),
+               changes if len(changes) > 1 else 0,
+               [caps.get(c["key"]) for c in CAPABILITIES]]
         rows.append(row)
     records = tier_records(models, events)
     advances = frontier_advances(models, events, records)
@@ -340,6 +372,7 @@ def build_output(history: dict, events: list) -> dict:
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
         tiers=TIERS,
+        capabilities=[{k: c[k] for k in ("key", "label", "metric", "percent", "blurb")} for c in CAPABILITIES],
         models=rows,
         tier_cost=records,
         tier_summary=tier_summary(records),
