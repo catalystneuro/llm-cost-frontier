@@ -223,10 +223,10 @@ def price_timeline(models: dict, events: list) -> list:
     return out
 
 
-def tier_records(models: dict, events: list) -> dict:
+def tier_records(models: dict, events: list, tiers: list = None) -> dict:
     timeline = price_timeline(models, events)
     out = {}
-    for t in TIERS:
+    for t in TIERS if tiers is None else tiers:
         best = math.inf
         recs = []
         for date, cost, slug, iq, note in timeline:
@@ -384,10 +384,26 @@ def build_output(history: dict, events: list) -> dict:
         rows.append(row)
     records = tier_records(models, events)
     advances = frontier_advances(models, events, records)
-    cap_advances = {c["key"]: frontier_advances(capability_models(models, c["key"]), events, {}) for c in CAPABILITIES}
+    # Per-capability tiers are derived from each metric's range: the top four
+    # multiples of ten at or below the highest measured score.
+    cap_tiers, cap_tier_cost, cap_tier_summary, cap_advances = {}, {}, {}, {}
+    for c in CAPABILITIES:
+        cm = capability_models(models, c["key"])
+        if not cm:
+            continue
+        hi = int(max(m["intelligence_index"] for m in cm.values()) // 10) * 10
+        tiers = [t for t in (hi - 30, hi - 20, hi - 10, hi) if t > 0]
+        recs = tier_records(cm, events, tiers)
+        cap_tiers[c["key"]] = tiers
+        cap_tier_cost[c["key"]] = recs
+        cap_tier_summary[c["key"]] = tier_summary(recs)
+        cap_advances[c["key"]] = frontier_advances(cm, events, recs)
     return dict(
         advances=advances,
         cap_advances=cap_advances,
+        cap_tiers=cap_tiers,
+        cap_tier_cost=cap_tier_cost,
+        cap_tier_summary=cap_tier_summary,
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
