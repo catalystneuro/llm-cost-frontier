@@ -1,0 +1,8 @@
+{
+ "open_weights": {
+  "glm-5-3-flash": {
+   "value": true,
+   "note": "Z.ai published the weights at https://huggingface.co/zai-org/GLM-5.3-Flash; Artificial Analysis still lists the model as proprietary."
+  }
+ }
+}

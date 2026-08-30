@@ -24,6 +24,7 @@ from pathlib import Path
 
 DEFAULT_HISTORY = Path("data/history.json")
 DEFAULT_EVENTS = Path("data/price-events.json")
+DEFAULT_OVERRIDES = Path("data/overrides.json")
 DEFAULT_OUTPUT = Path("build/llm-frontier.json")
 DEFAULT_FEED = Path("build/feed.xml")
 DEFAULT_SITE = "https://catalystneuro.com"
@@ -173,6 +174,19 @@ def merge(history: dict, live: dict, today: str) -> dict:
                 rec["observations"] = [[rec.get("last_seen", today), rec["cost_per_task"], rec["intelligence_index"]]]
     history["updated"] = today
     return history
+
+
+def apply_overrides(models: dict, overrides: dict) -> None:
+    """Hand-maintained corrections for fields the upstream data gets wrong.
+
+    Applied to the in-memory models when building the outputs, never to the
+    stored history, which stays a faithful record of what the source reports.
+    """
+    for slug, fix in (overrides.get("open_weights") or {}).items():
+        if slug in models:
+            models[slug]["open_weights"] = bool(fix["value"])
+        else:
+            print(f"warning: open_weights override for unknown slug {slug!r}")
 
 
 def add_months(d: dt.date, months: int) -> dt.date:
@@ -371,9 +385,11 @@ def tier_summary(records: dict) -> dict:
     return out
 
 
-def build_output(history: dict, events: list) -> dict:
+def build_output(history: dict, events: list, overrides: dict | None = None) -> dict:
     today = dt.date.fromisoformat(history["updated"])
     models = history["models"]
+    if overrides:
+        apply_overrides(models, overrides)
     rows = []
     for slug, m in sorted(models.items(), key=lambda kv: (kv[1]["release_date"], kv[1]["name"])):
         changes = [[d, round(c, 6)] for d, c, _n in cost_changes(slug, m, events)]
@@ -442,6 +458,10 @@ def taken_clause(taken: list, departed: list) -> str:
     return out
 
 
+def slugify(name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
+
+
 def xml_escape(t: str) -> str:
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
@@ -478,8 +498,11 @@ def write_feed(out: dict, feed_path: Path, site: str) -> None:
              "  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>"]
     for a in entries:
         title = f"{a['date']}: {a['model']} ({'price change' if a['kind'] == 'price change' else 'new model'}, index {a['intelligence_index']:.1f})"
+        # The advance's social card, rendered per (date, base model) group.
+        card = f"{site}/llm-cost-frontier/images/advances/{a['date']}-{slugify(a['base'])}.png"
         lines += ["  <entry>", f"    <title>{xml_escape(title)}</title>",
                   f'    <link href="{site}/llm-cost-frontier/#advances" />',
+                  f'    <link rel="enclosure" type="image/png" href="{card}" />',
                   f"    <id>{site}/llm-cost-frontier/advance/{a['date']}/{a['slug']}</id>",
                   f"    <updated>{a['date']}T00:00:00Z</updated>",
                   f"    <summary>{xml_escape(describe(a))}</summary>", "  </entry>"]
@@ -492,6 +515,7 @@ def parse_args(argv=None):
     p = argparse.ArgumentParser(prog="llm-cost-frontier", description=__doc__.splitlines()[0])
     p.add_argument("--history", type=Path, default=DEFAULT_HISTORY, help="cumulative per-model history (read and rewritten)")
     p.add_argument("--events", type=Path, default=DEFAULT_EVENTS, help="hand-maintained price events")
+    p.add_argument("--overrides", type=Path, default=DEFAULT_OVERRIDES, help="hand-maintained corrections to upstream fields")
     p.add_argument("--out", type=Path, default=DEFAULT_OUTPUT, help="dashboard JSON to write")
     p.add_argument("--feed", type=Path, default=DEFAULT_FEED, help="Atom feed to write")
     p.add_argument("--site", default=DEFAULT_SITE, help="base URL used for links in the feed")
@@ -504,6 +528,7 @@ def main(argv=None):
     args = parse_args(argv)
     history = json.loads(args.history.read_text())
     events = json.loads(args.events.read_text())
+    overrides = json.loads(args.overrides.read_text()) if args.overrides.exists() else {}
     if not args.offline:
         today = dt.date.today().isoformat()
         payload = fetch_payload(args.source)
@@ -513,7 +538,7 @@ def main(argv=None):
         history = merge(history, live, today)
         args.history.write_text(json.dumps(history, indent=1, sort_keys=True) + "\n")
         print(f"merged {len(live)} live models; history now {len(history['models'])} models")
-    out = build_output(history, events)
+    out = build_output(history, events, overrides)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(out, separators=(",", ":")) + "\n")
     write_feed(out, args.feed, args.site)
