@@ -35,6 +35,34 @@ SOURCE_PAGE = "https://artificialanalysis.ai/models/gpt-5-6-luna-xhigh"
 TIERS = [30, 40, 50, 60]
 SNAPSHOT_COUNT = 8
 SNAPSHOT_MONTHS = 2
+# A price change on a model already on the frontier is only reported as an
+# advance when it moved by at least this much, so sub-cent wiggles from
+# nightly cost measurement don't flood the advances list and the feed.
+MIN_PRICE_MOVE = 0.02
+
+# Per-capability metrics read from the same payload, each chosen because it
+# translates to a class of application better than the aggregate index does.
+# "percent" metrics arrive as 0-1 fractions and are stored as 0-100. Metrics
+# measured for only a small fraction of models (LiveCodeBench, AIME) are left
+# out. The blurb is shown on the dashboard when the capability's tab is active.
+CAPABILITIES = [
+    dict(key="coding", field="terminalbenchV21", label="Coding", metric="Terminal-Bench 2.1", percent=True,
+         blurb="Completion rate on Terminal-Bench 2.1: real software engineering tasks run agentically in a terminal. The axis to watch when picking a model for a coding assistant or an autonomous software agent."),
+    dict(key="agentic", field="agenticIndex", label="Agentic Tool Use", metric="AA Agentic Index", percent=False,
+         blurb="Artificial Analysis's Agentic Index, a composite of tool calling and multi-step task completion evaluations. Relevant for models that orchestrate tools and workflows rather than answer single prompts."),
+    dict(key="longcontext", field="lcr", label="Long Context", metric="AA-LCR", percent=True,
+         blurb="Accuracy on Artificial Analysis's long context reasoning suite, which requires answers grounded in roughly 100k tokens of source material. Relevant for document analysis, retrieval pipelines, and codebase-scale prompts."),
+    dict(key="instruction", field="ifbench", label="Instruction Following", metric="IFBench", percent=True,
+         blurb="Accuracy on IFBench, which checks precise compliance with constraints on the output. Relevant for structured output, templated generation, and any pipeline that parses what the model returns."),
+    dict(key="knowledge", field="omniscience", label="Factual Recall", metric="AA Omniscience", percent=False,
+         blurb="Artificial Analysis's Omniscience index: factual recall with hallucinated answers penalized, on a scale from -100 to 100, where zero means as many hallucinated answers as correct ones. Relevant for question answering and customer-facing assistants, where a made-up answer is worse than no answer."),
+    dict(key="science", field="gpqa", label="Scientific Reasoning", metric="GPQA Diamond", percent=True,
+         blurb="Accuracy on GPQA Diamond, graduate-level science questions written to resist lookup. Relevant for research assistance and technical question answering."),
+    dict(key="knowledgework", field="gdpvalNormalized", label="Knowledge Work", metric="GDPval-AA", percent=True,
+         blurb="Artificial Analysis's automated grading of GDPval deliverables: documents, spreadsheets, slides, and analysis drawn from real occupational tasks. Relevant for office work products beyond chat."),
+    dict(key="multimodal", field="mmmuPro", label="Multimodal", metric="MMMU-Pro", percent=True,
+         blurb="Accuracy on MMMU-Pro, college-level problems that require reading images, diagrams, and figures. Relevant for applications with visual input."),
+]
 
 
 def fetch_payload(url: str) -> str:
@@ -98,6 +126,11 @@ def extract_models(payload: str) -> dict:
             continue
         if float(cost) <= 0:
             continue  # free or promotional endpoints distort the cost axis
+        caps = {}
+        for cap in CAPABILITIES:
+            v = o.get(cap["field"])
+            if v is not None:
+                caps[cap["key"]] = round(float(v) * 100, 1) if cap["percent"] else round(float(v), 1)
         models[o["slug"]] = dict(
             name=o["name"],
             creator=(o.get("creator") or {}).get("name") or "",
@@ -106,6 +139,7 @@ def extract_models(payload: str) -> dict:
             cost_per_task=round(float(cost), 6),
             open_weights=bool(o.get("isOpenWeights")),
             deprecated=bool(o.get("deprecated")),
+            capabilities=caps,
         )
     return models
 
@@ -127,6 +161,7 @@ def merge(history: dict, live: dict, today: str) -> dict:
             intelligence_index=rec["intelligence_index"],
             cost_per_task=rec["cost_per_task"],
             open_weights=rec["open_weights"],
+            capabilities=rec.get("capabilities") or prev.get("capabilities") or {},
             retired=False,
             first_seen=prev.get("first_seen", today),
             last_seen=today,
@@ -202,10 +237,10 @@ def price_timeline(models: dict, events: list) -> list:
     return out
 
 
-def tier_records(models: dict, events: list) -> dict:
+def tier_records(models: dict, events: list, tiers: list = None) -> dict:
     timeline = price_timeline(models, events)
     out = {}
-    for t in TIERS:
+    for t in TIERS if tiers is None else tiers:
         best = math.inf
         recs = []
         for date, cost, slug, iq, note in timeline:
@@ -255,7 +290,7 @@ def frontier_advances(models: dict, events: list, records: dict) -> list:
             changed[slug] = ("price change" if note and ("cut" in note or "change" in note) else "new model", prev[0] if prev else None)
         prev_front = current
         new_front = pareto(state)
-        entered = [s for s in new_front if s in changed and (s not in current or (changed[s][0] == "price change" and changed[s][1] is not None and state[s][0] < changed[s][1]))]
+        entered = [s for s in new_front if s in changed and (s not in current or (changed[s][0] == "price change" and changed[s][1] is not None and changed[s][1] - state[s][0] >= MIN_PRICE_MOVE))]
         # A model "leaves the frontier" only when none of its reasoning variants remains on it.
         remaining_bases = {base_of(o) for o in new_front}
         left_bases = {}
@@ -318,6 +353,20 @@ def frontier_advances(models: dict, events: list, records: dict) -> list:
     return advances
 
 
+def capability_models(models: dict, key: str) -> dict:
+    """The models measured on one capability, with the capability score standing
+    in for the intelligence index so the frontier machinery applies unchanged."""
+    out = {}
+    for slug, m in models.items():
+        v = (m.get("capabilities") or {}).get(key)
+        if v is None:
+            continue
+        mm = dict(m)
+        mm["intelligence_index"] = v
+        out[slug] = mm
+    return out
+
+
 def tier_summary(records: dict) -> dict:
     out = {}
     for t, recs in records.items():
@@ -344,18 +393,38 @@ def build_output(history: dict, events: list, overrides: dict | None = None) -> 
     rows = []
     for slug, m in sorted(models.items(), key=lambda kv: (kv[1]["release_date"], kv[1]["name"])):
         changes = [[d, round(c, 6)] for d, c, _n in cost_changes(slug, m, events)]
-        row = [m["name"], m["creator"], m["release_date"], m["intelligence_index"], m["cost_per_task"], int(m["retired"]), int(m["open_weights"])]
-        if len(changes) > 1:
-            row.append(changes)
+        caps = m.get("capabilities") or {}
+        row = [m["name"], m["creator"], m["release_date"], m["intelligence_index"], m["cost_per_task"], int(m["retired"]), int(m["open_weights"]),
+               changes if len(changes) > 1 else 0,
+               [caps.get(c["key"]) for c in CAPABILITIES]]
         rows.append(row)
     records = tier_records(models, events)
     advances = frontier_advances(models, events, records)
+    # Per-capability tiers are derived from each metric's range: the top four
+    # multiples of ten at or below the highest measured score.
+    cap_tiers, cap_tier_cost, cap_tier_summary, cap_advances = {}, {}, {}, {}
+    for c in CAPABILITIES:
+        cm = capability_models(models, c["key"])
+        if not cm:
+            continue
+        hi = int(max(m["intelligence_index"] for m in cm.values()) // 10) * 10
+        tiers = [t for t in (hi - 30, hi - 20, hi - 10, hi) if t > 0]
+        recs = tier_records(cm, events, tiers)
+        cap_tiers[c["key"]] = tiers
+        cap_tier_cost[c["key"]] = recs
+        cap_tier_summary[c["key"]] = tier_summary(recs)
+        cap_advances[c["key"]] = frontier_advances(cm, events, recs)
     return dict(
         advances=advances,
+        cap_advances=cap_advances,
+        cap_tiers=cap_tiers,
+        cap_tier_cost=cap_tier_cost,
+        cap_tier_summary=cap_tier_summary,
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
         tiers=TIERS,
+        capabilities=[{k: c[k] for k in ("key", "label", "metric", "percent", "blurb")} for c in CAPABILITIES],
         models=rows,
         tier_cost=records,
         tier_summary=tier_summary(records),
