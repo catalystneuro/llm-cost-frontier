@@ -163,6 +163,136 @@
    "release_date": "2026-06-09",
    "retired": false
   },
+  "claude-fable-5-1": {
+   "capabilities": {
+    "agentic": 61.3,
+    "coding": 91.4,
+    "knowledge": 43.5,
+    "knowledgework": 67.7,
+    "longcontext": 80.0,
+    "science": 93.7
+   },
+   "cost_per_task": 3.689126,
+   "creator": "Anthropic",
+   "first_seen": "2026-09-01",
+   "intelligence_index": 65.7,
+   "last_seen": "2026-09-01",
+   "name": "Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback)",
+   "observations": [
+    [
+     "2026-09-01",
+     3.689126,
+     65.7
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-01",
+   "retired": false
+  },
+  "claude-fable-5-1-high": {
+   "capabilities": {
+    "agentic": 55.8,
+    "coding": 89.9,
+    "knowledge": 40.8,
+    "knowledgework": 62.1,
+    "longcontext": 77.0,
+    "science": 90.6
+   },
+   "cost_per_task": 1.4299,
+   "creator": "Anthropic",
+   "first_seen": "2026-09-01",
+   "intelligence_index": 62.5,
+   "last_seen": "2026-09-01",
+   "name": "Claude Fable 5.1 (Adaptive Reasoning, High Effort, Default Fallback)",
+   "observations": [
+    [
+     "2026-09-01",
+     1.4299,
+     62.5
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-01",
+   "retired": false
+  },
+  "claude-fable-5-1-low": {
+   "capabilities": {
+    "agentic": 49.2,
+    "coding": 85.0,
+    "knowledge": 34.1,
+    "knowledgework": 54.3,
+    "longcontext": 79.3,
+    "science": 88.1
+   },
+   "cost_per_task": 0.773568,
+   "creator": "Anthropic",
+   "first_seen": "2026-09-01",
+   "intelligence_index": 58.1,
+   "last_seen": "2026-09-01",
+   "name": "Claude Fable 5.1 (Adaptive Reasoning, Low Effort, Default Fallback)",
+   "observations": [
+    [
+     "2026-09-01",
+     0.773568,
+     58.1
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-01",
+   "retired": false
+  },
+  "claude-fable-5-1-medium": {
+   "capabilities": {
+    "agentic": 52.7,
+    "coding": 88.0,
+    "knowledge": 37.6,
+    "knowledgework": 58.5,
+    "longcontext": 78.7,
+    "science": 88.6
+   },
+   "cost_per_task": 1.00062,
+   "creator": "Anthropic",
+   "first_seen": "2026-09-01",
+   "intelligence_index": 60.5,
+   "last_seen": "2026-09-01",
+   "name": "Claude Fable 5.1 (Adaptive Reasoning, Medium Effort, Default Fallback)",
+   "observations": [
+    [
+     "2026-09-01",
+     1.00062,
+     60.5
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-01",
+   "retired": false
+  },
+  "claude-fable-5-1-xhigh": {
+   "capabilities": {
+    "agentic": 59.8,
+    "coding": 91.0,
+    "knowledge": 42.4,
+    "knowledgework": 66.8,
+    "longcontext": 78.0,
+    "science": 93.4
+   },
+   "cost_per_task": 2.650797,
+   "creator": "Anthropic",
+   "first_seen": "2026-09-01",
+   "intelligence_index": 64.8,
+   "last_seen": "2026-09-01",
+   "name": "Claude Fable 5.1 (Adaptive Reasoning, Xhigh Effort, Default Fallback)",
+   "observations": [
+    [
+     "2026-09-01",
+     2.650797,
+     64.8
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-01",
+   "retired": false
+  },
   "claude-opus-4-7": {
    "capabilities": {
     "agentic": 46.3,

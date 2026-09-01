@@ -8,6 +8,30 @@
   <author><name>CatalystNeuro</name></author>
   <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>
   <entry>
+    <title>2026-09-01: Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback) (new model, index 65.7)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-01-claude-fable-5-1.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-01/claude-fable-5-1</id>
+    <updated>2026-09-01T00:00:00Z</updated>
+    <summary>Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback): pushed the intelligence ceiling from 63.1 to 65.7, at $3.69 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-01: Claude Fable 5.1 (Adaptive Reasoning, Xhigh Effort, Default Fallback) (new model, index 64.8)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-01-claude-fable-5-1.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-01/claude-fable-5-1-xhigh</id>
+    <updated>2026-09-01T00:00:00Z</updated>
+    <summary>Claude Fable 5.1 (Adaptive Reasoning, Xhigh Effort, Default Fallback): pushed the intelligence ceiling from 63.1 to 64.8, at $2.65 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-01: Claude Fable 5.1 (Adaptive Reasoning, High Effort, Default Fallback) (new model, index 62.5)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-01-claude-fable-5-1.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-01/claude-fable-5-1-high</id>
+    <updated>2026-09-01T00:00:00Z</updated>
+    <summary>Claude Fable 5.1 (Adaptive Reasoning, High Effort, Default Fallback): now the cheapest way to reach index 61.5 to 62.5 at $1.43 per task, taking it from Claude Opus 5. Proprietary.</summary>
+  </entry>
+  <entry>
     <title>2026-08-28: GPT-5.6 Sol (xhigh) (price change, index 59.0)</title>
     <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
     <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-08-28-gpt-5-6-sol.png" />
@@ -462,29 +486,5 @@
     <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-10-15/claude-4-5-haiku-reasoning</id>
     <updated>2025-10-15T00:00:00Z</updated>
     <summary>Claude 4.5 Haiku (Reasoning): now the cheapest way to reach index 25.9 to 29.9 at $0.22 per task, taking it from GPT-5. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2025-09-29: Claude 4.5 Sonnet (Reasoning) (new model, index 37.4)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2025-09-29-claude-4-5-sonnet.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-09-29/claude-4-5-sonnet-thinking</id>
-    <updated>2025-09-29T00:00:00Z</updated>
-    <summary>Claude 4.5 Sonnet (Reasoning): pushed the intelligence ceiling from 35.3 to 37.4, at $0.46 per task. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2025-08-07: GPT-5 (high) (new model, index 35.3)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2025-08-07-gpt-5.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-08-07/gpt-5</id>
-    <updated>2025-08-07T00:00:00Z</updated>
-    <summary>GPT-5 (high): pushed the intelligence ceiling from 25.9 to 35.3, at $0.26 per task. New cost record for index ≥ 30. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2025-08-07: GPT-5 mini (high) (new model, index 25.8)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2025-08-07-gpt-5-mini.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-08-07/gpt-5-mini</id>
-    <updated>2025-08-07T00:00:00Z</updated>
-    <summary>GPT-5 mini (high): now the cheapest way to reach index 15.2 to 25.8 at $0.036 per task, taking it from Gemini 2.5 Pro, gpt-oss-120b, and Qwen3 235B A22B 2507; Qwen3 235B A22B 2507 left the frontier. Proprietary.</summary>
   </entry>
 </feed>
