@@ -4,7 +4,7 @@
   <link href="https://catalystneuro.com/llm-cost-frontier/" />
   <link rel="self" href="https://catalystneuro.com/llm-cost-frontier/feed.xml" />
   <id>https://catalystneuro.com/llm-cost-frontier/feed.xml</id>
-  <updated>2026-08-31T06:00:00Z</updated>
+  <updated>2026-09-01T06:00:00Z</updated>
   <author><name>CatalystNeuro</name></author>
   <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>
   <entry>
@@ -22,6 +22,14 @@
     <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-08-26/glm-5-3-flash</id>
     <updated>2026-08-26T00:00:00Z</updated>
     <summary>GLM-5.3-Flash: now the cheapest way to reach index 52.3 to 57.5 at $0.087 per task, taking it from GPT-5.6 Sol, Muse Spark 1.2, Grok 4.5, Gemini 3.7 Flash, and DeepSeek V4 Pro 0813; Muse Spark 1.2, Grok 4.5, Gemini 3.7 Flash, and DeepSeek V4 Pro 0813 left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-26: Agnes 2.5 Pro Beta (new model, index 49.1)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-08-26-agnes-2-5-pro-beta.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-08-26/agnes-2-5-pro-beta</id>
+    <updated>2026-08-26T00:00:00Z</updated>
+    <summary>Agnes 2.5 Pro Beta: now the cheapest way to reach index 47.0 to 49.1 at $0.027 per task, taking it from GPT-5.6 Luna. Proprietary.</summary>
   </entry>
   <entry>
     <title>2026-08-25: GPT-5.6 Sol (xhigh) (price change, index 59.0)</title>
@@ -478,13 +486,5 @@
     <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-08-07/gpt-5-mini</id>
     <updated>2025-08-07T00:00:00Z</updated>
     <summary>GPT-5 mini (high): now the cheapest way to reach index 15.2 to 25.8 at $0.036 per task, taking it from Gemini 2.5 Pro, gpt-oss-120b, and Qwen3 235B A22B 2507; Qwen3 235B A22B 2507 left the frontier. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2025-08-05: gpt-oss-120b (high) (new model, index 24.1)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2025-08-05-gpt-oss-120b.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-08-05/gpt-oss-120b</id>
-    <updated>2025-08-05T00:00:00Z</updated>
-    <summary>gpt-oss-120b (high): now the cheapest way to reach index 19.9 to 24.1 at $0.073 per task, taking it from Gemini 2.5 Pro. Open weights.</summary>
   </entry>
 </feed>
