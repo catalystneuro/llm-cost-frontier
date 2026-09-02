@@ -8,6 +8,14 @@
   <author><name>CatalystNeuro</name></author>
   <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>
   <entry>
+    <title>2026-09-02: Muse Spark 1.3 (xhigh) (new model, index 60.8)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-02-muse-spark-1-3.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-02/muse-spark-1-3-xhigh</id>
+    <updated>2026-09-02T00:00:00Z</updated>
+    <summary>Muse Spark 1.3 (xhigh): now the cheapest way to reach index 57.5 to 60.8 at $0.55 per task, taking it from Grok 4.6, Kimi K3, GLM-5.3, and GPT-5.6 Sol; Kimi K3, GLM-5.3, and GPT-5.6 Sol left the frontier. New cost record for index ≥ 60. Proprietary.</summary>
+  </entry>
+  <entry>
     <title>2026-09-01: Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback) (new model, index 65.7)</title>
     <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
     <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-01-claude-fable-5-1.png" />
@@ -478,13 +486,5 @@
     <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-11-13/gpt-5-1</id>
     <updated>2025-11-13T00:00:00Z</updated>
     <summary>GPT-5.1 (high): pushed the intelligence ceiling from 37.4 to 37.5, at $0.30 per task, taking it from Claude 4.5 Sonnet, which left the frontier. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2025-10-15: Claude 4.5 Haiku (Reasoning) (new model, index 29.9)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2025-10-15-claude-4-5-haiku.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2025-10-15/claude-4-5-haiku-reasoning</id>
-    <updated>2025-10-15T00:00:00Z</updated>
-    <summary>Claude 4.5 Haiku (Reasoning): now the cheapest way to reach index 25.9 to 29.9 at $0.22 per task, taking it from GPT-5. Proprietary.</summary>
   </entry>
 </feed>

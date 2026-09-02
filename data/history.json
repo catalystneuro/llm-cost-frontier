@@ -1110,6 +1110,87 @@
    "release_date": "2026-08-13",
    "retired": false
   },
+  "gemini-3-8-flash": {
+   "capabilities": {
+    "agentic": 50.0,
+    "coding": 87.6,
+    "knowledge": 29.6,
+    "knowledgework": 52.3,
+    "longcontext": 81.0,
+    "multimodal": 85.6,
+    "science": 95.3
+   },
+   "cost_per_task": 0.576639,
+   "creator": "Google",
+   "first_seen": "2026-09-02",
+   "intelligence_index": 58.7,
+   "last_seen": "2026-09-02",
+   "name": "Gemini 3.8 Flash (high)",
+   "observations": [
+    [
+     "2026-09-02",
+     0.576639,
+     58.7
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-02",
+   "retired": false
+  },
+  "gemini-3-8-flash-low": {
+   "capabilities": {
+    "agentic": 40.8,
+    "coding": 83.1,
+    "knowledge": 21.4,
+    "knowledgework": 44.7,
+    "longcontext": 78.7,
+    "multimodal": 84.5,
+    "science": 92.0
+   },
+   "cost_per_task": 0.238897,
+   "creator": "Google",
+   "first_seen": "2026-09-02",
+   "intelligence_index": 51.7,
+   "last_seen": "2026-09-02",
+   "name": "Gemini 3.8 Flash (low)",
+   "observations": [
+    [
+     "2026-09-02",
+     0.238897,
+     51.7
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-02",
+   "retired": false
+  },
+  "gemini-3-8-flash-medium": {
+   "capabilities": {
+    "agentic": 48.5,
+    "coding": 83.9,
+    "knowledge": 28.6,
+    "knowledgework": 49.8,
+    "longcontext": 82.0,
+    "multimodal": 84.2,
+    "science": 93.5
+   },
+   "cost_per_task": 0.409936,
+   "creator": "Google",
+   "first_seen": "2026-09-02",
+   "intelligence_index": 56.6,
+   "last_seen": "2026-09-02",
+   "name": "Gemini 3.8 Flash (medium)",
+   "observations": [
+    [
+     "2026-09-02",
+     0.409936,
+     56.6
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-02",
+   "retired": false
+  },
   "gemma-4-26b-a4b": {
    "capabilities": {
     "agentic": 11.0,
@@ -3723,6 +3804,33 @@
    ],
    "open_weights": false,
    "release_date": "2026-08-05",
+   "retired": false
+  },
+  "muse-spark-1-3-xhigh": {
+   "capabilities": {
+    "agentic": 56.1,
+    "coding": 85.4,
+    "knowledge": 23.1,
+    "knowledgework": 60.5,
+    "longcontext": 79.3,
+    "multimodal": 82.0,
+    "science": 94.1
+   },
+   "cost_per_task": 0.54699,
+   "creator": "Meta",
+   "first_seen": "2026-09-02",
+   "intelligence_index": 60.8,
+   "last_seen": "2026-09-02",
+   "name": "Muse Spark 1.3 (xhigh)",
+   "observations": [
+    [
+     "2026-09-02",
+     0.54699,
+     60.8
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-02",
    "retired": false
   },
   "nemotron-3-5-lightning": {
