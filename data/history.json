@@ -2508,6 +2508,168 @@
    "release_date": "2025-08-07",
    "retired": false
   },
+  "gpt-6-astra": {
+   "capabilities": {
+    "agentic": 51.5,
+    "coding": 88.4,
+    "knowledge": 43.4,
+    "knowledgework": 56.5,
+    "longcontext": 74.3,
+    "multimodal": 86.9,
+    "science": 96.1
+   },
+   "cost_per_task": 1.667264,
+   "creator": "OpenAI",
+   "first_seen": "2026-09-03",
+   "intelligence_index": 61.2,
+   "last_seen": "2026-09-03",
+   "name": "GPT-6 Astra (max)",
+   "observations": [
+    [
+     "2026-09-03",
+     1.667264,
+     61.2
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-03",
+   "retired": false
+  },
+  "gpt-6-astra-high": {
+   "capabilities": {
+    "agentic": 49.2,
+    "coding": 89.9,
+    "knowledge": 43.7,
+    "knowledgework": 53.7,
+    "longcontext": 76.0,
+    "multimodal": 86.4,
+    "science": 94.9
+   },
+   "cost_per_task": 0.958484,
+   "creator": "OpenAI",
+   "first_seen": "2026-09-03",
+   "intelligence_index": 60.3,
+   "last_seen": "2026-09-03",
+   "name": "GPT-6 Astra (high)",
+   "observations": [
+    [
+     "2026-09-03",
+     0.958484,
+     60.3
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-03",
+   "retired": false
+  },
+  "gpt-6-astra-low": {
+   "capabilities": {
+    "agentic": 43.2,
+    "coding": 88.0,
+    "knowledge": 40.5,
+    "knowledgework": 48.7,
+    "longcontext": 72.7,
+    "multimodal": 84.6,
+    "science": 93.1
+   },
+   "cost_per_task": 0.458834,
+   "creator": "OpenAI",
+   "first_seen": "2026-09-03",
+   "intelligence_index": 56.7,
+   "last_seen": "2026-09-03",
+   "name": "GPT-6 Astra (low)",
+   "observations": [
+    [
+     "2026-09-03",
+     0.458834,
+     56.7
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-03",
+   "retired": false
+  },
+  "gpt-6-astra-medium": {
+   "capabilities": {
+    "agentic": 46.9,
+    "coding": 89.5,
+    "knowledge": 42.2,
+    "knowledgework": 52.6,
+    "longcontext": 76.3,
+    "multimodal": 85.1,
+    "science": 93.9
+   },
+   "cost_per_task": 0.74696,
+   "creator": "OpenAI",
+   "first_seen": "2026-09-03",
+   "intelligence_index": 59.2,
+   "last_seen": "2026-09-03",
+   "name": "GPT-6 Astra (medium)",
+   "observations": [
+    [
+     "2026-09-03",
+     0.74696,
+     59.2
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-03",
+   "retired": false
+  },
+  "gpt-6-astra-non-reasoning": {
+   "capabilities": {
+    "agentic": 48.8,
+    "coding": 89.1,
+    "knowledge": 26.6,
+    "knowledgework": 54.6,
+    "longcontext": 68.0,
+    "multimodal": 82.0,
+    "science": 89.5
+   },
+   "cost_per_task": 0.930831,
+   "creator": "OpenAI",
+   "first_seen": "2026-09-03",
+   "intelligence_index": 55.3,
+   "last_seen": "2026-09-03",
+   "name": "GPT-6 Astra (Non-reasoning)",
+   "observations": [
+    [
+     "2026-09-03",
+     0.930831,
+     55.3
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-03",
+   "retired": false
+  },
+  "gpt-6-astra-xhigh": {
+   "capabilities": {
+    "agentic": 51.3,
+    "coding": 89.1,
+    "knowledge": 43.4,
+    "knowledgework": 55.3,
+    "longcontext": 74.0,
+    "multimodal": 86.2,
+    "science": 96.3
+   },
+   "cost_per_task": 1.204128,
+   "creator": "OpenAI",
+   "first_seen": "2026-09-03",
+   "intelligence_index": 61.0,
+   "last_seen": "2026-09-03",
+   "name": "GPT-6 Astra (xhigh)",
+   "observations": [
+    [
+     "2026-09-03",
+     1.204128,
+     61.0
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-09-03",
+   "retired": false
+  },
   "gpt-oss-120b": {
    "capabilities": {
     "agentic": 13.4,
