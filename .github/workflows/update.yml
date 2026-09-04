@@ -2,9 +2,9 @@ name: Update frontier data
 
 on:
   schedule:
-    # Nightly at 06:00 UTC (02:00 US Eastern). A successful update triggers
-    # the website's sync workflow directly (see the last step).
-    - cron: "0 6 * * *"
+    # Four times a day, every six hours. A successful update triggers the
+    # website's sync workflow directly (see the last step).
+    - cron: "0 0,6,12,18 * * *"
   workflow_dispatch:
 
 permissions:
@@ -42,7 +42,7 @@ jobs:
             echo "No data changes."
             echo "pushed=false" >> "$GITHUB_OUTPUT"
           else
-            git commit -m "Update frontier data ($(date -u +%Y-%m-%d))"
+            git commit -m "Update frontier data ($(date -u '+%Y-%m-%d %H:%M UTC'))"
             git push
             echo "pushed=true" >> "$GITHUB_OUTPUT"
           fi
