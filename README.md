@@ -1,6 +1,6 @@
 # LLM Cost Frontier
 
-This repository tracks how cheaply a given level of large language model capability can be bought, and how that price changes over time. Every night it reads Artificial Analysis's measured cost per Intelligence Index task for every model they benchmark, merges the result into a cumulative history, and rebuilds two artifacts: the JSON that the dashboard at [catalystneuro.com/llm-cost-frontier](https://catalystneuro.com/llm-cost-frontier/) renders, and an Atom feed of frontier advances.
+This repository tracks how cheaply a given level of large language model capability can be bought, and how that price changes over time. Four times a day it reads Artificial Analysis's measured cost per Intelligence Index task for every model they benchmark, merges the result into a cumulative history, and rebuilds two artifacts: the JSON that the dashboard at [catalystneuro.com/llm-cost-frontier](https://catalystneuro.com/llm-cost-frontier/) renders, and an Atom feed of frontier advances.
 
 The background, the method, and the argument for why the cheap end of the range matters are in the post [What Happens When the Cost of Intelligence Drops 100x](https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/).
 
@@ -71,7 +71,7 @@ PYTHONPATH=src python -m llm_cost_frontier.render --force   # re-render everythi
 
 ## Schedule
 
-`.github/workflows/update.yml` runs the updater every night at 06:00 UTC, commits `data/history.json` and the build artifacts when they change, and then triggers the website's sync workflow so the site republishes right away. The trigger needs a `WEBSITE_DISPATCH_TOKEN` secret (a fine-grained personal access token with read and write access to Actions on the website repository) and is skipped quietly when the secret is absent. The workflow can also be run by hand from the Actions tab.
+`.github/workflows/update.yml` runs the updater four times a day, every six hours starting at 00:00 UTC, commits `data/history.json` and the build artifacts when they change, and then triggers the website's sync workflow so the site republishes right away. The trigger needs a `WEBSITE_DISPATCH_TOKEN` secret (a fine-grained personal access token with read and write access to Actions on the website repository) and is skipped quietly when the secret is absent. The workflow can also be run by hand from the Actions tab.
 
 ## Caveats
 
