@@ -1002,31 +1002,35 @@
   },
   "gemini-3-5-flash": {
    "capabilities": {
-    "agentic": 39.7,
     "coding": 78.7,
     "instruction": 76.3,
     "knowledge": 21.2,
-    "knowledgework": 41.9,
-    "longcontext": 81.0,
+    "knowledgework": 38.2,
+    "longcontext": 73.3,
     "multimodal": 84.3,
     "science": 92.2
    },
-   "cost_per_task": 0.693389,
+   "cost_per_task": 1.014848,
    "creator": "Google",
    "first_seen": "2026-08-19",
-   "intelligence_index": 52.0,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 39.7,
+   "last_seen": "2026-09-05",
    "name": "Gemini 3.5 Flash (high)",
    "observations": [
     [
      "2026-08-19",
      0.693389,
      52.0
+    ],
+    [
+     "2026-09-05",
+     1.014848,
+     39.7
     ]
    ],
    "open_weights": false,
    "release_date": "2026-05-19",
-   "retired": true
+   "retired": false
   },
   "gemini-3-5-flash-lite": {
    "capabilities": {
@@ -2425,7 +2429,7 @@
     "coding": 75.7,
     "instruction": 64.4,
     "knowledge": -3.5,
-    "knowledgework": 46.0,
+    "knowledgework": 45.9,
     "longcontext": 77.7,
     "multimodal": 79.1,
     "science": 89.6
