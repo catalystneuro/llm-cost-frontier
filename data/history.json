@@ -1448,7 +1448,7 @@
    "capabilities": {
     "coding": 83.9,
     "knowledge": 14.3,
-    "knowledgework": 59.1,
+    "knowledgework": 59.0,
     "longcontext": 79.7,
     "science": 91.7
    },
@@ -3301,7 +3301,7 @@
     "multimodal": 73.5,
     "science": 87.2
    },
-   "cost_per_task": 0.437261,
+   "cost_per_task": 0.437862,
    "creator": "Thinking Machines",
    "first_seen": "2026-08-19",
    "intelligence_index": 32.2,
@@ -3316,6 +3316,11 @@
     [
      "2026-09-05",
      0.437261,
+     32.2
+    ],
+    [
+     "2026-09-05",
+     0.437862,
      32.2
     ]
    ],
@@ -3895,31 +3900,35 @@
   },
   "mistral-large-3": {
    "capabilities": {
-    "agentic": 5.5,
     "coding": 12.0,
     "instruction": 36.2,
     "knowledge": -39.6,
-    "knowledgework": 7.2,
-    "longcontext": 34.7,
+    "knowledgework": 4.6,
+    "longcontext": 36.0,
     "multimodal": 55.7,
     "science": 68.0
    },
-   "cost_per_task": 0.080608,
+   "cost_per_task": 0.068903,
    "creator": "Mistral",
    "first_seen": "2026-08-19",
-   "intelligence_index": 15.9,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 11.1,
+   "last_seen": "2026-09-05",
    "name": "Mistral Large 3",
    "observations": [
     [
      "2026-08-19",
      0.080608,
      15.9
+    ],
+    [
+     "2026-09-05",
+     0.068903,
+     11.1
     ]
    ],
    "open_weights": true,
    "release_date": "2025-12-02",
-   "retired": true
+   "retired": false
   },
   "mistral-medium-3-1": {
    "capabilities": {
@@ -4191,7 +4200,7 @@
    "capabilities": {
     "coding": 85.4,
     "knowledge": 23.1,
-    "knowledgework": 58.4,
+    "knowledgework": 58.3,
     "longcontext": 83.0,
     "multimodal": 82.0,
     "science": 94.1
@@ -4809,10 +4818,10 @@
     "multimodal": 76.3,
     "science": 90.5
    },
-   "cost_per_task": 0.570695,
+   "cost_per_task": 0.572736,
    "creator": "Alibaba",
    "first_seen": "2026-08-21",
-   "intelligence_index": 41.6,
+   "intelligence_index": 41.4,
    "last_seen": "2026-09-05",
    "name": "Qwen3.8 27B (xhigh)",
    "observations": [
@@ -4840,6 +4849,11 @@
      "2026-09-05",
      0.570695,
      41.6
+    ],
+    [
+     "2026-09-05",
+     0.572736,
+     41.4
     ]
    ],
    "open_weights": true,
