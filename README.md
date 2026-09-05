@@ -59,6 +59,13 @@ llm-cost-frontier --history data/history.json --out build/llm-frontier.json \
 
 A run refuses to rewrite the history if it parses fewer than 50 live models, which guards against a change in the source page's layout quietly emptying the dataset.
 
+The test suite runs offline and needs only pytest. It covers the payload parsing, the history merge, the frontier derivations, and the output assembly, and it checks invariants against the repository's real data, so it keeps passing as the data grows. `.github/workflows/test.yml` runs it on every pull request and push to main.
+
+```bash
+pip install pytest
+pytest
+```
+
 ## Advance Cards
 
 Each frontier advance also gets a 1200x630 PNG suitable for social sharing: the scatter of every model as it stood on the advance date, the frontier before and after, and the advancing model highlighted, with the region it took from the previous frontier shaded. Reasoning levels of the same base model that advance on the same date share one card, so a release that lands three variants on the frontier produces one image, not three. The shaded region and the dashed line show the frontier as it would stand without that model's change, so on a date with several advancing models each card credits only its own model. Because the state is reconstructed as of the advance date, a card never changes once rendered, so the renderer skips existing files and only new advances cost anything on the nightly run. This is the one part of the pipeline that needs a dependency:

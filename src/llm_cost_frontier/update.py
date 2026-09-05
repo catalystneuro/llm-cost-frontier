@@ -104,7 +104,7 @@ def parse_object_at(s: str, start: int) -> dict:
 def enclosing_object(s: str, idx: int) -> dict:
     depth = 0
     j = idx
-    while j > 0:
+    while j >= 0:
         c = s[j]
         if c == "}":
             depth += 1
