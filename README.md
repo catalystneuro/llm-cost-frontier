@@ -11,6 +11,7 @@ The background, the method, and the argument for why the cheap end of the range 
 | `data/history.json` | Cumulative per-model record: release date, creator, open weights flag, retired flag, and every observed `(date, cost, index)` |
 | `data/price-events.json` | Hand-maintained price changes from before nightly observation began |
 | `data/overrides.json` | Hand-maintained corrections to upstream fields, currently the open weights flag; applied to the outputs, never to the history |
+| `data/eras.json` | Hand-declared index era boundaries: dates on which the source recomposed the Intelligence Index, breaking comparability of scores and measured costs |
 | `build/llm-frontier.json` | What the dashboard renders: model rows, frontier snapshots, tier records, halving times, and frontier advances |
 | `build/feed.xml` | Atom feed of the last 60 frontier advances |
 | `build/images/advances/` | A 1200x630 social card per advancing model per date, reasoning levels grouped, named `{date}-{base model}.png` |
@@ -31,6 +32,8 @@ Three properties follow from keeping a history instead of a snapshot:
 - **Advances are derived, not curated.** A frontier advance is any date on which the Pareto frontier of (higher index, lower cost) changed, whether through a release or a price change. Each one records the index range the model took over, the models it took that range from, any tier cost record it set, and whether it pushed the intelligence ceiling.
 
 Observation began on August 19, 2026. Before that date the only value available is a model's price at first observation, indexed by its release date, except for the price events recorded by hand in `data/price-events.json`. Earlier cuts that are not recorded make older points look cheaper than they were, which understates the collapse and dates it too early.
+
+When the source recomposes the Intelligence Index, as it did on September 5, 2026, scores and measured costs before and after the change are not comparable. Such a change is declared by hand as an era in `data/eras.json`. Observations store the index alongside the cost, so every derivation uses the index in effect on each date: frontiers before a boundary keep the old scores, records and summaries reset at the boundary, a model's first re-measurement under a new index is not reported as an advance, and models never re-scored under the current index compete only in the eras they were measured in. The updater refuses to merge a fetch whose live set shrank by more than 30% or whose median index shift exceeds 2 points unless an era within a week of the run date has been declared, so the next recomposition stops the pipeline for a human decision instead of merging silently.
 
 Free and promotional endpoints with a measured cost of zero are excluded, since they distort the cost axis.
 

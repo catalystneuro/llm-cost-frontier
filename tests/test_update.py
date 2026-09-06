@@ -188,11 +188,11 @@ def test_cost_changes_applies_price_events_before_the_cut():
     events = [{"slug_prefix": "alpha", "cut_date": "2026-02-15", "multiplier_before": 5.0}]
     m = model("Alpha", "2026-01-01", 40.0, 1.0)
     assert cost_changes("alpha", m, events) == [
-        ["2026-01-01", 5.0, "at launch price"],
-        ["2026-02-15", 1.0, "price cut (released 2026-01-01)"],
+        ["2026-01-01", 5.0, 40.0, "at launch price"],
+        ["2026-02-15", 1.0, 40.0, "price cut (released 2026-01-01)"],
     ]
     late = model("Alpha 2", "2026-03-01", 40.0, 1.0)
-    assert cost_changes("alpha-2", late, events) == [["2026-03-01", 1.0, None]]
+    assert cost_changes("alpha-2", late, events) == [["2026-03-01", 1.0, 40.0, None]]
 
 
 def test_cost_changes_dates_observed_changes():
@@ -200,7 +200,15 @@ def test_cost_changes_dates_observed_changes():
               obs=[["2026-01-01", 0.5, 50.0], ["2026-06-01", 0.4, 50.0]])
     changes = cost_changes("m", m, [])
     assert [c[:2] for c in changes] == [["2026-01-01", 0.5], ["2026-06-01", 0.4]]
-    assert "price change observed" in changes[1][2]
+    assert "price change observed" in changes[1][3]
+
+
+def test_cost_changes_records_index_moves_without_cost_moves():
+    m = model("M", "2026-01-01", 45.0, 0.5,
+              obs=[["2026-01-01", 0.5, 50.0], ["2026-09-05", 0.5, 45.0]])
+    changes = cost_changes("m", m, [])
+    assert [(c[0], c[2]) for c in changes] == [("2026-01-01", 50.0), ("2026-09-05", 45.0)]
+    assert changes[1][3] is None  # an index move alone is not a price change
 
 
 def test_price_timeline_is_sorted_by_date():
@@ -310,7 +318,16 @@ def test_tier_summary_collapse_and_halving():
     out = tier_summary(recs)
     assert out["40"]["collapse"] == 4.0
     assert out["40"]["halving_days"] == 30  # 60 days / log2(4)
-    assert out["60"] is None and out["70"] is None
+    assert out["60"]["collapse"] == 1.0 and out["60"]["halving_days"] is None
+    assert out["70"] is None
+
+
+def test_tier_summary_since_filters_to_the_current_era():
+    recs = {"40": [["2026-01-01", 1.0, "A", 45.0], ["2026-03-02", 0.25, "C", 46.0],
+                   ["2026-09-05", 0.6, "C", 41.0]]}
+    out = tier_summary(recs, since="2026-09-05")
+    assert out["40"]["first_date"] == "2026-09-05"
+    assert out["40"]["collapse"] == 1.0
 
 
 def test_capability_models_substitutes_scores():
@@ -322,6 +339,102 @@ def test_capability_models_substitutes_scores():
     assert set(cm) == {"a"}
     assert cm["a"]["intelligence_index"] == 80.0
     assert models["a"]["intelligence_index"] == 40.0  # original untouched
+
+
+# ---- index eras ----
+
+ERAS = [{"start": "2026-09-05", "note": "index recomposed"}]
+
+
+def era_history():
+    """Two old-era models; one re-scored under the new index, one not."""
+    return {
+        "stale": model("Stale", "2026-01-01", 55.0, 0.10),
+        "fresh": model("Fresh", "2026-02-01", 50.0, 0.20,
+                       obs=[["2026-02-01", 0.20, 50.0], ["2026-09-05", 0.30, 42.0]]),
+    }
+
+
+def test_model_era_follows_the_last_observation():
+    models = era_history()
+    from llm_cost_frontier.update import model_era
+    assert model_era(models["stale"], ERAS) == 0
+    assert model_era(models["fresh"], ERAS) == 1
+
+
+def test_tier_records_reset_at_the_era_boundary():
+    models = era_history()
+    recs = tier_records(models, [], tiers=[40], eras=ERAS)["40"]
+    # Old era: Stale set the record at 0.10. New era: only Fresh competes,
+    # and its higher new-suite cost is a fresh record, not compared to 0.10.
+    assert [(r[0], r[1], r[2]) for r in recs] == [
+        ("2026-01-01", 0.10, "Stale"), ("2026-09-05", 0.30, "Fresh")]
+
+
+def test_stale_models_cannot_hold_new_era_records():
+    models = era_history()
+    recs = tier_records(models, [], tiers=[50], eras=ERAS)["50"]
+    # Stale's 55.0 is an old-era score; Fresh's new score is 42. Nothing
+    # reaches new-50, so the tier has no record after the boundary.
+    assert [r[2] for r in recs] == ["Stale"]
+
+
+def test_rebase_observations_produce_no_advances():
+    models = era_history()
+    advances = frontier_advances(models, [], {}, eras=ERAS)
+    assert all(a["date"] < "2026-09-05" for a in advances)
+
+
+def test_models_released_after_the_boundary_still_advance():
+    models = era_history()
+    models["newcomer"] = model("Newcomer", "2026-09-06", 45.0, 0.05,
+                               obs=[["2026-09-06", 0.05, 45.0]])
+    advances = frontier_advances(models, [], {}, eras=ERAS)
+    new = [a for a in advances if a["date"] >= "2026-09-05"]
+    assert [a["model"] for a in new] == ["Newcomer"]
+    # It competes only against re-scored models: Stale's old 55 does not
+    # block it from the ceiling.
+    assert new[0]["ceiling_from"] == 42.0
+
+
+def test_post_boundary_price_cut_still_advances():
+    models = era_history()
+    models["fresh"]["observations"].append(["2026-09-10", 0.25, 42.0])
+    advances = frontier_advances(models, [], {}, eras=ERAS)
+    cut = [a for a in advances if a["kind"] == "price change"]
+    assert [(a["date"], a["previous_cost"]) for a in cut] == [("2026-09-10", 0.30)]
+
+
+def test_check_live_set_guards():
+    from llm_cost_frontier.update import check_live_set
+    history = {"models": {f"m{i}": model(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}}
+    live_same = {f"m{i}": live_record(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}
+    check_live_set(live_same, history, [], "2026-09-06")  # no complaint
+
+    with pytest.raises(RuntimeError, match="only 30 live models"):
+        check_live_set(dict(list(live_same.items())[:30]), history, [], "2026-09-06")
+
+    with pytest.raises(RuntimeError, match="live set dropped"):
+        check_live_set(dict(list(live_same.items())[:60]), history, [], "2026-09-06")
+
+    shifted = {s: live_record(r["name"], "2026-01-01", 45.0, 1.0) for s, r in live_same.items()}
+    with pytest.raises(RuntimeError, match="median index shift"):
+        check_live_set(shifted, history, [], "2026-09-06")
+
+    # A declared era within a week waives the relative checks.
+    check_live_set(shifted, history, ERAS, "2026-09-06")
+    check_live_set(dict(list(live_same.items())[:60]), history, ERAS, "2026-09-06")
+
+
+def test_build_output_with_eras():
+    history = {"updated": "2026-09-06", "models": era_history()}
+    out = build_output(history, events=[], eras=ERAS)
+    assert out["eras"] == [["2026-09-05", "index recomposed"]]
+    by_name = {r[0]: r for r in out["models"]}
+    assert by_name["Stale"][9] == 0 and by_name["Fresh"][9] == 1
+    assert all(a["date"] < "2026-09-05" for a in out["advances"])
+    s = out["tier_summary"]["40"]
+    assert s["first_date"] == "2026-09-05"  # summary never spans the boundary
 
 
 # ---- output assembly ----
@@ -337,8 +450,9 @@ def test_build_output_shape():
     names = [r[0] for r in out["models"]]
     assert names == ["Alpha", "Beta", "Gamma"]  # sorted by release date
     for row in out["models"]:
-        assert len(row) == 9
+        assert len(row) == 10
         assert len(row[8]) == len(CAPABILITIES)
+        assert row[9] == 0  # no eras declared
     alpha, gamma = out["models"][0], out["models"][2]
     assert alpha[7] == 0  # no price changes
     assert [c[:2] for c in gamma[7]] == [["2026-03-01", 0.5], ["2026-06-01", 0.4]]
