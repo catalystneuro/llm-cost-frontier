@@ -1,0 +1,6 @@
+[
+ {
+  "start": "2026-09-05",
+  "note": "Artificial Analysis recomposed the Intelligence Index and cut the live comparison set to about 52 models. Scores and measured costs per task before and after this date are not comparable: live models were re-scored 4 to 12 points lower on the new composition, and the new evaluation suite costs more to run."
+ }
+]

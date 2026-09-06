@@ -25,6 +25,7 @@ from pathlib import Path
 DEFAULT_HISTORY = Path("data/history.json")
 DEFAULT_EVENTS = Path("data/price-events.json")
 DEFAULT_OVERRIDES = Path("data/overrides.json")
+DEFAULT_ERAS = Path("data/eras.json")
 DEFAULT_OUTPUT = Path("build/llm-frontier.json")
 DEFAULT_FEED = Path("build/feed.xml")
 DEFAULT_SITE = "https://catalystneuro.com"
@@ -210,40 +211,70 @@ def snapshots(today: dt.date) -> list:
     return out
 
 
+def era_index(date: str, eras: list) -> int:
+    """Number of era boundaries at or before the date; 0 means before the first.
+
+    An era begins when the source recomposes the Intelligence Index (or
+    otherwise breaks comparability); eras are declared by hand in eras.json.
+    Scores and measured costs are only comparable within one era.
+    """
+    return sum(1 for e in eras or [] if e["start"] <= date)
+
+
+def model_era(m: dict, eras: list) -> int:
+    """The era a model's current scores belong to: the era of its last
+    observation. A model retired before a boundary keeps pre-boundary scores
+    forever, so it never competes in later eras."""
+    obs = m.get("observations") or []
+    last = obs[-1][0] if obs else m.get("last_seen", m["release_date"])
+    return era_index(last, eras)
+
+
 def cost_changes(slug: str, m: dict, events: list) -> list:
-    """Dated cost changes for one model: [[date, cost, note], ...], starting at release."""
+    """Dated changes for one model: [[date, cost, iq, note], ...], starting at
+    release. An entry is added whenever the cost or the index moves, so the
+    index a model had on a given date is recoverable."""
     obs = sorted(m.get("observations") or [[m.get("last_seen", m["release_date"]), m["cost_per_task"], m["intelligence_index"]]])
-    first_cost = obs[0][1]
+    first_cost, first_iq = obs[0][1], obs[0][2]
     out = []
     ev = next((e for e in events if slug.startswith(e["slug_prefix"])), None)
     if ev and m["release_date"] < ev["cut_date"]:
-        out.append([m["release_date"], first_cost * ev["multiplier_before"], "at launch price"])
-        out.append([ev["cut_date"], first_cost, f"price cut (released {m['release_date']})"])
+        out.append([m["release_date"], first_cost * ev["multiplier_before"], first_iq, "at launch price"])
+        out.append([ev["cut_date"], first_cost, first_iq, f"price cut (released {m['release_date']})"])
     else:
-        out.append([m["release_date"], first_cost, None])
-    for date, cost, _iq in obs[1:]:
-        if abs(cost - out[-1][1]) > 1e-9:
-            out.append([date, cost, f"price change observed (released {m['release_date']})"])
+        out.append([m["release_date"], first_cost, first_iq, None])
+    for date, cost, iq in obs[1:]:
+        if abs(cost - out[-1][1]) > 1e-9 or abs(iq - out[-1][2]) > 0.049:
+            note = f"price change observed (released {m['release_date']})" if abs(cost - out[-1][1]) > 1e-9 else None
+            out.append([date, cost, iq, note])
     return out
 
 
 def price_timeline(models: dict, events: list) -> list:
-    """All dated cost changes across models as (date, cost, slug, iq, note)."""
+    """All dated changes across models as (date, cost, slug, iq, note), with
+    the cost and index in effect on each date."""
     out = []
     for slug, m in models.items():
-        for date, cost, note in cost_changes(slug, m, events):
-            out.append([date, cost, slug, m["intelligence_index"], note])
+        for date, cost, iq, note in cost_changes(slug, m, events):
+            out.append([date, cost, slug, iq, note])
     out.sort(key=lambda e: (e[0], e[1]))
     return out
 
 
-def tier_records(models: dict, events: list, tiers: list = None) -> dict:
+def tier_records(models: dict, events: list, tiers: list = None, eras: list = None) -> dict:
+    """Running cost minimums per tier. The minimum resets at each era boundary,
+    since neither the scores nor the measured costs are comparable across one."""
     timeline = price_timeline(models, events)
+    starts = [e["start"] for e in eras or []]
     out = {}
     for t in TIERS if tiers is None else tiers:
         best = math.inf
+        pending = list(starts)
         recs = []
         for date, cost, slug, iq, note in timeline:
+            while pending and date >= pending[0]:
+                best = math.inf
+                pending.pop(0)
             if iq >= t and cost < best:
                 best = cost
                 recs.append([date, round(cost, 6), models[slug]["name"], iq] + ([note] if note else []))
@@ -270,8 +301,15 @@ def pareto(state: dict) -> set:
     return out
 
 
-def frontier_advances(models: dict, events: list, records: dict) -> list:
-    """Dates on which the Pareto frontier changed, newest first."""
+def frontier_advances(models: dict, events: list, records: dict, eras: list = None) -> list:
+    """Dates on which the Pareto frontier changed, newest first.
+
+    At an era boundary, models whose scores were never re-measured under the
+    new index are dropped from the frontier, and each surviving model's first
+    post-boundary observation is treated as a re-measurement, not an advance:
+    it moves the frontier because the yardstick changed, which is not news
+    about the model.
+    """
     timeline = price_timeline(models, events)
     record_keys = {(r[0], r[2]): t for t, recs in records.items() for r in recs}
     state = {}
@@ -280,13 +318,25 @@ def frontier_advances(models: dict, events: list, records: dict) -> list:
     by_date = {}
     for date, cost, slug, iq, note in timeline:
         by_date.setdefault(date, []).append((cost, slug, iq, note))
+    cur_era = 0
+    seen_era = {}
     for date in sorted(by_date):
+        ev_era = era_index(date, eras)
+        if ev_era > cur_era:
+            for slug in [s for s in state if model_era(models[s], eras) < ev_era]:
+                del state[slug]
+            current = pareto(state)
+            cur_era = ev_era
         changed = {}
         state_before = dict(state)
         base_of = lambda o: split_variant(models[o]["name"])[0]
         for cost, slug, iq, note in by_date[date]:
             prev = state.get(slug)
             state[slug] = (cost, iq)
+            rebase = ev_era > 0 and seen_era.get(slug, -1) < ev_era and models[slug]["release_date"] < (eras or [])[ev_era - 1]["start"]
+            seen_era[slug] = ev_era
+            if rebase:
+                continue
             changed[slug] = ("price change" if note and ("cut" in note or "change" in note) else "new model", prev[0] if prev else None)
         prev_front = current
         new_front = pareto(state)
@@ -355,7 +405,9 @@ def frontier_advances(models: dict, events: list, records: dict) -> list:
 
 def capability_models(models: dict, key: str) -> dict:
     """The models measured on one capability, with the capability score standing
-    in for the intelligence index so the frontier machinery applies unchanged."""
+    in for the intelligence index so the frontier machinery applies unchanged.
+    Observations are rewritten with the constant capability score, since only
+    the index is versioned in the history; the cost history is kept."""
     out = {}
     for slug, m in models.items():
         v = (m.get("capabilities") or {}).get(key)
@@ -363,14 +415,18 @@ def capability_models(models: dict, key: str) -> dict:
             continue
         mm = dict(m)
         mm["intelligence_index"] = v
+        mm["observations"] = [[d, c, v] for d, c, _iq in (m.get("observations") or [])]
         out[slug] = mm
     return out
 
 
-def tier_summary(records: dict) -> dict:
+def tier_summary(records: dict, since: str = None) -> dict:
+    """Collapse and halving time per tier, from records at or after `since`
+    (the current era's start), so the summary never spans an era boundary."""
     out = {}
-    for t, recs in records.items():
-        if len(recs) < 2:
+    for t, all_recs in records.items():
+        recs = [r for r in all_recs if since is None or r[0] >= since]
+        if not recs:
             out[t] = None
             continue
         first, last = recs[0], recs[-1]
@@ -380,46 +436,52 @@ def tier_summary(records: dict) -> dict:
             first_date=first[0], first_model=first[2], first_cost=first[1],
             last_date=last[0], last_model=last[2], last_cost=last[1],
             collapse=round(ratio, 1),
-            halving_days=round(days / math.log2(ratio)) if ratio > 1 else None,
+            halving_days=round(days / math.log2(ratio)) if ratio > 1 and days else None,
         )
     return out
 
 
-def build_output(history: dict, events: list, overrides: dict | None = None) -> dict:
+def build_output(history: dict, events: list, overrides: dict | None = None, eras: list | None = None) -> dict:
     today = dt.date.fromisoformat(history["updated"])
     models = history["models"]
     if overrides:
         apply_overrides(models, overrides)
+    era_start = eras[-1]["start"] if eras else None
+    current_era = len(eras or [])
     rows = []
     for slug, m in sorted(models.items(), key=lambda kv: (kv[1]["release_date"], kv[1]["name"])):
-        changes = [[d, round(c, 6)] for d, c, _n in cost_changes(slug, m, events)]
+        changes = [[d, round(c, 6), iq] for d, c, iq, _n in cost_changes(slug, m, events)]
         caps = m.get("capabilities") or {}
         row = [m["name"], m["creator"], m["release_date"], m["intelligence_index"], m["cost_per_task"], int(m["retired"]), int(m["open_weights"]),
                changes if len(changes) > 1 else 0,
-               [caps.get(c["key"]) for c in CAPABILITIES]]
+               [caps.get(c["key"]) for c in CAPABILITIES],
+               model_era(m, eras)]
         rows.append(row)
-    records = tier_records(models, events)
-    advances = frontier_advances(models, events, records)
+    records = tier_records(models, events, eras=eras)
+    advances = frontier_advances(models, events, records, eras=eras)
     # Per-capability tiers are derived from each metric's range: the top four
-    # multiples of ten at or below the highest measured score.
+    # multiples of ten at or below the highest score among models whose
+    # measurements are current-era.
     cap_tiers, cap_tier_cost, cap_tier_summary, cap_advances = {}, {}, {}, {}
     for c in CAPABILITIES:
         cm = capability_models(models, c["key"])
-        if not cm:
+        current = [m for m in cm.values() if model_era(m, eras) == current_era]
+        if not current:
             continue
-        hi = int(max(m["intelligence_index"] for m in cm.values()) // 10) * 10
+        hi = int(max(m["intelligence_index"] for m in current) // 10) * 10
         tiers = [t for t in (hi - 30, hi - 20, hi - 10, hi) if t > 0]
-        recs = tier_records(cm, events, tiers)
+        recs = tier_records(cm, events, tiers, eras=eras)
         cap_tiers[c["key"]] = tiers
         cap_tier_cost[c["key"]] = recs
-        cap_tier_summary[c["key"]] = tier_summary(recs)
-        cap_advances[c["key"]] = frontier_advances(cm, events, recs)
+        cap_tier_summary[c["key"]] = tier_summary(recs, since=era_start)
+        cap_advances[c["key"]] = frontier_advances(cm, events, recs, eras=eras)
     return dict(
         advances=advances,
         cap_advances=cap_advances,
         cap_tiers=cap_tiers,
         cap_tier_cost=cap_tier_cost,
         cap_tier_summary=cap_tier_summary,
+        eras=[[e["start"], e.get("note", "")] for e in eras or []],
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
@@ -427,7 +489,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None) -> 
         capabilities=[{k: c[k] for k in ("key", "label", "metric", "percent", "blurb")} for c in CAPABILITIES],
         models=rows,
         tier_cost=records,
-        tier_summary=tier_summary(records),
+        tier_summary=tier_summary(records, since=era_start),
         price_events=events,
         counts=dict(total=len(rows), live=sum(1 for m in models.values() if not m["retired"]), retired=sum(1 for m in models.values() if m["retired"])),
     )
@@ -511,11 +573,35 @@ def write_feed(out: dict, feed_path: Path, site: str) -> None:
     feed_path.write_text("\n".join(lines) + "\n")
 
 
+def check_live_set(live: dict, history: dict, eras: list, today: str) -> None:
+    """Refuse suspicious fetches. A hard floor guards against page breakage;
+    a relative floor and a median index shift check guard against the source
+    recomposing its index, which must be declared as an era by hand before
+    the updater will merge it."""
+    if len(live) < 50:
+        raise RuntimeError(f"only {len(live)} live models parsed; refusing to update")
+    recent_era = any(abs((dt.date.fromisoformat(today) - dt.date.fromisoformat(e["start"])).days) <= 7 for e in eras)
+    if recent_era:
+        return
+    prev_live = sum(1 for m in history["models"].values() if not m.get("retired"))
+    if prev_live and len(live) < 0.7 * prev_live:
+        raise RuntimeError(
+            f"live set dropped from {prev_live} to {len(live)} models; if the source recomposed "
+            f"its index, declare an era in data/eras.json before updating")
+    shifts = sorted(abs(rec["intelligence_index"] - history["models"][s]["intelligence_index"])
+                    for s, rec in live.items() if s in history["models"])
+    if shifts and shifts[len(shifts) // 2] > 2.0:
+        raise RuntimeError(
+            f"median index shift is {shifts[len(shifts) // 2]:.1f} points across {len(shifts)} models; "
+            f"if the source recomposed its index, declare an era in data/eras.json before updating")
+
+
 def parse_args(argv=None):
     p = argparse.ArgumentParser(prog="llm-cost-frontier", description=__doc__.splitlines()[0])
     p.add_argument("--history", type=Path, default=DEFAULT_HISTORY, help="cumulative per-model history (read and rewritten)")
     p.add_argument("--events", type=Path, default=DEFAULT_EVENTS, help="hand-maintained price events")
     p.add_argument("--overrides", type=Path, default=DEFAULT_OVERRIDES, help="hand-maintained corrections to upstream fields")
+    p.add_argument("--eras", type=Path, default=DEFAULT_ERAS, help="hand-declared index era boundaries")
     p.add_argument("--out", type=Path, default=DEFAULT_OUTPUT, help="dashboard JSON to write")
     p.add_argument("--feed", type=Path, default=DEFAULT_FEED, help="Atom feed to write")
     p.add_argument("--site", default=DEFAULT_SITE, help="base URL used for links in the feed")
@@ -529,16 +615,16 @@ def main(argv=None):
     history = json.loads(args.history.read_text())
     events = json.loads(args.events.read_text())
     overrides = json.loads(args.overrides.read_text()) if args.overrides.exists() else {}
+    eras = json.loads(args.eras.read_text()) if args.eras.exists() else []
     if not args.offline:
         today = dt.date.today().isoformat()
         payload = fetch_payload(args.source)
         live = extract_models(payload)
-        if len(live) < 50:
-            raise RuntimeError(f"only {len(live)} live models parsed; refusing to update")
+        check_live_set(live, history, eras, today)
         history = merge(history, live, today)
         args.history.write_text(json.dumps(history, indent=1, sort_keys=True) + "\n")
         print(f"merged {len(live)} live models; history now {len(history['models'])} models")
-    out = build_output(history, events, overrides)
+    out = build_output(history, events, overrides, eras)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(out, separators=(",", ":")) + "\n")
     write_feed(out, args.feed, args.site)
