@@ -426,6 +426,20 @@ def test_check_live_set_guards():
     check_live_set(dict(list(live_same.items())[:60]), history, ERAS, "2026-09-06")
 
 
+def test_era_snapshots_split_at_the_boundary():
+    from llm_cost_frontier.update import era_snapshots
+    out = era_snapshots(ERAS, dt.date(2026, 9, 6))
+    assert len(out) == 2
+    old, new = out
+    # The old era ends the day before the boundary, labeled with its date.
+    assert old[-1] == ["2026-09-04", "Sep 4, 2026"]
+    assert all(d < "2026-09-05" for d, _ in old)
+    # The current era has no bi-monthly firsts yet, only today.
+    assert new == [["2026-09-06", "today"]]
+    # Without eras there is a single list equivalent to snapshots().
+    assert era_snapshots([], dt.date(2026, 9, 6)) == [snapshots(dt.date(2026, 9, 6))]
+
+
 def test_build_output_with_eras():
     history = {"updated": "2026-09-06", "models": era_history()}
     out = build_output(history, events=[], eras=ERAS)

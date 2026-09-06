@@ -211,6 +211,31 @@ def snapshots(today: dt.date) -> list:
     return out
 
 
+def era_snapshots(eras: list, today: dt.date) -> list:
+    """Per era, the bi-monthly snapshot dates falling inside it, ending with
+    the era's last day (labeled with its date) or with today for the current
+    era. The dashboard renders one frontier chart per era from these, since
+    index scores are only comparable within an era."""
+    starts = [dt.date.fromisoformat(e["start"]) for e in eras or []]
+    out = []
+    for i in range(len(starts) + 1):
+        end = today if i == len(starts) else starts[i] - dt.timedelta(days=1)
+        first = end.replace(day=1)
+        if first == end:
+            first = add_months(first, -1)
+        snaps = []
+        for k in range(SNAPSHOT_COUNT - 2, -1, -1):
+            d = add_months(first, -SNAPSHOT_MONTHS * k)
+            if d > end or (i > 0 and d < starts[i - 1]):
+                continue
+            snaps.append([d.isoformat(), d.strftime("%b %-d, %Y")])
+        if snaps and snaps[-1][0] == end.isoformat():
+            snaps.pop()
+        snaps.append([end.isoformat(), "today" if i == len(starts) else end.strftime("%b %-d, %Y")])
+        out.append(snaps)
+    return out
+
+
 def era_index(date: str, eras: list) -> int:
     """Number of era boundaries at or before the date; 0 means before the first.
 
@@ -482,6 +507,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         cap_tier_cost=cap_tier_cost,
         cap_tier_summary=cap_tier_summary,
         eras=[[e["start"], e.get("note", "")] for e in eras or []],
+        era_snapshots=era_snapshots(eras, today),
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
