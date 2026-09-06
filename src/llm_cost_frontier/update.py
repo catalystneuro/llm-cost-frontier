@@ -445,23 +445,34 @@ def capability_models(models: dict, key: str) -> dict:
     return out
 
 
-def tier_summary(records: dict, since: str = None) -> dict:
-    """Collapse and halving time per tier, from records at or after `since`
-    (the current era's start), so the summary never spans an era boundary."""
+def tier_summary(records: dict, eras: list = None) -> dict:
+    """Collapse and halving time per tier, using the full record history.
+
+    A cost ratio is only ever taken within one era, since a recomposition
+    changes the cost basis; each era contributes its own decline (in log2)
+    and its own span of days, and the contributions are pooled. The collapse
+    is the product of the within-era ratios, and the halving time is the
+    pooled days per pooled halving, so older eras keep informing the estimate
+    without a cost ever being compared across a boundary."""
     out = {}
-    for t, all_recs in records.items():
-        recs = [r for r in all_recs if since is None or r[0] >= since]
+    for t, recs in records.items():
         if not recs:
             out[t] = None
             continue
         first, last = recs[0], recs[-1]
-        days = (dt.date.fromisoformat(last[0]) - dt.date.fromisoformat(first[0])).days
-        ratio = first[1] / last[1]
+        groups = {}
+        for r in recs:
+            groups.setdefault(era_index(r[0], eras), []).append(r)
+        days = 0
+        log_drop = 0.0
+        for g in groups.values():
+            days += (dt.date.fromisoformat(g[-1][0]) - dt.date.fromisoformat(g[0][0])).days
+            log_drop += math.log2(g[0][1] / g[-1][1])
         out[t] = dict(
             first_date=first[0], first_model=first[2], first_cost=first[1],
             last_date=last[0], last_model=last[2], last_cost=last[1],
-            collapse=round(ratio, 1),
-            halving_days=round(days / math.log2(ratio)) if ratio > 1 and days else None,
+            collapse=round(2 ** log_drop, 1),
+            halving_days=round(days / log_drop) if log_drop > 0 and days else None,
         )
     return out
 
@@ -471,7 +482,6 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
     models = history["models"]
     if overrides:
         apply_overrides(models, overrides)
-    era_start = eras[-1]["start"] if eras else None
     current_era = len(eras or [])
     rows = []
     for slug, m in sorted(models.items(), key=lambda kv: (kv[1]["release_date"], kv[1]["name"])):
@@ -498,7 +508,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         recs = tier_records(cm, events, tiers, eras=eras)
         cap_tiers[c["key"]] = tiers
         cap_tier_cost[c["key"]] = recs
-        cap_tier_summary[c["key"]] = tier_summary(recs, since=era_start)
+        cap_tier_summary[c["key"]] = tier_summary(recs, eras=eras)
         cap_advances[c["key"]] = frontier_advances(cm, events, recs, eras=eras)
     return dict(
         advances=advances,
@@ -515,7 +525,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         capabilities=[{k: c[k] for k in ("key", "label", "metric", "percent", "blurb")} for c in CAPABILITIES],
         models=rows,
         tier_cost=records,
-        tier_summary=tier_summary(records, since=era_start),
+        tier_summary=tier_summary(records, eras=eras),
         price_events=events,
         counts=dict(total=len(rows), live=sum(1 for m in models.values() if not m["retired"]), retired=sum(1 for m in models.values() if m["retired"])),
     )
