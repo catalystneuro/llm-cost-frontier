@@ -322,12 +322,27 @@ def test_tier_summary_collapse_and_halving():
     assert out["70"] is None
 
 
-def test_tier_summary_since_filters_to_the_current_era():
+def test_tier_summary_pools_declines_across_eras():
+    # Old era: 1.0 -> 0.25 over 60 days (two halvings). New era: the cost
+    # basis resets to 0.6, then falls to 0.3 over 40 days (one halving).
+    # The ratio 0.25 -> 0.6 across the boundary must contribute nothing.
+    recs = {"40": [["2026-01-01", 1.0, "A", 45.0], ["2026-03-02", 0.25, "C", 46.0],
+                   ["2026-09-05", 0.6, "C", 41.0], ["2026-10-15", 0.3, "D", 42.0]]}
+    out = tier_summary(recs, eras=ERAS)["40"]
+    assert out["first_date"] == "2026-01-01" and out["last_date"] == "2026-10-15"
+    assert out["collapse"] == 8.0  # 4x within the old era times 2x within the new
+    assert out["halving_days"] == 33  # (60 + 40) days per 3 halvings
+
+
+def test_tier_summary_ignores_a_cost_rise_at_the_boundary_only():
+    # A single new-era record after an old-era decline: the higher new-suite
+    # cost is not a regression, and the old decline still sets the estimate.
     recs = {"40": [["2026-01-01", 1.0, "A", 45.0], ["2026-03-02", 0.25, "C", 46.0],
                    ["2026-09-05", 0.6, "C", 41.0]]}
-    out = tier_summary(recs, since="2026-09-05")
-    assert out["40"]["first_date"] == "2026-09-05"
-    assert out["40"]["collapse"] == 1.0
+    out = tier_summary(recs, eras=ERAS)["40"]
+    assert out["collapse"] == 4.0
+    assert out["halving_days"] == 30
+    assert out["last_cost"] == 0.6  # the current record is still the new-era one
 
 
 def test_capability_models_substitutes_scores():
@@ -448,7 +463,10 @@ def test_build_output_with_eras():
     assert by_name["Stale"][9] == 0 and by_name["Fresh"][9] == 1
     assert all(a["date"] < "2026-09-05" for a in out["advances"])
     s = out["tier_summary"]["40"]
-    assert s["first_date"] == "2026-09-05"  # summary never spans the boundary
+    # First crossed in the old era, current record in the new; the collapse
+    # pools within-era declines, which are both flat here.
+    assert s["first_date"] == "2026-01-01" and s["last_date"] == "2026-09-05"
+    assert s["collapse"] == 1.0 and s["halving_days"] is None
 
 
 # ---- output assembly ----
