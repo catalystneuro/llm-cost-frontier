@@ -431,7 +431,7 @@
    "capabilities": {
     "coding": 76.4,
     "knowledge": 28.6,
-    "knowledgework": 43.8,
+    "knowledgework": 43.7,
     "longcontext": 81.3,
     "multimodal": 79.8,
     "science": 88.9
@@ -1183,7 +1183,7 @@
    "capabilities": {
     "coding": 87.6,
     "knowledge": 29.6,
-    "knowledgework": 48.3,
+    "knowledgework": 48.2,
     "longcontext": 81.3,
     "multimodal": 85.6,
     "science": 95.3
@@ -2261,7 +2261,7 @@
     "coding": 86.1,
     "instruction": 69.6,
     "knowledge": 19.4,
-    "knowledgework": 48.0,
+    "knowledgework": 47.9,
     "longcontext": 80.3,
     "multimodal": 81.4,
     "science": 92.6
