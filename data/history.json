@@ -123,31 +123,35 @@
   },
   "claude-4-5-sonnet-thinking": {
    "capabilities": {
-    "agentic": 26.4,
     "coding": 55.8,
     "instruction": 57.3,
     "knowledge": -0.1,
-    "knowledgework": 27.8,
-    "longcontext": 68.3,
+    "knowledgework": 24.5,
+    "longcontext": 72.3,
     "multimodal": 68.7,
     "science": 83.4
    },
-   "cost_per_task": 0.46434,
+   "cost_per_task": 0.466611,
    "creator": "Anthropic",
    "first_seen": "2026-08-19",
-   "intelligence_index": 37.4,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 27.3,
+   "last_seen": "2026-09-07",
    "name": "Claude 4.5 Sonnet (Reasoning)",
    "observations": [
     [
      "2026-08-19",
      0.46434,
      37.4
+    ],
+    [
+     "2026-09-07",
+     0.466611,
+     27.3
     ]
    ],
    "open_weights": false,
    "release_date": "2025-09-29",
-   "retired": true
+   "retired": false
   },
   "claude-fable-5": {
    "capabilities": {
@@ -184,7 +188,7 @@
    "capabilities": {
     "coding": 91.4,
     "knowledge": 43.5,
-    "knowledgework": 63.3,
+    "knowledgework": 63.2,
     "longcontext": 85.3,
     "science": 93.7
    },
@@ -576,7 +580,7 @@
    "capabilities": {
     "coding": 80.5,
     "knowledge": 16.4,
-    "knowledgework": 50.2,
+    "knowledgework": 50.0,
     "longcontext": 82.0,
     "multimodal": 77.3,
     "science": 91.1
@@ -659,30 +663,34 @@
   },
   "deepseek-v3": {
    "capabilities": {
-    "agentic": 1.6,
     "coding": 16.9,
     "instruction": 34.8,
     "knowledge": -41.6,
     "knowledgework": 0.0,
-    "longcontext": 31.7,
+    "longcontext": 29.3,
     "science": 55.7
    },
-   "cost_per_task": 0.025497,
+   "cost_per_task": 0.024635,
    "creator": "DeepSeek",
    "first_seen": "2026-08-19",
-   "intelligence_index": 14.2,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 10.4,
+   "last_seen": "2026-09-07",
    "name": "DeepSeek V3 (Dec '24)",
    "observations": [
     [
      "2026-08-19",
      0.025497,
      14.2
+    ],
+    [
+     "2026-09-07",
+     0.024635,
+     10.4
     ]
    ],
    "open_weights": true,
    "release_date": "2024-12-26",
-   "retired": true
+   "retired": false
   },
   "deepseek-v3-0324": {
    "capabilities": {
@@ -779,19 +787,18 @@
   },
   "deepseek-v4-flash-0420-high": {
    "capabilities": {
-    "agentic": 30.3,
     "coding": 56.9,
     "instruction": 73.5,
     "knowledge": -23.1,
-    "knowledgework": 32.6,
-    "longcontext": 69.0,
+    "knowledgework": 29.2,
+    "longcontext": 72.0,
     "science": 86.7
    },
-   "cost_per_task": 0.052891,
+   "cost_per_task": 0.092007,
    "creator": "DeepSeek",
    "first_seen": "2026-08-19",
-   "intelligence_index": 39.0,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 30.2,
+   "last_seen": "2026-09-07",
    "name": "DeepSeek V4 Flash (Reasoning, High Effort)",
    "observations": [
     [
@@ -808,11 +815,16 @@
      "2026-08-26",
      0.052891,
      39.0
+    ],
+    [
+     "2026-09-07",
+     0.092007,
+     30.2
     ]
    ],
    "open_weights": true,
    "release_date": "2026-04-24",
-   "retired": true
+   "retired": false
   },
   "deepseek-v4-flash-vision": {
    "capabilities": {
@@ -978,31 +990,35 @@
   },
   "gemini-3-1-flash-lite-preview": {
    "capabilities": {
-    "agentic": 6.5,
     "coding": 31.1,
     "instruction": 77.2,
     "knowledge": -16.4,
-    "knowledgework": 7.5,
-    "longcontext": 71.3,
+    "knowledgework": 4.9,
+    "longcontext": 74.3,
     "multimodal": 75.5,
     "science": 82.2
    },
-   "cost_per_task": 0.043246,
+   "cost_per_task": 0.037183,
    "creator": "Google",
    "first_seen": "2026-08-19",
-   "intelligence_index": 25.6,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 19.3,
+   "last_seen": "2026-09-07",
    "name": "Gemini 3.1 Flash-Lite",
    "observations": [
     [
      "2026-08-19",
      0.043246,
      25.6
+    ],
+    [
+     "2026-09-07",
+     0.037183,
+     19.3
     ]
    ],
    "open_weights": false,
    "release_date": "2026-03-03",
-   "retired": true
+   "retired": false
   },
   "gemini-3-1-pro-preview": {
    "capabilities": {
@@ -2919,30 +2935,34 @@
   },
   "gpt-oss-20b": {
    "capabilities": {
-    "agentic": 3.1,
     "coding": 13.9,
     "instruction": 65.1,
     "knowledge": -63.0,
-    "knowledgework": 3.4,
-    "longcontext": 33.3,
+    "knowledgework": 0.8,
+    "longcontext": 34.7,
     "science": 68.8
    },
-   "cost_per_task": 0.024981,
+   "cost_per_task": 0.014487,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
-   "intelligence_index": 15.2,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 10.8,
+   "last_seen": "2026-09-07",
    "name": "gpt-oss-20b (high)",
    "observations": [
     [
      "2026-08-19",
      0.024981,
      15.2
+    ],
+    [
+     "2026-09-07",
+     0.014487,
+     10.8
     ]
    ],
    "open_weights": true,
    "release_date": "2025-08-05",
-   "retired": true
+   "retired": false
   },
   "granite-4-2-30b": {
    "capabilities": {
@@ -3613,7 +3633,6 @@
   },
   "llama-4-maverick": {
    "capabilities": {
-    "agentic": 1.2,
     "coding": 7.9,
     "instruction": 43.0,
     "knowledge": -41.9,
@@ -3622,11 +3641,11 @@
     "multimodal": 62.1,
     "science": 67.1
    },
-   "cost_per_task": 0.034603,
+   "cost_per_task": 0.044662,
    "creator": "Meta",
    "first_seen": "2026-08-19",
-   "intelligence_index": 14.5,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 10.3,
+   "last_seen": "2026-09-07",
    "name": "Llama 4 Maverick",
    "observations": [
     [
@@ -3638,11 +3657,16 @@
      "2026-08-21",
      0.034603,
      14.5
+    ],
+    [
+     "2026-09-07",
+     0.044662,
+     10.3
     ]
    ],
    "open_weights": true,
    "release_date": "2025-04-05",
-   "retired": true
+   "retired": false
   },
   "llama-4-scout": {
    "capabilities": {
@@ -4077,30 +4101,34 @@
   },
   "mistral-small-3-1": {
    "capabilities": {
-    "agentic": 5.3,
     "coding": 26.2,
     "instruction": 29.9,
     "knowledge": -50.8,
-    "knowledgework": 5.2,
-    "longcontext": 22.0,
+    "knowledgework": 2.6,
+    "longcontext": 22.3,
     "science": 45.4
    },
-   "cost_per_task": 0.044317,
+   "cost_per_task": 0.038122,
    "creator": "Mistral",
    "first_seen": "2026-08-19",
-   "intelligence_index": 14.9,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 10.3,
+   "last_seen": "2026-09-07",
    "name": "Mistral Small 3.1",
    "observations": [
     [
      "2026-08-19",
      0.044317,
      14.9
+    ],
+    [
+     "2026-09-07",
+     0.038122,
+     10.3
     ]
    ],
    "open_weights": true,
    "release_date": "2025-03-17",
-   "retired": true
+   "retired": false
   },
   "mistral-small-3-2": {
    "capabilities": {
@@ -5140,30 +5168,34 @@
   },
   "qwen3-coder-next": {
    "capabilities": {
-    "agentic": 8.9,
     "coding": 38.2,
     "instruction": 35.2,
     "knowledge": -62.4,
-    "knowledgework": 11.1,
-    "longcontext": 42.3,
+    "knowledgework": 8.3,
+    "longcontext": 47.0,
     "science": 73.7
    },
-   "cost_per_task": 0.337054,
+   "cost_per_task": 0.430908,
    "creator": "Alibaba",
    "first_seen": "2026-08-19",
-   "intelligence_index": 21.3,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 14.1,
+   "last_seen": "2026-09-07",
    "name": "Qwen3 Coder Next",
    "observations": [
     [
      "2026-08-19",
      0.337054,
      21.3
+    ],
+    [
+     "2026-09-07",
+     0.430908,
+     14.1
     ]
    ],
    "open_weights": true,
    "release_date": "2026-02-03",
-   "retired": true
+   "retired": false
   },
   "qwen3-next-80b-a3b-reasoning": {
    "capabilities": {
@@ -5221,19 +5253,18 @@
   },
   "solar-pro-3": {
    "capabilities": {
-    "agentic": 2.9,
     "coding": 12.0,
     "instruction": 71.2,
     "knowledge": -53.4,
     "knowledgework": 0.0,
-    "longcontext": 31.0,
+    "longcontext": 32.3,
     "science": 72.4
    },
-   "cost_per_task": 0.131567,
+   "cost_per_task": 0.096643,
    "creator": "Upstage",
    "first_seen": "2026-08-19",
-   "intelligence_index": 14.5,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 9.4,
+   "last_seen": "2026-09-07",
    "name": "Solar Pro 3",
    "observations": [
     [
@@ -5245,11 +5276,16 @@
      "2026-08-26",
      0.131567,
      14.5
+    ],
+    [
+     "2026-09-07",
+     0.096643,
+     9.4
     ]
    ],
    "open_weights": false,
    "release_date": "2026-04-06",
-   "retired": true
+   "retired": false
   },
   "solar-pro4": {
    "capabilities": {
@@ -5312,19 +5348,18 @@
   },
   "trinity-large-thinking": {
    "capabilities": {
-    "agentic": 3.7,
     "coding": 20.6,
     "instruction": 56.3,
     "knowledge": -44.1,
-    "knowledgework": 3.3,
-    "longcontext": 38.3,
+    "knowledgework": 0.6,
+    "longcontext": 38.0,
     "science": 75.2
    },
-   "cost_per_task": 0.199567,
+   "cost_per_task": 0.187107,
    "creator": "Arcee AI",
    "first_seen": "2026-08-19",
-   "intelligence_index": 18.7,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 13.1,
+   "last_seen": "2026-09-07",
    "name": "Trinity Large Thinking",
    "observations": [
     [
@@ -5336,11 +5371,16 @@
      "2026-09-01",
      0.199567,
      18.7
+    ],
+    [
+     "2026-09-07",
+     0.187107,
+     13.1
     ]
    ],
    "open_weights": true,
    "release_date": "2026-04-01",
-   "retired": true
+   "retired": false
   }
  },
  "updated": "2026-09-07"
