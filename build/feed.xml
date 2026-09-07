@@ -8,6 +8,94 @@
   <author><name>CatalystNeuro</name></author>
   <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>
   <entry>
+    <title>2026-09-07: Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback) (price change, index 53.4)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-claude-fable-5-1.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/claude-fable-5-1</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback): price moved from $6.117 to $7.63 per task; now the cheapest way to reach index 53.2 to 53.4. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-6 Astra (max) (price change, index 52.8)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-6-astra.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-6-astra</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-6 Astra (max): price moved from $2.567 to $3.26 per task; now the cheapest way to reach index 52.5 to 52.8, taking it from Claude Fable 5.1. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-6 Astra (xhigh) (price change, index 52.5)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-6-astra.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-6-astra-xhigh</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-6 Astra (xhigh): price moved from $1.847 to $2.31 per task; now the cheapest way to reach index 51.0 to 52.5, taking it from Claude Fable 5.1. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-6 Astra (high) (price change, index 51.0)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-6-astra.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-6-astra-high</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-6 Astra (high): price moved from $1.411 to $1.72 per task; now the cheapest way to reach index 49.7 to 51.0, taking it from Claude Fable 5.1. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-6 Astra (medium) (price change, index 49.7)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-6-astra.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-6-astra-medium</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-6 Astra (medium): price moved from $1.161 to $1.54 per task; now the cheapest way to reach index 46.9 to 49.7, taking it from Claude Fable 5.1. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-6 Astra (low) (price change, index 46.0)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-6-astra.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-6-astra-low</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-6 Astra (low): price moved from $0.631 to $0.82 per task; now the cheapest way to reach index 42.5 to 46.0, taking it from Claude Fable 5.1 and Grok 4.6; Grok 4.6 left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-5.6 Sol (high) (price change, index 42.5)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-5-6-sol.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-5-6-sol-high</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (high): price moved from $0.615 to $0.81 per task; now the cheapest way to reach index 42.1 to 42.5, taking it from Grok 4.6. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GLM-5.3-Flash (price change, index 41.9)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-glm-5-3-flash.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/glm-5-3-flash</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GLM-5.3-Flash: price moved from $0.183 to $0.25 per task; now the cheapest way to reach index 37.5 to 41.9, taking it from Grok 4.6 and Gemini 3.8 Flash; Gemini 3.8 Flash left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-5.6 Luna (max) (price change, index 37.5)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-5-6-luna.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-5-6-luna</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (max): price moved from $0.097 to $0.18 per task; now the cheapest way to reach index 34.8 to 37.5, taking it from Gemini 3.8 Flash, Grok 4.6, and DeepSeek V4 Flash Vision; DeepSeek V4 Flash Vision left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: GPT-5.6 Luna (xhigh) (price change, index 34.8)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-5-6-luna.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-5-6-luna-xhigh</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (xhigh): price moved from $0.057 to $0.085 per task; now the cheapest way to reach index 27.4 to 34.8, taking it from DeepSeek V4 Flash Vision, Muse Spark 1.1, and DeepSeek V4 Pro; Muse Spark 1.1 and DeepSeek V4 Pro left the frontier; Hy3 left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-07: gpt-oss-20b (high) (price change, index 10.8)</title>
+    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
+    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-07-gpt-oss-20b.png" />
+    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-09-07/gpt-oss-20b</id>
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>gpt-oss-20b (high): price moved from $0.011 to $0.014 per task; now the cheapest way to reach index 9.1 to 10.8, taking it from MiMo-V2.5. Open weights.</summary>
+  </entry>
+  <entry>
     <title>2026-09-03: GPT-6 Astra (xhigh) (new model, index 61.0)</title>
     <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
     <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-09-03-gpt-6-astra.png" />
@@ -398,93 +486,5 @@
     <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-04-23/gpt-5-5-low</id>
     <updated>2026-04-23T00:00:00Z</updated>
     <summary>GPT-5.5 (low): now the cheapest way to reach index 42.9 to 44.5 at $0.26 per task, taking it from Gemini 3.1 Pro Preview. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2026-04-22: MiMo-V2.5-Pro (new model, index 42.9)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-04-22-mimo-v2-5-pro.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-04-22/mimo-v2-5-pro</id>
-    <updated>2026-04-22T00:00:00Z</updated>
-    <summary>MiMo-V2.5-Pro: now the cheapest way to reach index 38.0 to 42.9 at $0.034 per task, taking it from Gemini 3.1 Pro Preview, GLM-5.1, GPT-5.4 nano, and MiniMax-M2.7; GLM-5.1, GPT-5.4 nano, and MiniMax-M2.7 left the frontier. New cost record for index ≥ 40. Open weights.</summary>
-  </entry>
-  <entry>
-    <title>2026-04-22: MiMo-V2.5 (new model, index 38.0)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-04-22-mimo-v2-5.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-04-22/mimo-v2-5-0424</id>
-    <updated>2026-04-22T00:00:00Z</updated>
-    <summary>MiMo-V2.5: now the cheapest way to reach index 0.0 to 38.0 at $0.010 per task, taking it from MiniMax-M2.7, Gemma 4 26B A4B, GPT-5 mini, gpt-oss-20b, gpt-oss-120b, and Llama 4 Scout; Gemma 4 26B A4B, GPT-5 mini, gpt-oss-20b, gpt-oss-120b, and Llama 4 Scout left the frontier. New cost record for index ≥ 30. Open weights.</summary>
-  </entry>
-  <entry>
-    <title>2026-04-16: Claude Opus 4.7 (Adaptive Reasoning, Max Effort) (new model, index 55.0)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-04-16-claude-opus-4-7.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-04-16/claude-opus-4-7</id>
-    <updated>2026-04-16T00:00:00Z</updated>
-    <summary>Claude Opus 4.7 (Adaptive Reasoning, Max Effort): pushed the intelligence ceiling from 53.1 to 55.0, at $2.23 per task. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2026-04-07: GLM-5.1 (Reasoning) (new model, index 41.0)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-04-07-glm-5-1.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-04-07/glm-5-1</id>
-    <updated>2026-04-07T00:00:00Z</updated>
-    <summary>GLM-5.1 (Reasoning): now the cheapest way to reach index 39.7 to 41.0 at $0.30 per task, taking it from Gemini 3.1 Pro Preview. New cost record for index ≥ 40. Open weights.</summary>
-  </entry>
-  <entry>
-    <title>2026-04-02: Gemma 4 26B A4B (Reasoning) (new model, index 26.1)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-04-02-gemma-4-26b-a4b.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-04-02/gemma-4-26b-a4b</id>
-    <updated>2026-04-02T00:00:00Z</updated>
-    <summary>Gemma 4 26B A4B (Reasoning): now the cheapest way to reach index 25.8 to 26.1 at $0.039 per task, taking it from MiniMax-M2.7. Open weights.</summary>
-  </entry>
-  <entry>
-    <title>2026-03-18: MiniMax-M2.7 (new model, index 38.9)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-03-18-minimax-m2-7.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-03-18/minimax-m2-7</id>
-    <updated>2026-03-18T00:00:00Z</updated>
-    <summary>MiniMax-M2.7: now the cheapest way to reach index 25.8 to 38.9 at $0.078 per task, taking it from GPT-5.4 nano and Kimi K2.5; Kimi K2.5 left the frontier. New cost record for index ≥ 30. Open weights.</summary>
-  </entry>
-  <entry>
-    <title>2026-03-17: GPT-5.4 nano (xhigh) (new model, index 39.7)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-03-17-gpt-5-4-nano.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-03-17/gpt-5-4-nano</id>
-    <updated>2026-03-17T00:00:00Z</updated>
-    <summary>GPT-5.4 nano (xhigh): now the cheapest way to reach index 36.0 to 39.7 at $0.15 per task, taking it from Gemini 3.1 Pro Preview and GPT-5.1; GPT-5.1 left the frontier. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2026-03-05: GPT-5.4 (xhigh) (new model, index 53.1)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-03-05-gpt-5-4.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-03-05/gpt-5-4</id>
-    <updated>2026-03-05T00:00:00Z</updated>
-    <summary>GPT-5.4 (xhigh): pushed the intelligence ceiling from 48.4 to 53.1, at $1.10 per task, taking it from Claude Sonnet 4.6, which left the frontier. New cost record for index ≥ 50. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2026-02-19: Gemini 3.1 Pro Preview (new model, index 47.7)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-02-19-gemini-3-1-pro-preview.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-02-19/gemini-3-1-pro-preview</id>
-    <updated>2026-02-19T00:00:00Z</updated>
-    <summary>Gemini 3.1 Pro Preview: now the cheapest way to reach index 37.5 to 47.7 at $0.33 per task, taking it from Claude Sonnet 4.6. New cost record for index ≥ 40. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2026-02-17: Claude Sonnet 4.6 (Adaptive Reasoning, Max Effort) (new model, index 48.4)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-02-17-claude-sonnet-4-6.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-02-17/claude-sonnet-4-6-adaptive</id>
-    <updated>2026-02-17T00:00:00Z</updated>
-    <summary>Claude Sonnet 4.6 (Adaptive Reasoning, Max Effort): pushed the intelligence ceiling from 37.5 to 48.4, at $1.22 per task. New cost record for index ≥ 40. Proprietary.</summary>
-  </entry>
-  <entry>
-    <title>2026-01-27: Kimi K2.5 (Reasoning) (new model, index 36.0)</title>
-    <link href="https://catalystneuro.com/llm-cost-frontier/#advances" />
-    <link rel="enclosure" type="image/png" href="https://catalystneuro.com/llm-cost-frontier/images/advances/2026-01-27-kimi-k2-5.png" />
-    <id>https://catalystneuro.com/llm-cost-frontier/advance/2026-01-27/kimi-k2-5</id>
-    <updated>2026-01-27T00:00:00Z</updated>
-    <summary>Kimi K2.5 (Reasoning): now the cheapest way to reach index 25.8 to 36.0 at $0.096 per task, taking it from GPT-5.1, GPT-5, Claude 4.5 Haiku, and Gemini 2.5 Pro; GPT-5, Claude 4.5 Haiku, and Gemini 2.5 Pro left the frontier. New cost record for index ≥ 30. Open weights.</summary>
   </entry>
 </feed>
