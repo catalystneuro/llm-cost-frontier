@@ -531,7 +531,7 @@ def test_era_snapshots_split_at_the_boundary():
 def test_build_output_with_eras():
     history = {"updated": "2026-09-06", "models": era_history()}
     out = build_output(history, events=[], eras=ERAS)
-    assert out["eras"] == [["2026-09-05", "index recomposed", "", ""]]
+    assert out["eras"] == [["2026-09-05", "index recomposed", "", "", "2026-09-05"]]
     by_name = {r[0]: r for r in out["models"]}
     assert by_name["Stale"][9] == 0 and by_name["Fresh"][9] == 1
     assert all(a["date"] < "2026-09-05" for a in out["advances"])

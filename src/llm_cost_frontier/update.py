@@ -496,6 +496,20 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
     return advances
 
 
+def settled_date(models: dict, events: list, eras: list) -> str:
+    """The day the current era's measurement basis settled: its start, or the
+    last mass re-measurement within SETTLE_DAYS of it."""
+    if not eras:
+        return ""
+    boundary = eras[-1]["start"]
+    settled = boundary
+    limit = (dt.date.fromisoformat(boundary) + dt.timedelta(days=SETTLE_DAYS)).isoformat()
+    for d in mass_move_dates(models, events, eras):
+        if boundary <= d <= limit:
+            settled = d
+    return settled
+
+
 def rebased_models(models: dict, eras: list) -> dict:
     """Models projected onto the current era's basis, so history is drawable
     in one continuous series: scores are the current measurements, and costs
@@ -508,10 +522,7 @@ def rebased_models(models: dict, eras: list) -> dict:
     if not eras:
         return models
     boundary = eras[-1]["start"]
-    settled = boundary
-    for d in mass_move_dates(models, [], eras):
-        if boundary <= d <= (dt.date.fromisoformat(boundary) + dt.timedelta(days=SETTLE_DAYS)).isoformat():
-            settled = d
+    settled = settled_date(models, [], eras)
     out = {}
     for slug, m in models.items():
         if model_era(m, eras) < len(eras):
@@ -519,11 +530,16 @@ def rebased_models(models: dict, eras: list) -> dict:
         obs = sorted(m.get("observations") or [[m.get("last_seen", m["release_date"]), m["cost_per_task"], m["intelligence_index"]]])
         cur_iq, cur_cost = m["intelligence_index"], m["cost_per_task"]
         old = [o for o in obs if o[0] < boundary]
+        settled_obs = [o for o in obs if o[0] >= settled]
+        # The scaled old history anchors at the first settled measurement, so
+        # the series is continuous there and later price changes within the
+        # current era are not projected backward.
+        anchor = settled_obs[0][1] if settled_obs else cur_cost
         robs = []
         if old and old[-1][1] > 0:
             last_old = old[-1][1]
-            robs += [[d, round(cur_cost * c / last_old, 6), cur_iq] for d, c, _iq in old]
-        robs += [[d, c, cur_iq] for d, c, _iq in obs if d >= settled]
+            robs += [[d, round(anchor * c / last_old, 6), cur_iq] for d, c, _iq in old]
+        robs += [[d, c, cur_iq] for d, c, _iq in settled_obs]
         if not robs:
             robs = [[m["release_date"], cur_cost, cur_iq]]
         mm = dict(m)
@@ -627,7 +643,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         cap_tiers=cap_tiers,
         cap_tier_cost=cap_tier_cost,
         cap_tier_summary=cap_tier_summary,
-        eras=[[e["start"], e.get("note", ""), e.get("label", ""), e.get("label_before", "")] for e in eras or []],
+        eras=[[e["start"], e.get("note", ""), e.get("label", ""), e.get("label_before", ""), settled_date(models, events, eras or [])] for e in eras or []],
         era_snapshots=era_snapshots(eras, today, models, events),
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
