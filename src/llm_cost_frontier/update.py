@@ -4,7 +4,7 @@ Any model page on artificialanalysis.ai embeds the full comparison dataset for
 every currently benchmarked model, including the measured cost per Intelligence
 Index task. This module fetches one page, parses that payload, merges it into a
 cumulative history, applies known price events, and writes the JSON and Atom
-feed that the dashboard at catalystneuro.com/llm-cost-frontier/ renders.
+feed that the dashboard at llm-cost-frontier.catalystneuro.com renders.
 
 The history keeps every observed (date, cost, index) per model, appending an
 observation whenever a value changes. Snapshots and tier records use the cost in
@@ -28,7 +28,7 @@ DEFAULT_OVERRIDES = Path("data/overrides.json")
 DEFAULT_ERAS = Path("data/eras.json")
 DEFAULT_OUTPUT = Path("build/llm-frontier.json")
 DEFAULT_FEED = Path("build/feed.xml")
-DEFAULT_SITE = "https://catalystneuro.com"
+DEFAULT_SITE = "https://llm-cost-frontier.catalystneuro.com"
 FEED_ENTRIES = 60
 
 # Any model page works; this one is stable and cheap to serve.
@@ -650,20 +650,20 @@ def write_feed(out: dict, feed_path: Path, site: str) -> None:
     updated = out["updated"] + "T06:00:00Z"
     lines = ['<?xml version="1.0" encoding="utf-8"?>', '<feed xmlns="http://www.w3.org/2005/Atom">',
              "  <title>LLM Cost Frontier: frontier advances</title>",
-             f'  <link href="{site}/llm-cost-frontier/" />',
-             f'  <link rel="self" href="{site}/llm-cost-frontier/feed.xml" />',
-             f"  <id>{site}/llm-cost-frontier/feed.xml</id>",
+             f'  <link href="{site}/" />',
+             f'  <link rel="self" href="{site}/feed.xml" />',
+             f"  <id>{site}/feed.xml</id>",
              f"  <updated>{updated}</updated>",
              "  <author><name>CatalystNeuro</name></author>",
              "  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>"]
     for a in entries:
         title = f"{a['date']}: {a['model']} ({'price change' if a['kind'] == 'price change' else 'new model'}, index {a['intelligence_index']:.1f})"
         # The advance's social card, rendered per (date, base model) group.
-        card = f"{site}/llm-cost-frontier/images/advances/{a['date']}-{slugify(a['base'])}.png"
+        card = f"{site}/images/advances/{a['date']}-{slugify(a['base'])}.png"
         lines += ["  <entry>", f"    <title>{xml_escape(title)}</title>",
-                  f'    <link href="{site}/llm-cost-frontier/#advances" />',
+                  f'    <link href="{site}/#advances" />',
                   f'    <link rel="enclosure" type="image/png" href="{card}" />',
-                  f"    <id>{site}/llm-cost-frontier/advance/{a['date']}/{a['slug']}</id>",
+                  f"    <id>{site}/advance/{a['date']}/{a['slug']}</id>",
                   f"    <updated>{a['date']}T00:00:00Z</updated>",
                   f"    <summary>{xml_escape(describe(a))}</summary>", "  </entry>"]
     lines.append("</feed>")
