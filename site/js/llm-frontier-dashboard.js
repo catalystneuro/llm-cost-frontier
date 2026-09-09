@@ -536,9 +536,26 @@
     eraStarts.forEach(function (s) {
       var ex = X(s);
       svg.append(svgEl('line', { x1: ex, x2: ex, y1: M.t, y2: H - M.b, stroke: C.ink2, 'stroke-width': 1, 'stroke-dasharray': '4 3' }));
-      var lb = svgEl('text', { x: ex - 5, y: M.t + 11, 'text-anchor': 'end', 'font-size': 10, fill: C.ink2 });
-      lb.textContent = 'index recomposed'; svg.append(lb);
     });
+    // The index version in effect, as a timeline of spans along the top of
+    // the plot: each era's label sits centered over its date range.
+    if (ERAS.length) {
+      var bounds = [X0DATE].concat(eraStarts).concat([DATA.updated]);
+      for (var bi = 0; bi < bounds.length - 1; bi++) {
+        var lblv = eraShortLabel(eraOfDate(bounds[bi]));
+        if (!lblv) continue;
+        var xa = X(bounds[bi]), xb = X(bounds[bi + 1]);
+        var narrow = xb - xa < 44;
+        var last = bi === bounds.length - 2;
+        if (narrow && !last) continue;
+        // A young current era is too narrow to center a label in, so its
+        // label hangs to the right of the boundary into the margin.
+        var lb = narrow
+          ? svgEl('text', { x: xa + 4, y: M.t + 11, 'text-anchor': 'start', 'font-size': 10, fill: C.ink2 })
+          : svgEl('text', { x: (xa + xb) / 2, y: M.t + 11, 'text-anchor': 'middle', 'font-size': 10, fill: C.ink2 });
+        lb.textContent = 'index ' + lblv; svg.append(lb);
+      }
+    }
     tiers.forEach(function (tier, i) {
       var all = tierCost[tier];
       if (!all || !all.length) return;
