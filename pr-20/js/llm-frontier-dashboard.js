@@ -387,7 +387,7 @@
     hideTip();
     anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
     syncHash();
-    renderEraNav(); renderStats(); renderFrontier();
+    renderEraNav(); renderFrontier();
   }
   function renderEraNav() {
     var nav = document.getElementById('pfc-era-nav');
@@ -432,7 +432,7 @@
         hideTip();
         anim.stage = 1e9;
         syncHash();
-        renderTabs(); renderEraNav(); renderStats(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
+        renderTabs(); renderEraNav(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
       });
       bar.append(b);
     });
@@ -445,40 +445,6 @@
     if (!c) { p.innerHTML = leadDefault; return; }
     var n = models.filter(function (m) { return score(m) != null; }).length;
     p.textContent = c.blurb + ' Measured for ' + n + ' of ' + models.length + ' tracked models.';
-  }
-  // The stat strip: the answers a visitor came for, before any chart.
-  function renderStats() {
-    var box = document.getElementById('pfc-stats');
-    if (!box) return;
-    box.hidden = ERA_VIEW < ERAS.length;  // an archived era needs no live stats
-    if (box.hidden) return;
-    box.replaceChildren();
-    function tile(label, value, sub) {
-      var t = el('div', 'pfc-stat');
-      t.append(el('div', 'pfc-stat-label', label), el('div', 'pfc-stat-value', value));
-      if (sub) t.append(el('div', 'pfc-stat-sub', sub));
-      box.append(t);
-    }
-    var live = models.filter(function (m) { return !m.retired && m.era === ERAS.length && score(m) != null; });
-    var tiers = curTiers();
-    var headline = null, best = null;
-    for (var i = tiers.length - 1; i >= 0 && !best; i--) {
-      var cands = live.filter(function (m) { return score(m) >= tiers[i]; });
-      if (cands.length) {
-        headline = tiers[i];
-        best = cands.reduce(function (a, b) { return b.mcost < a.mcost ? b : a; });
-      }
-    }
-    if (best) tile('Cheapest at ' + (CAP < 0 ? 'index' : metricName()) + ' ' + tierLabel(headline), fmt$(best.mcost) + ' / task', best.name);
-    var summary = curTierSummary();
-    var halving = null, htier = null;
-    tiers.forEach(function (t) { var s = summary[t]; if (s && s.halving_days) { halving = s.halving_days; htier = t; } });
-    if (halving) tile('Record halving time', '~' + halving + ' days', 'at ' + (CAP < 0 ? 'index' : metricName()) + ' ' + tierLabel(htier) + ', across index eras');
-    var advs = CAP < 0 ? DATA.advances : ((DATA.cap_advances || {})[capMeta().key] || []);
-    if (advs.length) {
-      var a = advs[0];
-      tile('Latest advance', a.base || a.model, fmtDate(a.date) + ' · ' + a.kind);
-    }
   }
   function renderCapTable() {
     var wrap = document.getElementById('pfc-cap-table-wrap');
@@ -769,7 +735,7 @@
       }
     }
   }
-  function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderStats(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
+  function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
   fetch(DATA_URL, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
     loadData(d);
     applyHash();
