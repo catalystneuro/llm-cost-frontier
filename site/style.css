@@ -114,13 +114,6 @@ strong { color: var(--navy); }
 .pfc-legend-side .pfc-legend-ver { font-size: 0.72rem; color: var(--ink-soft); border-top: 1px solid var(--line-soft); padding-top: 0.45rem; margin-top: 0.2rem; }
 @media (max-width: 700px) { .pfc-side { flex-direction: column; } .pfc-side-chart { width: 100%; } .pfc-legend-side { flex-direction: row; flex-wrap: wrap; border-left: 0; padding-left: 0; flex-basis: auto; } }
 
-/* stat strip */
-.pfc-stats { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 0.2rem 0 1.1rem; }
-.pfc-stat { flex: 1 1 12rem; min-width: 11rem; border: 1px solid var(--line); border-radius: 10px; padding: 0.7rem 0.9rem 0.65rem; }
-.pfc-stat-label { font-size: 0.72rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-soft); margin-bottom: 0.2rem; }
-.pfc-stat-value { font-size: 1.35rem; font-weight: 600; color: var(--navy); line-height: 1.2; }
-.pfc-stat-sub { font-size: 0.8rem; color: var(--ink-muted); margin-top: 0.15rem; }
-
 /* era toggle */
 .pfc-eranav { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin: 0.2rem 0 0; }
 .pfc-eranav[hidden] { display: none; }
