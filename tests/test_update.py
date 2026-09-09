@@ -445,21 +445,19 @@ def test_mass_move_dates_detects_correlated_shifts():
     assert mass_move_dates(models, []) == ["2026-06-01"]
 
 
-def test_era_baseline_settles_after_a_mass_remeasurement():
+def test_past_era_baseline_settles_after_a_mass_remeasurement():
     from llm_cost_frontier.update import era_snapshots
-    # First v4.3-style measurements on Sep 5, revised en masse on Sep 7: the
-    # current era's baseline snapshot moves to the settled Sep 7 values.
+    # A frozen past era's baseline moves to its settled measurements when a
+    # mass re-measurement follows its start within the settling window.
     models = {}
     for i in range(10):
         models[f"m{i}"] = model(f"M{i}", "2026-01-01", 40.0 + i, 1.0,
-                                obs=[["2026-01-01", 1.0, 50.0 + i], ["2026-09-05", 1.5, 40.0 + i],
-                                     ["2026-09-07", 2.0, 40.0 + i]])
-    out = era_snapshots(ERAS, dt.date(2026, 9, 9), models, [])
-    assert out[1][0] == ["2026-09-07", "Sep 7, 2026"]
-    assert out[1][-1] == ["2026-09-09", "today"]
-    # A mass move well after the settling window does not move the baseline.
-    out = era_snapshots([{"start": "2026-05-01"}], dt.date(2026, 9, 9), models, [])
-    assert out[1][0] == ["2026-05-01", "May 1, 2026"]
+                                obs=[["2026-01-01", 1.0, 50.0 + i], ["2026-05-01", 1.5, 40.0 + i],
+                                     ["2026-05-03", 2.0, 40.0 + i], ["2026-09-05", 2.5, 40.0 + i]])
+    eras = [{"start": "2026-05-01"}, {"start": "2026-09-05"}]
+    out = era_snapshots(eras, dt.date(2026, 9, 9), models, [])
+    assert out[1][0] == ["2026-05-03", "May 3, 2026"]
+    assert out[1][-1] == ["2026-09-04", "Sep 4, 2026"]
 
 
 def test_mass_cost_moves_are_not_price_changes():
@@ -473,6 +471,25 @@ def test_mass_cost_moves_are_not_price_changes():
     advances = frontier_advances(models, [], {})
     kinds = [(a["date"], a["kind"]) for a in advances if a["kind"] == "price change"]
     assert kinds == [("2026-07-01", "price change")]
+
+
+def test_rebased_models_scale_history_onto_the_current_basis():
+    from llm_cost_frontier.update import rebased_models
+    models = era_history()
+    # Fresh: old obs 0.20 at score 50 (v-old), current 0.30 at 42. A pre-era
+    # price of 0.10 (half the era-end 0.20) rebases to half of today's 0.30.
+    models["fresh"]["observations"] = [["2026-02-01", 0.10, 50.0], ["2026-06-01", 0.20, 50.0],
+                                       ["2026-09-05", 0.30, 42.0]]
+    models["fresh"]["cost_per_task"] = 0.30
+    models["fresh"]["intelligence_index"] = 42.0
+    out = rebased_models(models, ERAS)
+    assert "stale" not in out  # never measured on the current basis
+    robs = out["fresh"]["observations"]
+    assert robs[0] == ["2026-02-01", 0.15, 42.0]
+    assert robs[1] == ["2026-06-01", 0.30, 42.0]
+    assert robs[2] == ["2026-09-05", 0.30, 42.0]
+    recs = tier_records(out, [], tiers=[40])["40"]
+    assert [(r[0], r[1]) for r in recs] == [("2026-02-01", 0.15)]  # continuous, no reset
 
 
 def test_check_live_set_guards():
@@ -504,8 +521,9 @@ def test_era_snapshots_split_at_the_boundary():
     # The old era ends the day before the boundary, labeled with its date.
     assert old[-1] == ["2026-09-04", "Sep 4, 2026"]
     assert all(d < "2026-09-05" for d, _ in old)
-    # The current era opens with its start-day baseline and ends with today.
-    assert new == [["2026-09-05", "Sep 5, 2026"], ["2026-09-06", "today"]]
+    # The current era carries the full bi-monthly history: the dashboard
+    # reconstructs earlier frontiers on the current basis.
+    assert new == snapshots(dt.date(2026, 9, 6))
     # Without eras there is a single list equivalent to snapshots().
     assert era_snapshots([], dt.date(2026, 9, 6)) == [snapshots(dt.date(2026, 9, 6))]
 

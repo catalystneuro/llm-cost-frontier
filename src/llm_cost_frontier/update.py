@@ -241,6 +241,12 @@ def era_snapshots(eras: list, today: dt.date, models: dict = None, events: list 
     mass = mass_move_dates(models, events or [], eras) if models else []
     out = []
     for i in range(len(starts) + 1):
+        if i == len(starts):
+            # The current era gets the full bi-monthly history: the dashboard
+            # reconstructs earlier frontiers on the current basis from release
+            # dates, current scores, and each model's own price ratios.
+            out.append(snapshots(today))
+            continue
         end = today if i == len(starts) else starts[i] - dt.timedelta(days=1)
         first = end.replace(day=1)
         if first == end:
@@ -490,6 +496,42 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
     return advances
 
 
+def rebased_models(models: dict, eras: list) -> dict:
+    """Models projected onto the current era's basis, so history is drawable
+    in one continuous series: scores are the current measurements, and costs
+    before the last boundary are today's cost scaled by the model's own price
+    ratios (a price change is a ratio, so it survives the basis change, while
+    suite changes never leak in). Within the current era, measurements before
+    the settled date are dropped, since they were revised en masse. Models
+    never measured on the current basis are excluded; they belong to the
+    archived eras."""
+    if not eras:
+        return models
+    boundary = eras[-1]["start"]
+    settled = boundary
+    for d in mass_move_dates(models, [], eras):
+        if boundary <= d <= (dt.date.fromisoformat(boundary) + dt.timedelta(days=SETTLE_DAYS)).isoformat():
+            settled = d
+    out = {}
+    for slug, m in models.items():
+        if model_era(m, eras) < len(eras):
+            continue
+        obs = sorted(m.get("observations") or [[m.get("last_seen", m["release_date"]), m["cost_per_task"], m["intelligence_index"]]])
+        cur_iq, cur_cost = m["intelligence_index"], m["cost_per_task"]
+        old = [o for o in obs if o[0] < boundary]
+        robs = []
+        if old and old[-1][1] > 0:
+            last_old = old[-1][1]
+            robs += [[d, round(cur_cost * c / last_old, 6), cur_iq] for d, c, _iq in old]
+        robs += [[d, c, cur_iq] for d, c, _iq in obs if d >= settled]
+        if not robs:
+            robs = [[m["release_date"], cur_cost, cur_iq]]
+        mm = dict(m)
+        mm["observations"] = robs
+        out[slug] = mm
+    return out
+
+
 def capability_models(models: dict, key: str) -> dict:
     """The models measured on one capability, with the capability score standing
     in for the intelligence index so the frontier machinery applies unchanged.
@@ -556,10 +598,13 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         rows.append(row)
     records = tier_records(models, events, eras=eras)
     advances = frontier_advances(models, events, records, eras=eras)
+    rebased = rebased_models(models, eras or [])
+    records_rebased = tier_records(rebased, events)
     # Per-capability tiers are derived from each metric's range: the top four
     # multiples of ten at or below the highest score among models whose
     # measurements are current-era.
     cap_tiers, cap_tier_cost, cap_tier_summary, cap_advances = {}, {}, {}, {}
+    cap_tier_cost_rebased, cap_tier_summary_rebased = {}, {}
     for c in CAPABILITIES:
         cm = capability_models(models, c["key"])
         current = [m for m in cm.values() if model_era(m, eras) == current_era]
@@ -572,6 +617,10 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         cap_tier_cost[c["key"]] = recs
         cap_tier_summary[c["key"]] = tier_summary(recs, eras=eras)
         cap_advances[c["key"]] = frontier_advances(cm, events, recs, eras=eras)
+        cmr = capability_models(rebased, c["key"])
+        recs_r = tier_records(cmr, events, tiers)
+        cap_tier_cost_rebased[c["key"]] = recs_r
+        cap_tier_summary_rebased[c["key"]] = tier_summary(recs_r)
     return dict(
         advances=advances,
         cap_advances=cap_advances,
@@ -588,6 +637,10 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         models=rows,
         tier_cost=records,
         tier_summary=tier_summary(records, eras=eras),
+        tier_cost_rebased=records_rebased,
+        tier_summary_rebased=tier_summary(records_rebased),
+        cap_tier_cost_rebased=cap_tier_cost_rebased,
+        cap_tier_summary_rebased=cap_tier_summary_rebased,
         price_events=events,
         counts=dict(total=len(rows), live=sum(1 for m in models.values() if not m["retired"]), retired=sum(1 for m in models.values() if m["retired"])),
     )

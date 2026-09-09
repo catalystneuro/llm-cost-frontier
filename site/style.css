@@ -128,3 +128,11 @@ a.site-title, .site-title a { color: var(--navy); text-decoration: none; }
 .pfc-how summary { cursor: pointer; color: var(--ink-soft); font-size: 0.8rem; }
 .pfc-how summary:hover { color: var(--navy); }
 .pfc-how p { margin: 0.5rem 0 0; }
+
+/* two-column charts on wide windows */
+.pfc-cols { display: grid; grid-template-columns: 1fr; column-gap: 2.5rem; align-items: start; }
+.pfc-cols section > h2:first-child { margin-top: 1.6rem; }
+@media (min-width: 1480px) {
+  main.pfc-wrap, .site-header .container, .site-footer .container { max-width: 102rem; }
+  .pfc-cols { grid-template-columns: 1fr 1fr; }
+}

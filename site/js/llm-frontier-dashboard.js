@@ -57,6 +57,20 @@
     if (view >= ERAS.length) return ERAS[ERAS.length - 1][2] || '';
     return view === 0 ? (ERAS[0][3] || '') : (ERAS[view - 1][2] || '');
   }
+  function dayBefore(iso) {
+    var t = new Date(iso + 'T00:00:00Z');
+    t.setUTCDate(t.getUTCDate() - 1);
+    return t.toISOString().slice(0, 10);
+  }
+  // Cost on the current era's basis at any date. Within the current era it is
+  // the cost measured then; before the recomposition it is today's cost
+  // scaled by the model's own price ratio from its dated history, so price
+  // changes carry over while suite changes never leak in.
+  function basisCostAt(m, date) {
+    if (!ERAS.length || eraOfDate(date) === ERAS.length) return costAt(m, date);
+    var lastOld = costAt(m, dayBefore(ERAS[ERAS.length - 1][0]));
+    return lastOld > 0 ? m.mcost * costAt(m, date) / lastOld : m.mcost;
+  }
   // Whether a model had been measured under the era of snapDate by that date;
   // a model dropped at a boundary and re-measured later must not appear at
   // its old score in between.
@@ -196,8 +210,10 @@
     var svg = frame(box, W, H, M, (CAP < 0 ? 'Intelligence Index' : metricName()) + ' versus cost per task with Pareto frontier lines every two months');
     // Models appear in an era's view only if they were measured in that era
     // (or later, for old views: their scores then are in the change history).
+    var isCur = ERAS.length > 0 && eraView === ERAS.length;
     var ms = models.filter(function (m) {
       if (CAP >= 0 && score(m) == null) return false;
+      if (isCur) return m.era === ERAS.length;
       return m.era >= eraView && measuredBy(m, viewEnd);
     });
     if (!ms.length) {
@@ -207,7 +223,9 @@
     var allS = ms.map(viewScore), allC = ms.map(viewCost);
     ms.forEach(function (m) {
       (m.hist || []).forEach(function (h) {
-        if (h[0] > viewEnd || eraOfDate(h[0]) !== eraView) return;
+        if (h[0] > viewEnd) return;
+        if (isCur) { allC.push(basisCostAt(m, h[0])); return; }
+        if (eraOfDate(h[0]) !== eraView) return;
         allC.push(h[1]);
         if (CAP < 0 && h.length > 2 && h[2] != null) allS.push(h[2]);
       });
@@ -273,11 +291,12 @@
     SNAPS.slice().reverse().forEach(function (snap, ri) {
       var i = SNAPS.length - 1 - ri;
       var snapDate = snap[0], snapLabel = snap[1];
+      var est = isCur && eraOfDate(snapDate) < ERAS.length;
       var sub = ms.filter(function (m) {
-        return measuredBy(m, snapDate);
+        return isCur ? m.date <= snapDate : measuredBy(m, snapDate);
       }).map(function (m) {
-        var c = costAt(m, snapDate);
-        return { name: m.name, creator: m.creator, date: m.date, iq: CAP < 0 ? iqAt(m, snapDate) : score(m), mcost: c, retired: m.retired, open: m.open, current: viewCost(m) };
+        var c = isCur ? basisCostAt(m, snapDate) : costAt(m, snapDate);
+        return { name: m.name, creator: m.creator, date: m.date, iq: CAP < 0 ? (isCur ? viewScore(m) : iqAt(m, snapDate)) : score(m), mcost: c, retired: m.retired, open: m.open, current: viewCost(m), est: est };
       });
       var fr = sub.filter(function (p) {
         return !sub.some(function (o) { return o.iq >= p.iq && o.mcost <= p.mcost && (o.iq > p.iq || o.mcost < p.mcost); });
@@ -300,8 +319,8 @@
           var d1 = el('div', 'pfc-tt-name'); d1.textContent = p.name;
           var d2 = el('div', 'pfc-tt-row');
           var kd = el('span', 'pfc-tt-key'); kd.style.borderTopColor = color;
-          var s = el('span', 'pfc-tt-val'); s.textContent = fmt$(p.mcost);
-          d2.append(kd, s, ' at ' + (CAP < 0 ? 'Index ' + p.iq.toFixed(1) : metricName() + ' ' + fmtScore(p.iq)) + (Math.abs(p.current - p.mcost) > 1e-9 ? ' (price then; ' + fmt$(p.current) + (viewEnd === DATA.updated ? ' now)' : ' at era end)') : ''));
+          var s = el('span', 'pfc-tt-val'); s.textContent = (p.est ? '≈' : '') + fmt$(p.mcost);
+          d2.append(kd, s, ' at ' + (CAP < 0 ? 'Index ' + p.iq.toFixed(1) : metricName() + ' ' + fmtScore(p.iq)) + (Math.abs(p.current - p.mcost) > 1e-9 ? ' (price then; ' + fmt$(p.current) + (viewEnd === DATA.updated ? ' now)' : ' at era end)') : '') + (p.est ? ' · estimated from its price history' : ''));
           var d3 = el('div', null, 'Pareto frontier as of: ' + (labels && labels.length ? labels.join('; ') : snapLabel) + ' \u00b7 ' + (p.open ? 'open weights' : 'proprietary') + ' \u00b7 released ' + p.date + (p.retired ? ' \u00b7 retired' : ''));
           return [d1, d2, d3];
         }});
@@ -387,7 +406,7 @@
     hideTip();
     anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
     syncHash();
-    renderEraNav(); renderFrontier();
+    renderEraNav(); renderFrontier(); renderRecords(); renderTable();
   }
   function renderEraNav() {
     var nav = document.getElementById('pfc-era-nav');
@@ -487,18 +506,37 @@
     box.replaceChildren();
     var W = Math.max(320, Math.min(880, box.clientWidth)), H = 370;
     var M = { l: 56, r: 60, t: 12, b: 40 };
+    // The era toggle controls this chart too. The current view is one
+    // continuous series rebased onto the current index: current scores, with
+    // pre-recomposition costs from each model's own price ratios. An archive
+    // view shows only that era's actual measured records.
+    var isCur = ERAS.length > 0 && ERA_VIEW === ERAS.length;
+    var isArch = ERAS.length > 0 && ERA_VIEW < ERAS.length;
     var lead = document.getElementById('pfc-records-lead');
     if (lead) {
-      lead.textContent = 'The cheapest measured cost per task achieved by any released model at or above each ' + (CAP < 0 ? 'Intelligence Index' : metricName()) + ' tier, by release date. Each step is a model that set a new low for its tier.';
+      lead.textContent = 'The cheapest cost per task achieved by any released model at or above each ' + (CAP < 0 ? 'Intelligence Index' : metricName()) + ' tier, by release date. Each step is a model that set a new low for its tier.' + (isCur ? ' Costs before the recomposition are estimated from each model\'s own price history on the current basis.' : '');
     }
-    var svg = frame(box, W, H, M, 'Running minimum measured cost per task by capability tier');
-    var tiers = curTiers(), tierCost = curTierCost();
+    var svg = frame(box, W, H, M, 'Running minimum cost per task by capability tier');
+    var tiers = curTiers();
+    var tierCost = curTierCost();
+    if (isCur && DATA.tier_cost_rebased) {
+      tierCost = CAP < 0 ? DATA.tier_cost_rebased : ((DATA.cap_tier_cost_rebased || {})[capMeta().key] || tierCost);
+    }
+    if (isArch) {
+      var clipped = {};
+      tiers.forEach(function (t) {
+        clipped[t] = (tierCost[t] || []).filter(function (r) { return eraOfDate(r[0]) === ERA_VIEW; });
+      });
+      tierCost = clipped;
+    }
+    var endDate = isArch ? DATA.era_snapshots[ERA_VIEW][DATA.era_snapshots[ERA_VIEW].length - 1][0] : DATA.updated;
     var allRecs = []; tiers.forEach(function (t) { (tierCost[t] || []).forEach(function (r) { allRecs.push(r); }); });
+    if (!allRecs.length) { box.append(el('p', 'pfc-lead', 'No records in this era.')); return; }
     // Fixed time origin so the axis reads the same on every tab; records set
     // before it enter from the left edge at the value in effect on that date.
     var X0DATE = '2025-08-01';
     var x0d = new Date(X0DATE + 'T00:00:00Z');
-    var x1d = new Date(DATA.updated + 'T00:00:00Z');
+    var x1d = new Date(endDate + 'T00:00:00Z');
     var x0 = x0d.getTime(), x1 = x1d.getTime();
     var maxRec = Math.max.apply(null, allRecs.map(function (r) { return r[1]; }));
     var yd = [0.005, Math.max(5, Math.pow(10, Math.ceil(Math.log10(maxRec))))];
@@ -526,34 +564,16 @@
 
     var pts = [];
     var endLabels = [];
-    // Era boundaries: the running minimum resets where the index was
-    // recomposed, so record lines break rather than connect across one.
-    var eraStarts = ERAS.map(function (e) { return e[0]; }).filter(function (s) { return s > X0DATE && s <= DATA.updated; });
-    function eraCapX(date) {
-      for (var k = 0; k < eraStarts.length; k++) if (eraStarts[k] > date) return X(eraStarts[k]);
-      return W - M.r;
-    }
-    eraStarts.forEach(function (s) {
-      var ex = X(s);
-      svg.append(svgEl('line', { x1: ex, x2: ex, y1: M.t, y2: H - M.b, stroke: C.ink2, 'stroke-width': 1, 'stroke-dasharray': '4 3' }));
-    });
-    // The index version in effect, as a timeline of spans along the top of
-    // the plot: each era's label sits centered over its date range.
+    // Every view of this chart is on a single index basis, named at the top:
+    // the rebased current basis, or the archived era's actual one.
+    var eraStarts = [];
+    function eraCapX() { return W - M.r; }
     if (ERAS.length) {
-      var bounds = [X0DATE].concat(eraStarts).concat([DATA.updated]);
-      for (var bi = 0; bi < bounds.length - 1; bi++) {
-        var lblv = eraShortLabel(eraOfDate(bounds[bi]));
-        if (!lblv) continue;
-        var xa = X(bounds[bi]), xb = X(bounds[bi + 1]);
-        var narrow = xb - xa < 44;
-        var last = bi === bounds.length - 2;
-        if (narrow && !last) continue;
-        // A young current era is too narrow to center a label in, so its
-        // label hangs to the right of the boundary into the margin.
-        var lb = narrow
-          ? svgEl('text', { x: xa + 4, y: M.t + 11, 'text-anchor': 'start', 'font-size': 10, fill: C.ink2 })
-          : svgEl('text', { x: (xa + xb) / 2, y: M.t + 11, 'text-anchor': 'middle', 'font-size': 10, fill: C.ink2 });
-        lb.textContent = 'index ' + lblv; svg.append(lb);
+      var lblv = eraShortLabel(ERA_VIEW);
+      if (lblv) {
+        var lb = svgEl('text', { x: (M.l + W - M.r) / 2, y: M.t + 11, 'text-anchor': 'middle', 'font-size': 10, fill: C.ink2 });
+        lb.textContent = 'index ' + lblv + (isCur ? ' basis' : '');
+        svg.append(lb);
       }
     }
     tiers.forEach(function (tier, i) {
@@ -563,19 +583,15 @@
       var recs = all.filter(function (r) { if (r[0] < X0DATE) { carry = r; return false; } return true; });
       if (!carry && !recs.length) return;
       var color = C.ord[i];
-      var d = '', prevEra = null;
+      var d = '';
       if (carry) {
-        var sameEra = recs.length && eraOfDate(recs[0][0]) === eraOfDate(X0DATE);
-        d = 'M ' + M.l + ' ' + Y(carry[1]) + ' H ' + (sameEra ? X(recs[0][0]) : eraCapX(X0DATE));
-        prevEra = eraOfDate(X0DATE);
+        d = 'M ' + M.l + ' ' + Y(carry[1]) + ' H ' + (recs.length ? X(recs[0][0]) : W - M.r);
       }
       recs.forEach(function (r, j) {
         var x = X(r[0]), y = Y(r[1]);
-        var e = eraOfDate(r[0]);
-        d += (d && e === prevEra ? ' V ' + y : ' M ' + x + ' ' + y);
+        d += (d ? ' V ' + y : ' M ' + x + ' ' + y);
         var next = j < recs.length - 1 ? recs[j + 1] : null;
-        d += ' H ' + (next && eraOfDate(next[0]) === e ? X(next[0]) : eraCapX(r[0]));
-        prevEra = e;
+        d += ' H ' + (next ? X(next[0]) : W - M.r);
       });
       svg.append(svgEl('path', { d: d, fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
       recs.forEach(function (r) {
@@ -585,8 +601,9 @@
           var d1 = el('div', 'pfc-tt-name'); d1.textContent = r[2];
           var d2 = el('div', 'pfc-tt-row');
           var kd = el('span', 'pfc-tt-key'); kd.style.borderTopColor = color;
-          var s = el('span', 'pfc-tt-val'); s.textContent = fmt$(r[1]);
-          d2.append(kd, s, ' new record, ' + (CAP < 0 ? 'Index' : metricName()) + ' ' + tierLabel(tier));
+          var est = isCur && ERAS.length && r[0] < ERAS[ERAS.length - 1][0];
+          var s = el('span', 'pfc-tt-val'); s.textContent = (est ? '≈' : '') + fmt$(r[1]);
+          d2.append(kd, s, ' new record, ' + (CAP < 0 ? 'Index' : metricName()) + ' ' + tierLabel(tier) + (est ? ' · estimated from price history' : ''));
           var d3 = el('div', null, (r[4] ? r[4] + ' \u00b7 ' : 'released ' + r[0] + ' \u00b7 ') + (CAP < 0 ? 'Index ' + r[3].toFixed(1) : metricName() + ' ' + fmtScore(r[3])) + (openByName[r[2]] ? ' \u00b7 open weights' : ' \u00b7 proprietary') + (retiredByName[r[2]] ? ' \u00b7 retired' : ''));
           return [d1, d2, d3];
         }});
@@ -628,7 +645,28 @@
       var b = el('div', 'pfc-ev-model'); b.textContent = model;
       w.append(a, b); return w;
     }
+    var isCur = ERAS.length > 0 && ERA_VIEW === ERAS.length;
+    var isArch = ERAS.length > 0 && ERA_VIEW < ERAS.length;
     var summary = curTierSummary();
+    if (isCur && DATA.tier_summary_rebased) {
+      summary = CAP < 0 ? DATA.tier_summary_rebased : ((DATA.cap_tier_summary_rebased || {})[capMeta().key] || summary);
+    }
+    if (isArch) {
+      // Summaries for an archived era come from that era's actual records.
+      var tc = curTierCost();
+      summary = {};
+      curTiers().forEach(function (t) {
+        var recs = (tc[t] || []).filter(function (r) { return eraOfDate(r[0]) === ERA_VIEW; });
+        if (!recs.length) { summary[t] = null; return; }
+        var f = recs[0], l = recs[recs.length - 1];
+        var days = (Date.parse(l[0]) - Date.parse(f[0])) / 86400000;
+        var ratio = f[1] / l[1];
+        summary[t] = { first_date: f[0], first_model: f[2], first_cost: f[1],
+                       last_date: l[0], last_model: l[2], last_cost: l[1],
+                       collapse: Math.round(ratio * 10) / 10,
+                       halving_days: ratio > 1 && days ? Math.round(days / (Math.log(ratio) / Math.LN2)) : null };
+      });
+    }
     curTiers().forEach(function (t) {
       var s = summary[t];
       var tr = document.createElement('tr');
