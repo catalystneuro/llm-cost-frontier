@@ -17,7 +17,7 @@ The background, the method, and the argument for why the cheap end of the range 
 | `build/images/advances/` | A 1200x630 social card per advancing model per date, reasoning levels grouped, named `{date}-{base model}.png`; capability advances get theirs under `advances/{capability}/` |
 | `build/images/frontier-card.png` | A social card of the current frontier, for the dashboard page's link preview |
 
-A successful update triggers the website's sync workflow, which copies everything in `build/` into the site, so the dashboard, the feed, and the cards are served from catalystneuro.com, not from GitHub.
+The dashboard itself lives in `site/` and is served from this repository via GitHub Pages at [catalystneuro.github.io/llm-cost-frontier](https://catalystneuro.github.io/llm-cost-frontier/): a deploy workflow copies `site/` and the `build/` artifacts into the Pages tree on every push that touches them, and the update workflow redeploys after each data commit. Every same-repository pull request gets a live preview of the site at `/previews/pr-<number>/`, linked by a sticky comment on the PR and removed when it closes. A successful update also still triggers the catalystneuro.com sync, which remains the canonical home until the domain cutover.
 
 ## Method
 
