@@ -131,6 +131,11 @@ a.site-title, .site-title a { color: var(--navy); text-decoration: none; }
 
 /* two-column charts on wide windows */
 .pfc-cols { display: grid; grid-template-columns: 1fr; column-gap: 2.5rem; align-items: start; }
+/* Grid items default to min-width auto, so a rendered chart would hold the
+   track open and re-renders could never measure a narrower width: once wide
+   (a phone rotation, a resized window), the charts ratcheted past the
+   viewport. min-width 0 lets the SVGs scale down and re-measure honestly. */
+.pfc-cols > section { min-width: 0; }
 .pfc-cols section > h2:first-child { margin-top: 1.6rem; }
 @media (min-width: 1480px) {
   main.pfc-wrap, .site-header .container, .site-footer .container { max-width: 102rem; }
