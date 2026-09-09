@@ -436,6 +436,19 @@ def test_readded_models_do_not_leak_old_scores_into_the_new_era():
     assert new["Newcomer"]["ceiling_from"] == 42.0
 
 
+def test_mass_cost_moves_are_not_price_changes():
+    # Ten models re-measured 20% more expensive on one day is a suite change;
+    # one model's lone deep cut on another day is a price change.
+    models = {}
+    for i in range(10):
+        models[f"m{i}"] = model(f"M{i}", "2026-01-01", 30.0 + i, 1.0,
+                                obs=[["2026-01-01", 1.0, 30.0 + i], ["2026-06-01", 1.2, 30.0 + i]])
+    models["m9"]["observations"].append(["2026-07-01", 0.5, 39.0])
+    advances = frontier_advances(models, [], {})
+    kinds = [(a["date"], a["kind"]) for a in advances if a["kind"] == "price change"]
+    assert kinds == [("2026-07-01", "price change")]
+
+
 def test_check_live_set_guards():
     from llm_cost_frontier.update import check_live_set
     history = {"models": {f"m{i}": model(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}}

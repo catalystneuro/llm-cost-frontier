@@ -45,8 +45,22 @@ C = dict(
 W_PX, H_PX, DPI = 1200, 630, 100
 
 
+# Wording and scale for the metric a card is about. main() swaps this per
+# capability; the default is the overall Intelligence Index.
+INDEX_METRIC = dict(key=None, term="index", axis="Intelligence Index", ceiling="the intelligence ceiling", label=None, percent=False)
+METRIC = dict(INDEX_METRIC)
+
+
 def fmt_cost(c: float) -> str:
     return f"${c:.4f}" if c < 0.01 else f"${c:.3f}" if c < 0.1 else f"${c:.2f}"
+
+
+def fmt_score(v: float) -> str:
+    return f"{v:.1f}%" if METRIC["percent"] else f"{v:.1f}"
+
+
+def tier_text(t) -> str:
+    return f"{METRIC['term']} ≥ {t}" + ("%" if METRIC["percent"] else "")
 
 
 def long_date(iso: str) -> str:
@@ -58,17 +72,17 @@ def card_summary(a: dict) -> str:
     """A shorter counterpart of update.describe, sized for two lines on the card."""
     cost = fmt_cost(a["cost_per_task"])
     if f"{a['owns_to']:.1f}" == f"{a['owns_from']:.1f}":
-        span = f"index {a['owns_to']:.1f}"
+        span = f"{METRIC['term']} {fmt_score(a['owns_to'])}"
     else:
-        span = f"index {a['owns_from']:.1f} to {a['owns_to']:.1f}"
+        span = f"{METRIC['term']} {fmt_score(a['owns_from'])} to {fmt_score(a['owns_to'])}"
     if a["kind"] == "price change" and a["previous_cost"]:
         s = f"Price moved from {fmt_cost(a['previous_cost'])} to {cost} per task; now the cheapest way to reach {span}."
     elif a.get("ceiling_from") is not None:
-        s = f"Pushed the intelligence ceiling from {a['ceiling_from']:.1f} to {a['owns_to']:.1f}, at {cost} per task."
+        s = f"Pushed {METRIC['ceiling']} from {fmt_score(a['ceiling_from'])} to {fmt_score(a['owns_to'])}, at {cost} per task."
     else:
         s = f"Now the cheapest way to reach {span} at {cost} per task."
     if a["records"]:
-        s += " New cost record for " + join_and([f"index ≥ {t}" for t in a["records"]]) + "."
+        s += " New cost record for " + join_and([tier_text(t) for t in a["records"]]) + "."
     if a["open_weights"]:
         s += " Open weights."
     return s
@@ -77,12 +91,12 @@ def card_summary(a: dict) -> str:
 def group_table(group: list) -> list:
     """Header and one row per reasoning level, ascending: the level, its cost
     per task (old → new for a price change), and the index range it owns."""
-    rows = [("Reasoning level", "Cost per task", "Owns index range")]
+    rows = [("Reasoning level", "Cost per task", f"Owns {METRIC['term']} range")]
     for a in reversed(group):
         cost = fmt_cost(a["cost_per_task"])
         if a["kind"] == "price change" and a["previous_cost"]:
             cost = f"{fmt_cost(a['previous_cost'])} → {cost}"
-        rows.append((a["variant"] or a["model"], cost, f"{a['owns_from']:.1f} to {a['owns_to']:.1f}"))
+        rows.append((a["variant"] or a["model"], cost, f"{fmt_score(a['owns_from'])} to {fmt_score(a['owns_to'])}"))
     return rows
 
 
@@ -91,10 +105,10 @@ def group_notes(group: list) -> str:
     notes = []
     ceiling = group[0].get("ceiling_from")
     if ceiling is not None:
-        notes.append(f"Pushed the intelligence ceiling from {ceiling:.1f} to {group[0]['owns_to']:.1f}.")
+        notes.append(f"Pushed {METRIC['ceiling']} from {fmt_score(ceiling)} to {fmt_score(group[0]['owns_to'])}.")
     records = sorted({t for a in group for t in a["records"]})
     if records:
-        notes.append("New cost record for " + join_and([f"index ≥ {t}" for t in records]) + ".")
+        notes.append("New cost record for " + join_and([tier_text(t) for t in records]) + ".")
     if all(a["open_weights"] for a in group):
         notes.append("Open weights.")
     return " ".join(notes)
@@ -134,7 +148,9 @@ def new_figure(kicker: str, title: str, summary_lines: list, table: list = None)
 
     fig = plt.figure(figsize=(W_PX / DPI, H_PX / DPI), dpi=DPI, facecolor=C["surface"])
     fig.text(0.048, 0.945, kicker.upper(), fontsize=12.5, color=C["muted"], va="top")
-    fig.text(0.048, 0.895, title, fontsize=25, color=C["ink"], va="top", fontweight="bold")
+    # Long variant names would run off the right edge at the full size.
+    title_size = 25 if len(title) <= 46 else max(15, int(25 * 46 / len(title)))
+    fig.text(0.048, 0.895, title, fontsize=title_size, color=C["ink"], va="top", fontweight="bold")
     y = 0.820
     last = y
     if table:
@@ -209,7 +225,12 @@ def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = N
     costs = [c for c, _iq in state.values()]
     iqs = [iq for _c, iq in state.values()]
     xlo, xhi = min(costs) * 0.66, max(costs) * 1.5
-    yhi = max(66, ((int(max(iqs)) + 3) // 10 + 1) * 10)
+    if METRIC["percent"]:
+        yhi = min(100, ((int(max(iqs)) + 3) // 10 + 1) * 10)
+    else:
+        yhi = max(66, ((int(max(iqs)) + 3) // 10 + 1) * 10)
+    if min(iqs) < y_min:
+        y_min = (int(min(iqs)) - 3) // 10 * 10
 
     ax.set_xscale("log")
     ax.set_xlim(xlo, xhi)
@@ -236,7 +257,7 @@ def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = N
     ax.xaxis.set_minor_locator(mticker.NullLocator())
     ax.yaxis.set_major_locator(mticker.MultipleLocator(10))
     ax.set_xlabel("Cost per task (log)", fontsize=12, color=C["ink2"])
-    ax.set_ylabel("Intelligence Index", fontsize=12, color=C["ink2"])
+    ax.set_ylabel(METRIC["axis"], fontsize=12, color=C["ink2"])
 
     def dots(slugs, color, size, z):
         filled = [state[s] for s in slugs if not models[s]["open_weights"]]
@@ -337,7 +358,8 @@ def render_group(group: list, models: dict, timeline: list, path: Path, eras: li
     state_cf = counterfactual(state, state_at(timeline, date, before=True, models=models, eras=eras), models, base)
     front_cf = pareto(state_cf)
     kinds = {a["kind"] for a in group}
-    parts = ["Frontier advance", long_date(date)] + (sorted(kinds) if len(kinds) == 1 else []) + [a0["creator"]]
+    what = (METRIC["label"] + " frontier advance") if METRIC["label"] else "Frontier advance"
+    parts = [what, long_date(date)] + (sorted(kinds) if len(kinds) == 1 else []) + [a0["creator"]]
     if len(group) > 1:
         title = base
         table = group_table(group)
@@ -349,7 +371,7 @@ def render_group(group: list, models: dict, timeline: list, path: Path, eras: li
     fig, ax = new_figure(" · ".join(parts), title, summary_lines, table)
     highlights = {a["slug"] for a in group}
     xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights,
-                          y_min=10 if date > Y_MIN_10_AFTER else 0)
+                          y_min=(10 if date > Y_MIN_10_AFTER else 0) if METRIC["key"] is None else 0)
     draw_highlights(ax, group, state, xlo, xhi)
     add_legend(ax, price_change=any(a["kind"] == "price change" and a["previous_cost"] for a in group))
     save(fig, path)
@@ -400,19 +422,36 @@ def main(argv=None):
     eras = json.loads(args.eras.read_text()) if args.eras.exists() else []
     out = build_output(history, events, overrides, eras)
     models = history["models"]
-    timeline = price_timeline(models, events)
+
+    from .update import CAPABILITIES, capability_models
+
+    global METRIC
+    # One card set per metric: the overall index in advances/, and each
+    # capability in advances/<key>/, matching the paths the dashboard links.
+    metric_sets = [(dict(INDEX_METRIC), models, out["advances"], args.out / "advances")]
+    for c in CAPABILITIES:
+        advs = (out.get("cap_advances") or {}).get(c["key"]) or []
+        if advs:
+            met = dict(key=c["key"], term=c["metric"], axis=c["metric"],
+                       ceiling=f"the {c['metric']} ceiling", label=c["label"], percent=c["percent"])
+            metric_sets.append((met, capability_models(models, c["key"]), advs, args.out / "advances" / c["key"]))
 
     rendered = skipped = 0
-    groups = {}
-    for a in out["advances"]:
-        groups.setdefault((a["date"], a["base"]), []).append(a)
-    for (date, base), group in groups.items():
-        path = args.out / "advances" / f"{date}-{slugify(base)}.png"
-        if path.exists() and not args.force:
-            skipped += 1
-            continue
-        render_group(group, models, timeline, path, eras)
-        rendered += 1
+    timeline = price_timeline(models, events)
+    for met, mset, advs, outdir in metric_sets:
+        METRIC = met
+        tl = timeline if met["key"] is None else price_timeline(mset, events)
+        groups = {}
+        for a in advs:
+            groups.setdefault((a["date"], a["base"]), []).append(a)
+        for (date, base), group in groups.items():
+            path = outdir / f"{date}-{slugify(base)}.png"
+            if path.exists() and not args.force:
+                skipped += 1
+                continue
+            render_group(group, mset, tl, path, eras)
+            rendered += 1
+    METRIC = dict(INDEX_METRIC)
     render_current(out, models, timeline, args.out / "frontier-card.png", eras)
     print(f"rendered {rendered} advance cards ({skipped} already existed) and frontier-card.png in {args.out}")
     return 0

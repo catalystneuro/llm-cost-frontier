@@ -40,6 +40,12 @@ SNAPSHOT_MONTHS = 2
 # advance when it moved by at least this much, so sub-cent wiggles from
 # nightly cost measurement don't flood the advances list and the feed.
 MIN_PRICE_MOVE = 0.02
+# A date on which the measured cost moved by more than 10% for many models at
+# once is a re-measurement of the evaluation suite, not a wave of price
+# changes, and produces no price-change advances. September 7, 2026, when 129
+# models moved together days after the v4.3 recomposition, is the archetype.
+MASS_MOVE_MIN = 6
+MASS_MOVE_FRACTION = 0.15
 
 # Per-capability metrics read from the same payload, each chosen because it
 # translates to a class of application better than the aggregate index does.
@@ -365,12 +371,15 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
         changed = {}
         state_before = dict(state)
         base_of = lambda o: split_variant(models[o]["name"])[0]
+        movers = sum(1 for cost, slug, iq, note in by_date[date]
+                     if slug in state and state[slug][0] > 0 and abs(cost - state[slug][0]) / state[slug][0] > 0.10)
+        mass = movers >= max(MASS_MOVE_MIN, MASS_MOVE_FRACTION * len(state))
         for cost, slug, iq, note in by_date[date]:
             prev = state.get(slug)
             state[slug] = (cost, iq)
             rebase = ev_era > 0 and seen_era.get(slug, -1) < ev_era and models[slug]["release_date"] < (eras or [])[ev_era - 1]["start"]
             seen_era[slug] = ev_era
-            if rebase:
+            if rebase or (mass and prev is not None):
                 continue
             changed[slug] = ("price change" if note and ("cut" in note or "change" in note) else "new model", prev[0] if prev else None)
         prev_front = current
