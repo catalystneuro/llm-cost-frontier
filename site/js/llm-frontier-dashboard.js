@@ -347,12 +347,12 @@
 
   // ---- shareable view state in the URL hash ----
   function hashFor() {
-    if (CAP >= 0) return '#' + CAPS[CAP].key;
+    var key = CAP >= 0 ? CAPS[CAP].key : 'index';
     if (ERAS.length && ERA_VIEW < ERAS.length && DATA.era_snapshots) {
       var snaps = DATA.era_snapshots[ERA_VIEW];
-      return '#index-through-' + snaps[snaps.length - 1][0];
+      return '#' + key + '-through-' + snaps[snaps.length - 1][0];
     }
-    return '';
+    return CAP >= 0 ? '#' + key : '';
   }
   function syncHash() {
     var h = hashFor();
@@ -365,23 +365,23 @@
     for (var i = 0; i < CAPS.length; i++) if (CAPS[i].key === h) { CAP = i; return; }
     var m = h.match(/^([a-z]+)-through-(\d{4}-\d{2}-\d{2})$/);
     if (m && DATA.era_snapshots) {
+      var cap = -1;
       if (m[1] !== 'index') {
-        // Capability tabs no longer carry era views; old links land on the tab.
-        for (var k = 0; k < CAPS.length; k++) if (CAPS[k].key === m[1]) CAP = k;
-        return;
+        for (var k = 0; k < CAPS.length; k++) if (CAPS[k].key === m[1]) cap = k;
+        if (cap === -1) return;
       }
       for (var e = 0; e < ERAS.length; e++) {
         var snaps = DATA.era_snapshots[e];
-        if (snaps[snaps.length - 1][0] === m[2]) { CAP = -1; ERA_VIEW = e; return; }
+        if (snaps[snaps.length - 1][0] === m[2]) { CAP = cap; ERA_VIEW = e; return; }
       }
     }
   }
 
-  // ---- the era archive link on the Overall frontier chart ----
-  // Past eras are an archive, not a peer view: the Overall tab gets a quiet
-  // link to each frozen era (the score scale changed there); capability tabs
-  // get none, since their scores are comparable across eras and the records
-  // chart already shows the cost-basis break.
+  // ---- the era archive link on the frontier chart ----
+  // Past eras are an archive, not a peer view: every tab gets a quiet link to
+  // each frozen era instead of a toggle. On Overall the score scale changed
+  // there; on capability tabs the scores carry over but the cost basis does
+  // not, so the earlier frontier history is an archive too.
   function switchEra(i) {
     ERA_VIEW = i;
     hideTip();
@@ -392,7 +392,7 @@
   function renderEraNav() {
     var nav = document.getElementById('pfc-era-nav');
     if (!nav) return;
-    var show = CAP < 0 && ERAS.length > 0 && DATA.era_snapshots;
+    var show = ERAS.length > 0 && DATA.era_snapshots;
     nav.hidden = !show;
     if (!show) return;
     nav.replaceChildren();
@@ -406,10 +406,12 @@
       for (var i = ERAS.length - 1; i >= 0; i--) {
         var end = DATA.era_snapshots[i][DATA.era_snapshots[i].length - 1][0];
         var lbl = eraShortLabel(i);
-        link('View the ' + (lbl ? lbl + ' ' : '') + 'era (through ' + fmtDate(end) + ') →', i);
+        link(CAP < 0
+          ? 'View the ' + (lbl ? lbl + ' ' : '') + 'era (through ' + fmtDate(end) + ') →'
+          : 'View the earlier history (through ' + fmtDate(end) + ', on the era\'s own cost basis) →', i);
       }
     } else {
-      link('← Back to the current index' + (eraShortLabel(ERAS.length) ? ' (' + eraShortLabel(ERAS.length) + ')' : ''), ERAS.length);
+      link('← Back to the current era' + (CAP < 0 && eraShortLabel(ERAS.length) ? ' (' + eraShortLabel(ERAS.length) + ')' : ''), ERAS.length);
     }
   }
 
