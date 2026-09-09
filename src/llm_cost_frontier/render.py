@@ -219,7 +219,7 @@ def draw_push_region(ax, state: dict, front: set, state_before: dict, front_befo
 
 
 def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = None,
-               front_before: set = None, highlights: set = frozenset(), y_min: float = 0):
+               front_before: set = None, highlights: set = frozenset(), removed: set = frozenset(), y_min: float = 0):
     import matplotlib.ticker as mticker
 
     costs = [c for c, _iq in state.values()]
@@ -267,7 +267,7 @@ def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = N
         if hollow:
             ax.scatter(*zip(*hollow), s=size, facecolors=C["surface"], edgecolors=color, linewidths=1.6, zorder=z)
 
-    dots([s for s in state if s not in front and s not in highlights], C["deemph"], 26, 2)
+    dots([s for s in state if s not in front and s not in highlights and s not in removed], C["deemph"], 26, 2)
 
     if front_before:
         xs, ys = frontier_steps(state_before, front_before, xhi)
@@ -275,6 +275,7 @@ def draw_chart(ax, state: dict, models: dict, front: set, state_before: dict = N
         draw_push_region(ax, state, front, state_before, front_before, xhi)
     xs, ys = frontier_steps(state, front, xhi)
     ax.plot(xs, ys, color=C["blue"], linewidth=2.6, solid_joinstyle="round", zorder=4)
+    dots(sorted(removed), C["old"], 42, 5)
     dots([s for s in front if s not in highlights], C["blue"], 42, 5)
     return xlo, xhi
 
@@ -315,7 +316,33 @@ def draw_highlights(ax, group: list, state: dict, xlo: float, xhi: float):
                         fontsize=10.5, color=C["accent"], zorder=7)
 
 
-def add_legend(ax, price_change: bool):
+def draw_removed(ax, removed: set, state: dict, models: dict, xlo: float, xhi: float):
+    """Name the models this advance pushed off the frontier: one label per base
+    model, on its highest-scoring departed variant, placed below the dot where
+    the chart is empty of frontier lines."""
+    import math
+
+    by_base = {}
+    for s in removed:
+        b = split_variant(models[s]["name"])[0]
+        if b not in by_base or state[s][1] > state[by_base[b]][1]:
+            by_base[b] = s
+    # Departed models cluster along the old frontier at similar heights, so
+    # labels near each other in x are stepped further down to avoid colliding.
+    last_frac = None
+    drop = -14
+    for b, s in sorted(by_base.items(), key=lambda kv: state[kv[1]][0]):
+        cost, iq = state[s]
+        frac = (math.log10(cost) - math.log10(xlo)) / (math.log10(xhi) - math.log10(xlo))
+        drop = drop - 13 if last_frac is not None and frac - last_frac < 0.22 else -14
+        last_frac = frac
+        left = frac > 0.25
+        ax.annotate(b, xy=(cost, iq), xytext=(-12 if left else 12, drop),
+                    textcoords="offset points", ha="right" if left else "left",
+                    fontsize=10.5, color=C["ink2"], zorder=6)
+
+
+def add_legend(ax, price_change: bool, removed: bool = False):
     from matplotlib.lines import Line2D
 
     handles = [
@@ -326,6 +353,9 @@ def add_legend(ax, price_change: bool):
         Line2D([], [], marker="o", color="none", markerfacecolor=C["surface"],
                markeredgecolor=C["ink2"], markeredgewidth=1.6, markersize=8, label="open weights"),
     ]
+    if removed:
+        handles.insert(3, Line2D([], [], marker="o", color="none", markerfacecolor=C["old"],
+                                 markeredgecolor=C["surface"], markersize=9, label="left the frontier"))
     if price_change:
         handles.insert(3, Line2D([], [], marker="o", color="none", markerfacecolor="none",
                                  markeredgecolor=C["accent"], markeredgewidth=1.6, markersize=9,
@@ -370,10 +400,13 @@ def render_group(group: list, models: dict, timeline: list, path: Path, eras: li
         summary_lines = wrap(card_summary(a0))
     fig, ax = new_figure(" · ".join(parts), title, summary_lines, table)
     highlights = {a["slug"] for a in group}
-    xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights,
+    removed = frozenset(front_cf - front - highlights)
+    xlo, xhi = draw_chart(ax, state, models, front, state_cf, front_cf, highlights=highlights, removed=removed,
                           y_min=(10 if date > Y_MIN_10_AFTER else 0) if METRIC["key"] is None else 0)
     draw_highlights(ax, group, state, xlo, xhi)
-    add_legend(ax, price_change=any(a["kind"] == "price change" and a["previous_cost"] for a in group))
+    draw_removed(ax, removed, state, models, xlo, xhi)
+    add_legend(ax, price_change=any(a["kind"] == "price change" and a["previous_cost"] for a in group),
+               removed=bool(removed))
     save(fig, path)
 
 
