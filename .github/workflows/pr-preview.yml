@@ -1,0 +1,96 @@
+name: PR preview
+
+# Deploys a preview of the site for each pull request under
+# /previews/pr-<number>/ on the production Pages site. Previews live on the
+# `previews` branch, which the deploy workflow folds into every deployment;
+# the site's paths are all base-relative, so the same tree serves correctly
+# from the subdirectory. Card images are left out to keep the branch small,
+# so "chart card" links 404 in a preview; the cards themselves are reviewable
+# in the pull request's diff. The preview is removed when the PR closes.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pr-preview-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    # Same-repository branches only: fork PRs have no write token, and their
+    # code should not reach the production Pages site anyway.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-python@v5
+        if: github.event.action != 'closed'
+        with:
+          python-version: "3.12"
+      - name: Rebuild the outputs from the PR's code and history
+        if: github.event.action != 'closed'
+        run: python -m llm_cost_frontier --offline
+        env:
+          PYTHONPATH: src
+      - name: Assemble the preview
+        if: github.event.action != 'closed'
+        run: |
+          mkdir -p preview/data preview/images
+          cp -r site/* preview/
+          cp build/llm-frontier.json preview/data/llm-frontier.json
+          cp build/feed.xml preview/feed.xml
+          cp build/images/frontier-card.png preview/images/frontier-card.png
+      - name: Update the previews branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for attempt in 1 2 3; do
+            git fetch origin previews && git worktree add pv origin/previews || {
+              git worktree add --detach pv
+              (cd pv && git checkout --orphan previews && git rm -rf --quiet . || true)
+            }
+            rm -rf "pv/pr-${{ github.event.number }}"
+            if [ "${{ github.event.action }}" != "closed" ]; then
+              cp -r preview "pv/pr-${{ github.event.number }}"
+            fi
+            cd pv
+            git add -A
+            git commit -m "Preview for PR #${{ github.event.number }} (${{ github.event.action }})" || true
+            git push origin HEAD:previews && cd .. && break
+            cd .. && git worktree remove --force pv && sleep $attempt
+          done
+      - name: Comment the preview link
+        if: github.event.action != 'closed'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          base=$(gh api repos/${{ github.repository }}/pages -q .html_url)
+          url="${base%/}/previews/pr-${{ github.event.number }}/"
+          marker="<!-- pr-preview -->"
+          body="$marker Site preview for this PR: $url (updates on every push; chart card links are omitted from previews)"
+          existing=$(gh api repos/${{ github.repository }}/issues/${{ github.event.number }}/comments \
+            -q ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
+          if [ -n "$existing" ]; then
+            gh api -X PATCH repos/${{ github.repository }}/issues/comments/$existing -f body="$body" > /dev/null
+          else
+            gh api repos/${{ github.repository }}/issues/${{ github.event.number }}/comments -f body="$body" > /dev/null
+          fi
+
+  # Fold the updated previews into the live Pages deployment.
+  deploy:
+    needs: preview
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    uses: ./.github/workflows/deploy-pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write

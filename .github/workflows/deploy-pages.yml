@@ -38,6 +38,14 @@ jobs:
           cp build/llm-frontier.json _site/data/llm-frontier.json
           cp build/feed.xml _site/feed.xml
           cp -r build/images _site/images
+      - name: Include PR previews
+        run: |
+          if git fetch origin previews 2>/dev/null; then
+            git worktree add pv FETCH_HEAD
+            mkdir -p _site/previews
+            cp -r pv/. _site/previews/
+            rm -rf _site/previews/.git
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
