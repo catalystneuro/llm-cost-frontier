@@ -377,7 +377,18 @@
     }
   }
 
-  // ---- era views for the Overall frontier chart ----
+  // ---- the era archive link on the frontier chart ----
+  // Past eras are an archive, not a peer view: every tab gets a quiet link to
+  // each frozen era instead of a toggle. On Overall the score scale changed
+  // there; on capability tabs the scores carry over but the cost basis does
+  // not, so the earlier frontier history is an archive too.
+  function switchEra(i) {
+    ERA_VIEW = i;
+    hideTip();
+    anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
+    syncHash();
+    renderEraNav(); renderFrontier();
+  }
   function renderEraNav() {
     var nav = document.getElementById('pfc-era-nav');
     if (!nav) return;
@@ -395,12 +406,7 @@
         : 'Index ' + (lbl ? lbl + ' ' : '') + '(through ' + fmtDate(end) + ')';
       b.setAttribute('aria-pressed', ERA_VIEW === i ? 'true' : 'false');
       b.addEventListener('click', function () {
-        if (ERA_VIEW === i) return;
-        ERA_VIEW = i;
-        hideTip();
-        anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
-        syncHash();
-        renderEraNav(); renderFrontier();
+        if (ERA_VIEW !== i) switchEra(i);
       });
       nav.append(b);
     })(i);
@@ -438,7 +444,7 @@
     var c = capMeta();
     if (!c) { p.innerHTML = leadDefault; return; }
     var n = models.filter(function (m) { return score(m) != null; }).length;
-    p.textContent = c.blurb + ' Measured for ' + n + ' of ' + models.length + ' tracked models. The cost axis is unchanged, the measured cost per task on the full Intelligence Index suite, so switching tabs only moves each model vertically.';
+    p.textContent = c.blurb + ' Measured for ' + n + ' of ' + models.length + ' tracked models.';
   }
   function renderCapTable() {
     var wrap = document.getElementById('pfc-cap-table-wrap');
