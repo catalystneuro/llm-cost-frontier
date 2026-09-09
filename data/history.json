@@ -1649,19 +1649,18 @@
   },
   "glm-5-1": {
    "capabilities": {
-    "agentic": 30.6,
     "coding": 61.8,
     "instruction": 76.3,
     "knowledge": 0.8,
-    "knowledgework": 37.7,
-    "longcontext": 68.0,
+    "knowledgework": 34.0,
+    "longcontext": 73.7,
     "science": 86.8
    },
-   "cost_per_task": 0.286113,
+   "cost_per_task": 0.921782,
    "creator": "Z AI",
    "first_seen": "2026-08-19",
-   "intelligence_index": 41.0,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 26.4,
+   "last_seen": "2026-09-09",
    "name": "GLM-5.1 (Reasoning)",
    "observations": [
     [
@@ -1683,11 +1682,16 @@
      "2026-09-01",
      0.286113,
      41.0
+    ],
+    [
+     "2026-09-09",
+     0.921782,
+     26.4
     ]
    ],
    "open_weights": true,
    "release_date": "2026-04-07",
-   "retired": true
+   "retired": false
   },
   "glm-5-2": {
    "capabilities": {
