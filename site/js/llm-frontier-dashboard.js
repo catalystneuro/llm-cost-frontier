@@ -516,7 +516,7 @@
     var isArch = ERAS.length > 0 && ERA_VIEW < ERAS.length;
     var lead = document.getElementById('pfc-records-lead');
     if (lead) {
-      lead.textContent = 'The cheapest cost per task achieved by any released model at or above each ' + (CAP < 0 ? 'Intelligence Index' : metricName()) + ' tier, by release date. Each step is a model that set a new low for its tier.' + (isCur ? ' Costs before the recomposition are estimated from each model\'s own price history on the current basis.' : '');
+      lead.textContent = 'The cheapest cost per task achieved by any released model at or above each ' + (CAP < 0 ? 'Intelligence Index' : metricName()) + ' tier, by release date. Each step is a model that set a new low for its tier.';
     }
     var svg = frame(box, W, H, M, 'Running minimum cost per task by capability tier');
     var tiers = curTiers();
