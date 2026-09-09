@@ -36,7 +36,7 @@ DEFAULT_IMAGES = Path("build/images")
 # the frontier visible, where small models like Granite 4.2 3B still land.
 Y_MIN_10_AFTER = "2026-04-22"
 
-# Palette shared with the dashboard at catalystneuro.com/llm-cost-frontier/.
+# Palette shared with the dashboard at llm-cost-frontier.catalystneuro.com.
 C = dict(
     surface="#ffffff", grid="#ecf1f8", axis="#dfe6f1",
     ink="#101642", ink2="#55607a", muted="#68718b", deemph="#c2cbdc",
@@ -168,7 +168,7 @@ def new_figure(kicker: str, title: str, summary_lines: list, table: list = None)
         y -= 0.042
     fig.text(0.048, 0.028, "Data: Artificial Analysis · measured cost per Intelligence Index task",
              fontsize=11.5, color=C["muted"], va="bottom")
-    fig.text(0.952, 0.028, "catalystneuro.com/llm-cost-frontier",
+    fig.text(0.952, 0.028, "llm-cost-frontier.catalystneuro.com",
              fontsize=12.5, color=C["ink2"], va="bottom", ha="right", fontweight="bold")
     ax = fig.add_axes([0.058, 0.135, 0.894, (last - 0.100) - 0.135])
     return fig, ax
