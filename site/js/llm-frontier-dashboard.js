@@ -538,6 +538,9 @@
     var x0d = new Date(X0DATE + 'T00:00:00Z');
     var x1d = new Date(endDate + 'T00:00:00Z');
     var x0 = x0d.getTime(), x1 = x1d.getTime();
+    // An archived era is frozen: pad the axis past its end and cap the lines
+    // there, so the series visibly stops instead of running to the edge.
+    if (isArch) x1 = x1 + (x1 - x0) * 0.06;
     var maxRec = Math.max.apply(null, allRecs.map(function (r) { return r[1]; }));
     var yd = [0.005, Math.max(5, Math.pow(10, Math.ceil(Math.log10(maxRec))))];
     var ticks = []; var td = new Date(x0d.getTime());
@@ -566,8 +569,12 @@
     var endLabels = [];
     // Every view of this chart is on a single index basis, named at the top:
     // the rebased current basis, or the archived era's actual one.
-    var eraStarts = [];
-    function eraCapX() { return W - M.r; }
+    var endX = isArch ? X(endDate) : W - M.r;
+    if (isArch) {
+      svg.append(svgEl('line', { x1: endX, x2: endX, y1: M.t, y2: H - M.b, stroke: C.ink2, 'stroke-width': 1, 'stroke-dasharray': '4 3' }));
+      var endLb = svgEl('text', { x: endX - 5, y: M.t + 24, 'text-anchor': 'end', 'font-size': 10, fill: C.ink2 });
+      endLb.textContent = 'measurements ended ' + fmtDate(endDate); svg.append(endLb);
+    }
     if (ERAS.length) {
       var lblv = eraShortLabel(ERA_VIEW);
       if (lblv) {
@@ -585,13 +592,13 @@
       var color = C.ord[i];
       var d = '';
       if (carry) {
-        d = 'M ' + M.l + ' ' + Y(carry[1]) + ' H ' + (recs.length ? X(recs[0][0]) : W - M.r);
+        d = 'M ' + M.l + ' ' + Y(carry[1]) + ' H ' + (recs.length ? X(recs[0][0]) : endX);
       }
       recs.forEach(function (r, j) {
         var x = X(r[0]), y = Y(r[1]);
         d += (d ? ' V ' + y : ' M ' + x + ' ' + y);
         var next = j < recs.length - 1 ? recs[j + 1] : null;
-        d += ' H ' + (next ? X(next[0]) : W - M.r);
+        d += ' H ' + (next ? X(next[0]) : endX);
       });
       svg.append(svgEl('path', { d: d, fill: 'none', stroke: color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
       recs.forEach(function (r) {
@@ -610,7 +617,7 @@
       });
       var endY = Y((recs.length ? recs[recs.length - 1] : carry)[1]);
       if (!endLabels.some(function (yy) { return Math.abs(yy - endY) < 14; })) {
-        var lb = svgEl('text', { x: W - M.r + 6, y: endY + 4, 'font-size': 10.5, 'font-weight': 500, fill: C.ink2 });
+        var lb = svgEl('text', { x: endX + 6, y: endY + 4, 'font-size': 10.5, 'font-weight': 500, fill: C.ink2 });
         lb.textContent = tierLabel(tier); svg.append(lb);
         endLabels.push(endY);
       }
