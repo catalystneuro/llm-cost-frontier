@@ -86,7 +86,7 @@ jobs:
           base=$(gh api repos/${{ github.repository }}/pages -q .html_url)
           url="${base%/}/previews/pr-${{ github.event.number }}/"
           marker="<!-- pr-preview -->"
-          body="$marker Site preview for this PR: $url (updates on every push; chart card links are omitted from previews)"
+          body="$marker **[Site preview for this PR]($url)** — updates on every push; chart card links are omitted from previews."
           existing=$(gh api repos/${{ github.repository }}/issues/${{ github.event.number }}/comments \
             -q ".[] | select(.body | startswith(\"$marker\")) | .id" | head -1)
           if [ -n "$existing" ]; then
