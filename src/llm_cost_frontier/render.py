@@ -17,9 +17,11 @@ from pathlib import Path
 
 from .update import (
     DEFAULT_EVENTS,
+    DEFAULT_ERAS,
     DEFAULT_HISTORY,
     DEFAULT_OVERRIDES,
     apply_overrides,
+    era_index,
     join_and,
     pareto,
     price_timeline,
@@ -98,13 +100,20 @@ def group_notes(group: list) -> str:
     return " ".join(notes)
 
 
-def state_at(timeline: list, date: str, before: bool = False) -> dict:
+def state_at(timeline: list, date: str, before: bool = False, models: dict = None, eras: list = None) -> dict:
     """{slug: (cost, iq)} using the last cost change on or before the date
-    (strictly before it when before=True)."""
+    (strictly before it when before=True). A model appears only if its last
+    change belongs to the same index era as the date, matching the frontier
+    logic: values from before a recomposition are not comparable after it."""
     state = {}
+    last = {}
     for d, cost, slug, iq, _note in timeline:
         if d < date or (d == date and not before):
             state[slug] = (cost, iq)
+            last[slug] = d
+    if eras:
+        e = era_index(date, eras)
+        state = {s: v for s, v in state.items() if era_index(last[s], eras) == e}
     return state
 
 
@@ -318,14 +327,14 @@ def wrap(text: str, width: int = 108) -> list:
     return textwrap.wrap(text, width=width)
 
 
-def render_group(group: list, models: dict, timeline: list, path: Path):
+def render_group(group: list, models: dict, timeline: list, path: Path, eras: list = None):
     """One card for all of a base model's advances on one date. The group is
     ordered by descending intelligence index, matching the advances list."""
     a0 = group[0]
     date, base = a0["date"], a0["base"]
-    state = state_at(timeline, date)
+    state = state_at(timeline, date, models=models, eras=eras)
     front = pareto(state)
-    state_cf = counterfactual(state, state_at(timeline, date, before=True), models, base)
+    state_cf = counterfactual(state, state_at(timeline, date, before=True, models=models, eras=eras), models, base)
     front_cf = pareto(state_cf)
     kinds = {a["kind"] for a in group}
     parts = ["Frontier advance", long_date(date)] + (sorted(kinds) if len(kinds) == 1 else []) + [a0["creator"]]
@@ -346,8 +355,8 @@ def render_group(group: list, models: dict, timeline: list, path: Path):
     save(fig, path)
 
 
-def render_current(out: dict, models: dict, timeline: list, path: Path):
-    state = state_at(timeline, out["updated"])
+def render_current(out: dict, models: dict, timeline: list, path: Path, eras: list = None):
+    state = state_at(timeline, out["updated"], models=models, eras=eras)
     front = pareto(state)
     live = sum(1 for m in models.values() if not m["retired"])
     summary = (f"The cheapest way to reach each level of the Artificial Analysis "
@@ -367,6 +376,7 @@ def parse_args(argv=None):
     p.add_argument("--history", type=Path, default=DEFAULT_HISTORY, help="cumulative per-model history to read")
     p.add_argument("--events", type=Path, default=DEFAULT_EVENTS, help="hand-maintained price events")
     p.add_argument("--overrides", type=Path, default=DEFAULT_OVERRIDES, help="hand-maintained corrections to upstream fields")
+    p.add_argument("--eras", type=Path, default=DEFAULT_ERAS, help="hand-declared index era boundaries")
     p.add_argument("--out", type=Path, default=DEFAULT_IMAGES, help="directory to write images into")
     p.add_argument("--force", action="store_true", help="re-render advance cards that already exist")
     return p.parse_args(argv)
@@ -387,7 +397,8 @@ def main(argv=None):
     history = json.loads(args.history.read_text())
     events = json.loads(args.events.read_text())
     overrides = json.loads(args.overrides.read_text()) if args.overrides.exists() else {}
-    out = build_output(history, events, overrides)
+    eras = json.loads(args.eras.read_text()) if args.eras.exists() else []
+    out = build_output(history, events, overrides, eras)
     models = history["models"]
     timeline = price_timeline(models, events)
 
@@ -400,9 +411,9 @@ def main(argv=None):
         if path.exists() and not args.force:
             skipped += 1
             continue
-        render_group(group, models, timeline, path)
+        render_group(group, models, timeline, path, eras)
         rendered += 1
-    render_current(out, models, timeline, args.out / "frontier-card.png")
+    render_current(out, models, timeline, args.out / "frontier-card.png", eras)
     print(f"rendered {rendered} advance cards ({skipped} already existed) and frontier-card.png in {args.out}")
     return 0
 

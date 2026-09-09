@@ -77,7 +77,7 @@ def test_fetch_payload_rejects_pages_without_chunks(monkeypatch):
 
 
 def test_extract_models_reads_fields_and_capabilities():
-    o = source_object(terminalbenchV21=0.789, omniscience=-10.76, agenticIndex=44.36)
+    o = source_object(terminalbenchV21=0.789, omniscience=-10.76, automationBenchPartialScore=0.444)
     got = extract_models(payload_for([o]))["test-model"]
     assert got["name"] == "Test Model (high)"
     assert got["creator"] == "Lab"
@@ -420,6 +420,22 @@ def test_post_boundary_price_cut_still_advances():
     assert [(a["date"], a["previous_cost"]) for a in cut] == [("2026-09-10", 0.30)]
 
 
+def test_readded_models_do_not_leak_old_scores_into_the_new_era():
+    # "Readded" is dropped at the boundary and only re-measured on Sep 7, so
+    # between the boundary and its re-measurement it must not sit on the
+    # frontier at its old score, and its re-measurement is not an advance.
+    models = era_history()
+    models["readded"] = model("Readded", "2026-03-01", 60.0, 0.05,
+                              obs=[["2026-03-01", 0.05, 60.0], ["2026-09-07", 0.40, 45.0]])
+    models["newcomer"] = model("Newcomer", "2026-09-06", 44.0, 0.10,
+                               obs=[["2026-09-06", 0.10, 44.0]])
+    advances = frontier_advances(models, [], {}, eras=ERAS)
+    new = {a["model"]: a for a in advances if a["date"] >= "2026-09-05"}
+    assert set(new) == {"Newcomer"}
+    # Newcomer pushed the ceiling above Fresh's 42; Readded's old 60 is gone.
+    assert new["Newcomer"]["ceiling_from"] == 42.0
+
+
 def test_check_live_set_guards():
     from llm_cost_frontier.update import check_live_set
     history = {"models": {f"m{i}": model(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}}
@@ -449,8 +465,8 @@ def test_era_snapshots_split_at_the_boundary():
     # The old era ends the day before the boundary, labeled with its date.
     assert old[-1] == ["2026-09-04", "Sep 4, 2026"]
     assert all(d < "2026-09-05" for d, _ in old)
-    # The current era has no bi-monthly firsts yet, only today.
-    assert new == [["2026-09-06", "today"]]
+    # The current era opens with its start-day baseline and ends with today.
+    assert new == [["2026-09-05", "Sep 5, 2026"], ["2026-09-06", "today"]]
     # Without eras there is a single list equivalent to snapshots().
     assert era_snapshots([], dt.date(2026, 9, 6)) == [snapshots(dt.date(2026, 9, 6))]
 
@@ -458,7 +474,7 @@ def test_era_snapshots_split_at_the_boundary():
 def test_build_output_with_eras():
     history = {"updated": "2026-09-06", "models": era_history()}
     out = build_output(history, events=[], eras=ERAS)
-    assert out["eras"] == [["2026-09-05", "index recomposed"]]
+    assert out["eras"] == [["2026-09-05", "index recomposed", "", ""]]
     by_name = {r[0]: r for r in out["models"]}
     assert by_name["Stale"][9] == 0 and by_name["Fresh"][9] == 1
     assert all(a["date"] < "2026-09-05" for a in out["advances"])

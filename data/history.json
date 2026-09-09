@@ -61,6 +61,7 @@
   },
   "celeris-1": {
    "capabilities": {
+    "agentic": 0.4,
     "coding": 11.2,
     "knowledge": -71.6,
     "knowledgework": 0.0,
@@ -96,6 +97,7 @@
   },
   "claude-4-5-haiku-reasoning": {
    "capabilities": {
+    "agentic": 3.2,
     "coding": 44.2,
     "instruction": 54.3,
     "knowledge": -4.4,
@@ -133,6 +135,7 @@
   },
   "claude-4-5-sonnet-thinking": {
    "capabilities": {
+    "agentic": 14.1,
     "coding": 55.8,
     "instruction": 57.3,
     "knowledge": -0.1,
@@ -170,6 +173,7 @@
   },
   "claude-fable-5": {
    "capabilities": {
+    "agentic": 54.1,
     "coding": 84.6,
     "instruction": 63.5,
     "knowledge": 43.3,
@@ -206,6 +210,7 @@
   },
   "claude-fable-5-1": {
    "capabilities": {
+    "agentic": 59.4,
     "coding": 91.4,
     "knowledge": 43.5,
     "knowledgework": 63.2,
@@ -241,6 +246,7 @@
   },
   "claude-fable-5-1-high": {
    "capabilities": {
+    "agentic": 55.3,
     "coding": 89.9,
     "knowledge": 40.8,
     "knowledgework": 57.5,
@@ -276,6 +282,7 @@
   },
   "claude-fable-5-1-low": {
    "capabilities": {
+    "agentic": 52.2,
     "coding": 85.0,
     "knowledge": 34.1,
     "knowledgework": 50.2,
@@ -311,6 +318,7 @@
   },
   "claude-fable-5-1-medium": {
    "capabilities": {
+    "agentic": 54.7,
     "coding": 88.0,
     "knowledge": 37.6,
     "knowledgework": 54.0,
@@ -346,6 +354,7 @@
   },
   "claude-fable-5-1-xhigh": {
    "capabilities": {
+    "agentic": 57.8,
     "coding": 91.0,
     "knowledge": 42.4,
     "knowledgework": 62.3,
@@ -409,6 +418,7 @@
   },
   "claude-opus-4-8": {
    "capabilities": {
+    "agentic": 45.6,
     "coding": 84.6,
     "instruction": 62.2,
     "knowledge": 28.8,
@@ -445,6 +455,7 @@
   },
   "claude-opus-5": {
    "capabilities": {
+    "agentic": 56.6,
     "coding": 89.1,
     "knowledge": 37.1,
     "knowledgework": 61.8,
@@ -481,6 +492,7 @@
   },
   "claude-opus-5-high": {
    "capabilities": {
+    "agentic": 53.6,
     "coding": 87.6,
     "knowledge": 33.7,
     "knowledgework": 56.4,
@@ -517,6 +529,7 @@
   },
   "claude-opus-5-low": {
    "capabilities": {
+    "agentic": 51.8,
     "coding": 76.4,
     "knowledge": 28.6,
     "knowledgework": 43.6,
@@ -553,6 +566,7 @@
   },
   "claude-opus-5-medium": {
    "capabilities": {
+    "agentic": 54.3,
     "coding": 86.1,
     "knowledge": 31.0,
     "knowledgework": 51.2,
@@ -589,6 +603,7 @@
   },
   "claude-opus-5-xhigh": {
    "capabilities": {
+    "agentic": 53.2,
     "coding": 88.0,
     "knowledge": 35.4,
     "knowledgework": 60.4,
@@ -625,6 +640,7 @@
   },
   "claude-sonnet-4-6-adaptive": {
    "capabilities": {
+    "agentic": 20.1,
     "coding": 71.2,
     "instruction": 56.6,
     "knowledge": 12.2,
@@ -657,6 +673,7 @@
   },
   "claude-sonnet-5": {
    "capabilities": {
+    "agentic": 36.5,
     "coding": 80.5,
     "knowledge": 16.4,
     "knowledgework": 50.0,
@@ -693,6 +710,7 @@
   },
   "claude-sonnet-5-low": {
    "capabilities": {
+    "agentic": 19.9,
     "knowledge": -8.2,
     "knowledgework": 32.3,
     "longcontext": 67.3
@@ -716,6 +734,7 @@
   },
   "claude-sonnet-5-medium": {
    "capabilities": {
+    "agentic": 27.9,
     "knowledge": -6.9,
     "knowledgework": 36.1,
     "longcontext": 73.7
@@ -766,6 +785,7 @@
   },
   "deepseek-r1-0120": {
    "capabilities": {
+    "agentic": 0.2,
     "coding": 19.1,
     "instruction": 39.0,
     "knowledge": -32.2,
@@ -797,6 +817,7 @@
   },
   "deepseek-v3": {
    "capabilities": {
+    "agentic": 0.6,
     "coding": 16.9,
     "instruction": 34.8,
     "knowledge": -41.6,
@@ -833,6 +854,7 @@
   },
   "deepseek-v3-0324": {
    "capabilities": {
+    "agentic": 0.3,
     "coding": 13.9,
     "instruction": 41.0,
     "knowledge": -40.7,
@@ -864,6 +886,7 @@
   },
   "deepseek-v4-flash": {
    "capabilities": {
+    "agentic": 54.0,
     "coding": 78.7,
     "knowledge": -14.3,
     "knowledgework": 48.4,
@@ -899,6 +922,7 @@
   },
   "deepseek-v4-flash-0420": {
    "capabilities": {
+    "agentic": 28.0,
     "coding": 61.8,
     "instruction": 79.2,
     "knowledge": -23.9,
@@ -940,6 +964,7 @@
   },
   "deepseek-v4-flash-0420-high": {
    "capabilities": {
+    "agentic": 28.5,
     "coding": 56.9,
     "instruction": 73.5,
     "knowledge": -23.1,
@@ -986,6 +1011,7 @@
   },
   "deepseek-v4-flash-vision": {
    "capabilities": {
+    "agentic": 47.5,
     "coding": 74.2,
     "knowledge": -17.6,
     "knowledgework": 53.9,
@@ -1022,6 +1048,7 @@
   },
   "deepseek-v4-pro": {
    "capabilities": {
+    "agentic": 56.7,
     "coding": 78.7,
     "knowledge": 0.8,
     "knowledgework": 49.7,
@@ -1067,6 +1094,7 @@
   },
   "deepseek-v4-pro-0424": {
    "capabilities": {
+    "agentic": 56.3,
     "coding": 64.0,
     "instruction": 76.5,
     "knowledge": -10.7,
@@ -1135,6 +1163,7 @@
   },
   "gemini-2-5-pro": {
    "capabilities": {
+    "agentic": 2.2,
     "coding": 28.5,
     "instruction": 48.7,
     "knowledge": -16.4,
@@ -1167,6 +1196,7 @@
   },
   "gemini-3-1-flash-lite-preview": {
    "capabilities": {
+    "agentic": 6.8,
     "coding": 31.1,
     "instruction": 77.2,
     "knowledge": -16.4,
@@ -1204,6 +1234,7 @@
   },
   "gemini-3-1-pro-preview": {
    "capabilities": {
+    "agentic": 35.4,
     "coding": 73.8,
     "instruction": 77.1,
     "knowledge": 31.9,
@@ -1241,6 +1272,7 @@
   },
   "gemini-3-5-flash": {
    "capabilities": {
+    "agentic": 42.1,
     "coding": 78.7,
     "instruction": 76.3,
     "knowledge": 21.2,
@@ -1278,6 +1310,7 @@
   },
   "gemini-3-5-flash-lite": {
    "capabilities": {
+    "agentic": 25.0,
     "coding": 53.6,
     "knowledge": 5.2,
     "knowledgework": 28.2,
@@ -1314,6 +1347,7 @@
   },
   "gemini-3-6-flash": {
    "capabilities": {
+    "agentic": 53.0,
     "coding": 77.5,
     "knowledge": 22.1,
     "knowledgework": 41.6,
@@ -1350,6 +1384,7 @@
   },
   "gemini-3-7-flash": {
    "capabilities": {
+    "agentic": 62.0,
     "coding": 85.8,
     "knowledge": 26.5,
     "knowledgework": 46.7,
@@ -1440,6 +1475,7 @@
   },
   "gemini-3-8-flash": {
    "capabilities": {
+    "agentic": 59.9,
     "coding": 87.6,
     "knowledge": 29.6,
     "knowledgework": 48.2,
@@ -1503,6 +1539,7 @@
   },
   "gemini-3-8-flash-medium": {
    "capabilities": {
+    "agentic": 60.9,
     "coding": 83.9,
     "knowledge": 28.6,
     "knowledgework": 47.8,
@@ -1649,6 +1686,7 @@
   },
   "glm-5-1": {
    "capabilities": {
+    "agentic": 20.3,
     "coding": 61.8,
     "instruction": 76.3,
     "knowledge": 0.8,
@@ -1726,6 +1764,7 @@
   },
   "glm-5-3": {
    "capabilities": {
+    "agentic": 62.2,
     "coding": 83.9,
     "knowledge": 14.3,
     "knowledgework": 58.7,
@@ -1771,6 +1810,7 @@
   },
   "glm-5-3-flash": {
    "capabilities": {
+    "agentic": 60.4,
     "coding": 84.3,
     "knowledge": 7.5,
     "knowledgework": 58.5,
@@ -1961,6 +2001,7 @@
   },
   "gpt-5-4-mini": {
    "capabilities": {
+    "agentic": 26.2,
     "coding": 59.2,
     "instruction": 73.3,
     "knowledge": -18.9,
@@ -1998,6 +2039,7 @@
   },
   "gpt-5-4-nano": {
    "capabilities": {
+    "agentic": 6.0,
     "coding": 60.7,
     "instruction": 75.9,
     "knowledge": -29.5,
@@ -2035,6 +2077,7 @@
   },
   "gpt-5-5": {
    "capabilities": {
+    "agentic": 47.3,
     "coding": 84.3,
     "instruction": 75.9,
     "knowledge": 20.5,
@@ -2072,6 +2115,7 @@
   },
   "gpt-5-5-high": {
    "capabilities": {
+    "agentic": 44.3,
     "coding": 79.4,
     "instruction": 71.6,
     "knowledge": 18.8,
@@ -2109,6 +2153,7 @@
   },
   "gpt-5-5-instant-06-26": {
    "capabilities": {
+    "agentic": 36.4,
     "coding": 34.8,
     "knowledge": 3.7,
     "knowledgework": 8.1,
@@ -2177,6 +2222,7 @@
   },
   "gpt-5-5-medium": {
    "capabilities": {
+    "agentic": 40.1,
     "coding": 80.5,
     "instruction": 71.0,
     "knowledge": 18.1,
@@ -2247,6 +2293,7 @@
   },
   "gpt-5-6-luna": {
    "capabilities": {
+    "agentic": 50.2,
     "coding": 80.9,
     "knowledge": -10.3,
     "knowledgework": 49.5,
@@ -2411,6 +2458,7 @@
   },
   "gpt-5-6-luna-xhigh": {
    "capabilities": {
+    "agentic": 42.6,
     "coding": 77.9,
     "knowledge": -10.8,
     "knowledgework": 46.4,
@@ -2452,6 +2500,7 @@
   },
   "gpt-5-6-sol": {
    "capabilities": {
+    "agentic": 60.1,
     "coding": 88.0,
     "instruction": 72.7,
     "knowledge": 22.0,
@@ -2504,6 +2553,7 @@
   },
   "gpt-5-6-sol-high": {
    "capabilities": {
+    "agentic": 55.3,
     "coding": 87.3,
     "instruction": 69.2,
     "knowledge": 20.4,
@@ -2556,6 +2606,7 @@
   },
   "gpt-5-6-sol-low": {
    "capabilities": {
+    "agentic": 41.0,
     "coding": 76.8,
     "instruction": 66.5,
     "knowledge": 18.9,
@@ -2608,6 +2659,7 @@
   },
   "gpt-5-6-sol-medium": {
    "capabilities": {
+    "agentic": 51.3,
     "coding": 86.1,
     "instruction": 69.6,
     "knowledge": 19.4,
@@ -2697,6 +2749,7 @@
   },
   "gpt-5-6-sol-xhigh": {
    "capabilities": {
+    "agentic": 55.3,
     "coding": 89.5,
     "instruction": 71.0,
     "knowledge": 21.0,
@@ -2749,6 +2802,7 @@
   },
   "gpt-5-6-terra": {
    "capabilities": {
+    "agentic": 59.6,
     "coding": 88.0,
     "instruction": 71.2,
     "knowledge": 0.1,
@@ -2791,6 +2845,7 @@
   },
   "gpt-5-6-terra-high": {
    "capabilities": {
+    "agentic": 42.0,
     "coding": 75.7,
     "instruction": 64.4,
     "knowledge": -3.5,
@@ -2926,6 +2981,7 @@
   },
   "gpt-5-6-terra-xhigh": {
    "capabilities": {
+    "agentic": 47.1,
     "coding": 80.1,
     "instruction": 66.3,
     "knowledge": -3.0,
@@ -2968,6 +3024,7 @@
   },
   "gpt-5-mini": {
    "capabilities": {
+    "agentic": 6.5,
     "coding": 3.7,
     "instruction": 75.4,
     "knowledge": -17.3,
@@ -3005,6 +3062,7 @@
   },
   "gpt-6-astra": {
    "capabilities": {
+    "agentic": 68.5,
     "coding": 88.4,
     "knowledge": 43.4,
     "knowledgework": 54.0,
@@ -3041,6 +3099,7 @@
   },
   "gpt-6-astra-high": {
    "capabilities": {
+    "agentic": 66.6,
     "coding": 89.9,
     "knowledge": 43.7,
     "knowledgework": 51.5,
@@ -3077,6 +3136,7 @@
   },
   "gpt-6-astra-low": {
    "capabilities": {
+    "agentic": 59.1,
     "coding": 88.0,
     "knowledge": 40.5,
     "knowledgework": 46.0,
@@ -3113,6 +3173,7 @@
   },
   "gpt-6-astra-medium": {
    "capabilities": {
+    "agentic": 64.6,
     "coding": 89.5,
     "knowledge": 42.2,
     "knowledgework": 50.0,
@@ -3149,6 +3210,7 @@
   },
   "gpt-6-astra-non-reasoning": {
    "capabilities": {
+    "agentic": 61.8,
     "coding": 89.1,
     "knowledge": 26.6,
     "knowledgework": 52.1,
@@ -3185,6 +3247,7 @@
   },
   "gpt-6-astra-xhigh": {
    "capabilities": {
+    "agentic": 67.2,
     "coding": 89.1,
     "knowledge": 43.4,
     "knowledgework": 52.8,
@@ -3221,6 +3284,7 @@
   },
   "gpt-oss-120b": {
    "capabilities": {
+    "agentic": 0.2,
     "coding": 26.2,
     "instruction": 69.0,
     "knowledge": -49.2,
@@ -3289,6 +3353,7 @@
   },
   "gpt-oss-20b": {
    "capabilities": {
+    "agentic": 0.2,
     "coding": 13.9,
     "instruction": 65.1,
     "knowledge": -63.0,
@@ -3351,6 +3416,7 @@
   },
   "granite-4-2-3b": {
    "capabilities": {
+    "agentic": 0.4,
     "coding": 13.9,
     "knowledge": -14.7,
     "knowledgework": 0.0,
@@ -3426,6 +3492,7 @@
   },
   "grok-4-3": {
    "capabilities": {
+    "agentic": 1.4,
     "coding": 39.7,
     "instruction": 81.3,
     "knowledge": 18.0,
@@ -3463,6 +3530,7 @@
   },
   "grok-4-3-non-reasoning": {
    "capabilities": {
+    "agentic": 0.9,
     "coding": 34.1,
     "instruction": 47.6,
     "knowledge": -33.1,
@@ -3495,6 +3563,7 @@
   },
   "grok-4-5": {
    "capabilities": {
+    "agentic": 57.9,
     "coding": 81.6,
     "knowledge": 25.3,
     "knowledgework": 46.5,
@@ -3536,6 +3605,7 @@
   },
   "grok-4-6": {
    "capabilities": {
+    "agentic": 66.7,
     "coding": 88.4,
     "knowledge": 30.5,
     "knowledgework": 57.1,
@@ -3576,6 +3646,7 @@
   },
   "grok-4-6-low": {
    "capabilities": {
+    "agentic": 53.4,
     "coding": 75.3,
     "knowledge": 25.9,
     "knowledgework": 48.1,
@@ -3616,6 +3687,7 @@
   },
   "grok-4-6-medium": {
    "capabilities": {
+    "agentic": 63.2,
     "coding": 84.3,
     "knowledge": 28.0,
     "knowledgework": 57.1,
@@ -3656,6 +3728,7 @@
   },
   "grok-4-6-xhigh": {
    "capabilities": {
+    "agentic": 67.0,
     "coding": 88.0,
     "knowledge": 29.3,
     "knowledgework": 58.2,
@@ -3723,6 +3796,7 @@
   },
   "hy3": {
    "capabilities": {
+    "agentic": 18.4,
     "coding": 64.4,
     "knowledge": -18.5,
     "knowledgework": 31.8,
@@ -3785,6 +3859,7 @@
   },
   "inkling": {
    "capabilities": {
+    "agentic": 5.0,
     "coding": 55.1,
     "knowledge": 2.0,
     "knowledgework": 33.3,
@@ -3826,6 +3901,7 @@
   },
   "inkling-small": {
    "capabilities": {
+    "agentic": 4.8,
     "coding": 55.1,
     "knowledge": -8.9,
     "knowledgework": 34.6,
@@ -3923,6 +3999,7 @@
   },
   "kimi-k2-7-code": {
    "capabilities": {
+    "agentic": 24.5,
     "coding": 67.4,
     "instruction": 63.1,
     "knowledge": -10.2,
@@ -3959,6 +4036,7 @@
   },
   "kimi-k3": {
    "capabilities": {
+    "agentic": 58.3,
     "coding": 85.0,
     "knowledge": 19.7,
     "knowledgework": 54.2,
@@ -4056,6 +4134,7 @@
   },
   "llama-4-maverick": {
    "capabilities": {
+    "agentic": 0.2,
     "coding": 7.9,
     "instruction": 43.0,
     "knowledge": -41.9,
@@ -4098,6 +4177,7 @@
   },
   "llama-4-scout": {
    "capabilities": {
+    "agentic": 0.2,
     "coding": 3.7,
     "instruction": 39.5,
     "knowledge": -52.1,
@@ -4130,6 +4210,7 @@
   },
   "longcat-2-0": {
    "capabilities": {
+    "agentic": 4.5,
     "coding": 50.2,
     "knowledge": -23.4,
     "knowledgework": 23.2,
@@ -4206,6 +4287,7 @@
   },
   "mercury-2": {
    "capabilities": {
+    "agentic": 1.7,
     "coding": 27.3,
     "instruction": 69.8,
     "knowledge": -50.7,
@@ -4242,6 +4324,7 @@
   },
   "mimo-v2-5-0424": {
    "capabilities": {
+    "agentic": 18.4,
     "coding": 63.7,
     "instruction": 67.1,
     "knowledge": -9.8,
@@ -4279,6 +4362,7 @@
   },
   "mimo-v2-5-pro": {
    "capabilities": {
+    "agentic": 13.7,
     "coding": 65.2,
     "instruction": 79.9,
     "knowledge": 3.2,
@@ -4315,6 +4399,7 @@
   },
   "minimax-m2-7": {
    "capabilities": {
+    "agentic": 4.4,
     "coding": 55.4,
     "instruction": 75.7,
     "knowledge": 0.8,
@@ -4346,6 +4431,7 @@
   },
   "minimax-m3": {
    "capabilities": {
+    "agentic": 21.3,
     "coding": 65.2,
     "instruction": 82.9,
     "knowledge": 1.4,
@@ -4383,6 +4469,7 @@
   },
   "ministral-3-14b": {
    "capabilities": {
+    "agentic": 0.6,
     "coding": 9.7,
     "instruction": 32.0,
     "knowledge": -66.4,
@@ -4415,6 +4502,7 @@
   },
   "ministral-3-3b": {
    "capabilities": {
+    "agentic": 0.7,
     "coding": 0.0,
     "instruction": 26.8,
     "knowledge": -64.0,
@@ -4447,6 +4535,7 @@
   },
   "ministral-3-8b": {
    "capabilities": {
+    "agentic": 0.5,
     "coding": 4.1,
     "instruction": 29.1,
     "knowledge": -69.0,
@@ -4479,6 +4568,7 @@
   },
   "mistral-large-3": {
    "capabilities": {
+    "agentic": 1.5,
     "coding": 12.0,
     "instruction": 36.2,
     "knowledge": -39.6,
@@ -4544,6 +4634,7 @@
   },
   "mistral-medium-3-5": {
    "capabilities": {
+    "agentic": 6.3,
     "coding": 50.6,
     "instruction": 68.8,
     "knowledge": -36.8,
@@ -4581,6 +4672,7 @@
   },
   "mistral-small-3-1": {
    "capabilities": {
+    "agentic": 1.2,
     "coding": 26.2,
     "instruction": 29.9,
     "knowledge": -50.8,
@@ -4617,6 +4709,7 @@
   },
   "mistral-small-3-2": {
    "capabilities": {
+    "agentic": 0.3,
     "coding": 5.6,
     "instruction": 33.5,
     "knowledge": -50.6,
@@ -4649,6 +4742,7 @@
   },
   "mistral-small-4": {
    "capabilities": {
+    "agentic": 1.0,
     "coding": 21.0,
     "instruction": 48.2,
     "knowledge": -30.4,
@@ -4681,6 +4775,7 @@
   },
   "muse-glimmer": {
    "capabilities": {
+    "agentic": 6.8,
     "coding": 51.7,
     "knowledge": -32.9,
     "knowledgework": 19.6,
@@ -4727,6 +4822,7 @@
   },
   "muse-spark-1-1": {
    "capabilities": {
+    "agentic": 38.8,
     "coding": 77.9,
     "knowledge": 28.1,
     "knowledgework": 39.7,
@@ -4762,6 +4858,7 @@
   },
   "muse-spark-1-2": {
    "capabilities": {
+    "agentic": 40.6,
     "coding": 80.1,
     "knowledge": 27.2,
     "knowledgework": 51.2,
@@ -4797,6 +4894,7 @@
   },
   "muse-spark-1-3": {
    "capabilities": {
+    "agentic": 57.9,
     "coding": 84.3,
     "knowledge": 25.0,
     "knowledgework": 60.2,
@@ -4827,6 +4925,7 @@
   },
   "muse-spark-1-3-xhigh": {
    "capabilities": {
+    "agentic": 56.8,
     "coding": 85.4,
     "knowledge": 23.1,
     "knowledgework": 58.1,
@@ -4863,6 +4962,7 @@
   },
   "nemotron-3-5-lightning": {
    "capabilities": {
+    "agentic": 0.8,
     "coding": 24.3,
     "knowledge": -17.7,
     "knowledgework": 13.3,
@@ -4898,6 +4998,7 @@
   },
   "nvidia-nemotron-3-nano-30b-a3b-reasoning": {
    "capabilities": {
+    "agentic": 1.0,
     "coding": 6.7,
     "instruction": 71.1,
     "knowledge": -51.6,
@@ -4929,6 +5030,7 @@
   },
   "nvidia-nemotron-3-super-120b-a12b": {
    "capabilities": {
+    "agentic": 3.8,
     "coding": 38.6,
     "instruction": 71.5,
     "knowledge": -41.5,
@@ -4960,6 +5062,7 @@
   },
   "nvidia-nemotron-3-ultra-550b-a55b": {
    "capabilities": {
+    "agentic": 3.0,
     "coding": 53.9,
     "instruction": 81.4,
     "knowledge": -0.4,
@@ -5006,6 +5109,7 @@
   },
   "quasar-438b": {
    "capabilities": {
+    "agentic": 23.9,
     "coding": 69.3,
     "knowledge": -2.6,
     "knowledgework": 37.0,
@@ -5041,6 +5145,7 @@
   },
   "qwen3-235b-a22b-instruct-2507-reasoning": {
    "capabilities": {
+    "agentic": 2.2,
     "coding": 12.0,
     "instruction": 51.2,
     "knowledge": -46.5,
@@ -5072,6 +5177,7 @@
   },
   "qwen3-30b-a3b-2507-reasoning": {
    "capabilities": {
+    "agentic": 0.8,
     "coding": 1.5,
     "instruction": 50.7,
     "knowledge": -56.1,
@@ -5103,6 +5209,7 @@
   },
   "qwen3-5-122b-a10b": {
    "capabilities": {
+    "agentic": 5.5,
     "coding": 47.6,
     "instruction": 75.7,
     "knowledge": -41.5,
@@ -5191,6 +5298,7 @@
   },
   "qwen3-5-397b-a17b": {
    "capabilities": {
+    "agentic": 6.9,
     "coding": 51.3,
     "instruction": 78.8,
     "knowledge": -30.8,
@@ -5251,6 +5359,7 @@
   },
   "qwen3-6-27b": {
    "capabilities": {
+    "agentic": 11.0,
     "coding": 60.7,
     "instruction": 67.6,
     "knowledge": -20.0,
@@ -5395,6 +5504,7 @@
   },
   "qwen3-7-max": {
    "capabilities": {
+    "agentic": 23.0,
     "coding": 74.5,
     "instruction": 80.5,
     "knowledge": 13.5,
@@ -5436,6 +5546,7 @@
   },
   "qwen3-7-plus": {
    "capabilities": {
+    "agentic": 17.4,
     "coding": 61.0,
     "instruction": 78.0,
     "knowledge": 1.1,
@@ -5478,6 +5589,7 @@
   },
   "qwen3-8-2-4t-a95b": {
    "capabilities": {
+    "agentic": 57.2,
     "coding": 82.0,
     "knowledge": 4.3,
     "knowledgework": 56.4,
@@ -5518,6 +5630,7 @@
   },
   "qwen3-8-27b": {
    "capabilities": {
+    "agentic": 48.2,
     "coding": 79.8,
     "knowledge": -10.0,
     "knowledgework": 48.2,
@@ -5712,6 +5825,7 @@
   },
   "qwen3-8-max": {
    "capabilities": {
+    "agentic": 49.2,
     "coding": 81.3,
     "knowledge": 3.4,
     "knowledgework": 56.5,
@@ -5753,6 +5867,7 @@
   },
   "qwen3-coder-next": {
    "capabilities": {
+    "agentic": 1.1,
     "coding": 38.2,
     "instruction": 35.2,
     "knowledge": -62.4,
@@ -5816,6 +5931,7 @@
   },
   "ring-2-6-1t": {
    "capabilities": {
+    "agentic": 0.7,
     "coding": 43.1,
     "instruction": 44.6,
     "knowledge": -37.7,
@@ -5847,6 +5963,7 @@
   },
   "solar-pro-3": {
    "capabilities": {
+    "agentic": 0.5,
     "coding": 12.0,
     "instruction": 71.2,
     "knowledge": -53.4,
@@ -5947,6 +6064,7 @@
   },
   "trinity-large-thinking": {
    "capabilities": {
+    "agentic": 1.3,
     "coding": 20.6,
     "instruction": 56.3,
     "knowledge": -44.1,

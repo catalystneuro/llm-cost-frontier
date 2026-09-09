@@ -49,8 +49,11 @@ MIN_PRICE_MOVE = 0.02
 CAPABILITIES = [
     dict(key="coding", field="terminalbenchV21", label="Coding", metric="Terminal-Bench 2.1", percent=True,
          blurb="Completion rate on Terminal-Bench 2.1: real software engineering tasks run agentically in a terminal. The axis to watch when picking a model for a coding assistant or an autonomous software agent."),
-    dict(key="agentic", field="agenticIndex", label="Agentic Tool Use", metric="AA Agentic Index", percent=False,
-         blurb="Artificial Analysis's Agentic Index, a composite of tool calling and multi-step task completion evaluations. Relevant for models that orchestrate tools and workflows rather than answer single prompts."),
+    # agenticIndex was removed when AA recomposed the index (v4.3, September
+    # 2026); AutomationBench-AA is its successor for tool use and multi-step
+    # task completion. The key stays "agentic" so the tab and links carry over.
+    dict(key="agentic", field="automationBenchPartialScore", label="Agentic Tool Use", metric="AutomationBench-AA", percent=True,
+         blurb="Score on AutomationBench-AA, Artificial Analysis's benchmark of tool calling and multi-step task completion, which replaced their Agentic Index in September 2026. Relevant for models that orchestrate tools and workflows rather than answer single prompts."),
     dict(key="longcontext", field="lcr", label="Long Context", metric="AA-LCR", percent=True,
          blurb="Accuracy on Artificial Analysis's long context reasoning suite, which requires answers grounded in roughly 100k tokens of source material. Relevant for document analysis, retrieval pipelines, and codebase-scale prompts."),
     dict(key="instruction", field="ifbench", label="Instruction Following", metric="IFBench", percent=True,
@@ -224,9 +227,13 @@ def era_snapshots(eras: list, today: dt.date) -> list:
         if first == end:
             first = add_months(first, -1)
         snaps = []
+        if i > 0 and starts[i - 1] < end:
+            # The era's first day is the baseline the current frontier is
+            # compared against: how the frontier stood when the new index began.
+            snaps.append([starts[i - 1].isoformat(), starts[i - 1].strftime("%b %-d, %Y")])
         for k in range(SNAPSHOT_COUNT - 2, -1, -1):
             d = add_months(first, -SNAPSHOT_MONTHS * k)
-            if d > end or (i > 0 and d < starts[i - 1]):
+            if d > end or (i > 0 and d <= starts[i - 1]):
                 continue
             snaps.append([d.isoformat(), d.strftime("%b %-d, %Y")])
         if snaps and snaps[-1][0] == end.isoformat():
@@ -348,9 +355,12 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
     for date in sorted(by_date):
         ev_era = era_index(date, eras)
         if ev_era > cur_era:
-            for slug in [s for s in state if model_era(models[s], eras) < ev_era]:
-                del state[slug]
-            current = pareto(state)
+            # Everything measured so far predates the boundary, so nothing in
+            # the state is comparable in the new era. Models re-enter at their
+            # first in-era observation (a rebase), which also covers models the
+            # source drops at the boundary and re-measures days later.
+            state = {}
+            current = set()
             cur_era = ev_era
         changed = {}
         state_before = dict(state)
@@ -516,7 +526,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         cap_tiers=cap_tiers,
         cap_tier_cost=cap_tier_cost,
         cap_tier_summary=cap_tier_summary,
-        eras=[[e["start"], e.get("note", "")] for e in eras or []],
+        eras=[[e["start"], e.get("note", ""), e.get("label", ""), e.get("label_before", "")] for e in eras or []],
         era_snapshots=era_snapshots(eras, today),
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
