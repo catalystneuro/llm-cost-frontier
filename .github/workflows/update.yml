@@ -9,6 +9,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: update-frontier-data
@@ -57,3 +59,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
         run: gh workflow run sync-llm-frontier.yml --repo catalystneuro/catalystneuro.github.io
+
+  # Data commits above are made with the workflow token, which does not
+  # trigger the push-driven deploy, so the deploy is called directly.
+  deploy:
+    needs: update
+    uses: ./.github/workflows/deploy-pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
