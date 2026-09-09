@@ -186,8 +186,15 @@
     anim.paused = p;
     var b = document.getElementById('pfc-frontier-toggle');
     if (b) { b.textContent = p ? 'Play' : 'Pause'; b.setAttribute('aria-pressed', p ? 'true' : 'false'); }
-    if (p) clearTimeout(anim.timer);
-    else anim.timer = setTimeout(tick, anim.stage === SNAPS.length - 1 ? HOLD_MS : STEP_MS);
+    if (p) { clearTimeout(anim.timer); return; }
+    // Pressing Play on the finished picture restarts the build-up at once;
+    // waiting out the end-hold first reads as a dead button.
+    if (anim.stage >= SNAPS.length - 1) {
+      anim.stage = 0;
+      applyStage();
+      hideTip();
+    }
+    anim.timer = setTimeout(tick, STEP_MS);
   }
 
   function renderFrontier() {
