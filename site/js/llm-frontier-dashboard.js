@@ -554,7 +554,11 @@
     var yd = [0.005, Math.max(5, Math.pow(10, Math.ceil(Math.log10(maxRec))))];
     var ticks = []; var td = new Date(x0d.getTime());
     var monthsSpan = (x1d.getUTCFullYear() - x0d.getUTCFullYear()) * 12 + x1d.getUTCMonth() - x0d.getUTCMonth();
-    var stepM = monthsSpan > 30 ? 6 : monthsSpan > 16 ? 3 : 2;
+    // Tick spacing follows the pixels available, not just the span: a month
+    // label needs about 52px, so narrow charts get fewer, wider-stepped ticks.
+    var maxTicks = Math.max(2, Math.floor((W - M.l - M.r) / 52));
+    var stepM = Math.ceil(monthsSpan / maxTicks);
+    stepM = stepM <= 2 ? 2 : stepM <= 3 ? 3 : stepM <= 4 ? 4 : stepM <= 6 ? 6 : 12;
     var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     while (td.getTime() <= x1) { ticks.push([td.toISOString().slice(0, 10), MON[td.getUTCMonth()] + " '" + String(td.getUTCFullYear()).slice(2)]); td.setUTCMonth(td.getUTCMonth() + stepM); }
     function X(dstr) { return M.l + (Date.parse(dstr + 'T00:00:00Z') - x0) / (x1 - x0) * (W - M.l - M.r); }
