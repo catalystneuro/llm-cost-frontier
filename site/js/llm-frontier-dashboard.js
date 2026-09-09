@@ -676,7 +676,7 @@
                        halving_days: ratio > 1 && days ? Math.round(days / (Math.log(ratio) / Math.LN2)) : null };
       });
     }
-    curTiers().forEach(function (t) {
+    curTiers().slice().reverse().forEach(function (t) {
       var s = summary[t];
       var tr = document.createElement('tr');
       tr.append(cell(tierLabel(t), 'pfc-td-tier'));
