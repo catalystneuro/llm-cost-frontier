@@ -436,6 +436,32 @@ def test_readded_models_do_not_leak_old_scores_into_the_new_era():
     assert new["Newcomer"]["ceiling_from"] == 42.0
 
 
+def test_mass_move_dates_detects_correlated_shifts():
+    from llm_cost_frontier.update import mass_move_dates
+    models = {}
+    for i in range(10):
+        models[f"m{i}"] = model(f"M{i}", "2026-01-01", 30.0 + i, 1.0,
+                                obs=[["2026-01-01", 1.0, 30.0 + i], ["2026-06-01", 1.2, 30.0 + i]])
+    assert mass_move_dates(models, []) == ["2026-06-01"]
+
+
+def test_era_baseline_settles_after_a_mass_remeasurement():
+    from llm_cost_frontier.update import era_snapshots
+    # First v4.3-style measurements on Sep 5, revised en masse on Sep 7: the
+    # current era's baseline snapshot moves to the settled Sep 7 values.
+    models = {}
+    for i in range(10):
+        models[f"m{i}"] = model(f"M{i}", "2026-01-01", 40.0 + i, 1.0,
+                                obs=[["2026-01-01", 1.0, 50.0 + i], ["2026-09-05", 1.5, 40.0 + i],
+                                     ["2026-09-07", 2.0, 40.0 + i]])
+    out = era_snapshots(ERAS, dt.date(2026, 9, 9), models, [])
+    assert out[1][0] == ["2026-09-07", "Sep 7, 2026"]
+    assert out[1][-1] == ["2026-09-09", "today"]
+    # A mass move well after the settling window does not move the baseline.
+    out = era_snapshots([{"start": "2026-05-01"}], dt.date(2026, 9, 9), models, [])
+    assert out[1][0] == ["2026-05-01", "May 1, 2026"]
+
+
 def test_mass_cost_moves_are_not_price_changes():
     # Ten models re-measured 20% more expensive on one day is a suite change;
     # one model's lone deep cut on another day is a price change.

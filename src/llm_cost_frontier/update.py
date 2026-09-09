@@ -46,6 +46,11 @@ MIN_PRICE_MOVE = 0.02
 # models moved together days after the v4.3 recomposition, is the archetype.
 MASS_MOVE_MIN = 6
 MASS_MOVE_FRACTION = 0.15
+# A new index's measurements settle over its first days (v4.3 was first
+# measured on September 5 and revised en masse on September 7). An era's
+# baseline snapshot uses the last mass re-measurement within this many days
+# of the era's start, so baselines compare against settled values.
+SETTLE_DAYS = 7
 
 # Per-capability metrics read from the same payload, each chosen because it
 # translates to a class of application better than the aggregate index does.
@@ -220,12 +225,20 @@ def snapshots(today: dt.date) -> list:
     return out
 
 
-def era_snapshots(eras: list, today: dt.date) -> list:
+def era_snapshots(eras: list, today: dt.date, models: dict = None, events: list = None) -> list:
     """Per era, the bi-monthly snapshot dates falling inside it, ending with
     the era's last day (labeled with its date) or with today for the current
     era. The dashboard renders one frontier chart per era from these, since
-    index scores are only comparable within an era."""
+    index scores are only comparable within an era.
+
+    Each era after the first opens with a baseline snapshot: the day its
+    measurement basis settled. That is the era's start, unless a mass
+    re-measurement followed within SETTLE_DAYS (a new suite's first values
+    are often revised en masse days later), in which case the last such
+    re-measurement is the baseline, so the current frontier is compared
+    against settled values rather than a basis that no longer exists."""
     starts = [dt.date.fromisoformat(e["start"]) for e in eras or []]
+    mass = mass_move_dates(models, events or [], eras) if models else []
     out = []
     for i in range(len(starts) + 1):
         end = today if i == len(starts) else starts[i] - dt.timedelta(days=1)
@@ -233,13 +246,18 @@ def era_snapshots(eras: list, today: dt.date) -> list:
         if first == end:
             first = add_months(first, -1)
         snaps = []
-        if i > 0 and starts[i - 1] < end:
-            # The era's first day is the baseline the current frontier is
-            # compared against: how the frontier stood when the new index began.
-            snaps.append([starts[i - 1].isoformat(), starts[i - 1].strftime("%b %-d, %Y")])
+        base = None
+        if i > 0:
+            base = starts[i - 1]
+            for d in mass:
+                dd = dt.date.fromisoformat(d)
+                if starts[i - 1] <= dd <= min(end, starts[i - 1] + dt.timedelta(days=SETTLE_DAYS)):
+                    base = dd
+            if base < end:
+                snaps.append([base.isoformat(), base.strftime("%b %-d, %Y")])
         for k in range(SNAPSHOT_COUNT - 2, -1, -1):
             d = add_months(first, -SNAPSHOT_MONTHS * k)
-            if d > end or (i > 0 and d <= starts[i - 1]):
+            if d > end or (base is not None and d <= base):
                 continue
             snaps.append([d.isoformat(), d.strftime("%b %-d, %Y")])
         if snaps and snaps[-1][0] == end.isoformat():
@@ -339,6 +357,32 @@ def pareto(state: dict) -> set:
     return out
 
 
+def mass_move_dates(models: dict, events: list, eras: list = None) -> list:
+    """Dates on which the measured cost moved by more than 10% for many models
+    at once: at least MASS_MOVE_MIN of them and MASS_MOVE_FRACTION of the
+    models measured at that point. These are re-measurements of the evaluation
+    suite, not waves of price changes."""
+    timeline = price_timeline(models, events)
+    by_date = {}
+    for date, cost, slug, iq, note in timeline:
+        by_date.setdefault(date, []).append((cost, slug))
+    state = {}
+    cur_era = 0
+    out = []
+    for date in sorted(by_date):
+        ev_era = era_index(date, eras)
+        if ev_era > cur_era:
+            state = {}
+            cur_era = ev_era
+        movers = sum(1 for cost, slug in by_date[date]
+                     if slug in state and state[slug] > 0 and abs(cost - state[slug]) / state[slug] > 0.10)
+        if movers >= max(MASS_MOVE_MIN, MASS_MOVE_FRACTION * len(state)):
+            out.append(date)
+        for cost, slug in by_date[date]:
+            state[slug] = cost
+    return out
+
+
 def frontier_advances(models: dict, events: list, records: dict, eras: list = None) -> list:
     """Dates on which the Pareto frontier changed, newest first.
 
@@ -349,6 +393,7 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
     about the model.
     """
     timeline = price_timeline(models, events)
+    mass_days = set(mass_move_dates(models, events, eras))
     record_keys = {(r[0], r[2]): t for t, recs in records.items() for r in recs}
     state = {}
     current = set()
@@ -371,9 +416,7 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
         changed = {}
         state_before = dict(state)
         base_of = lambda o: split_variant(models[o]["name"])[0]
-        movers = sum(1 for cost, slug, iq, note in by_date[date]
-                     if slug in state and state[slug][0] > 0 and abs(cost - state[slug][0]) / state[slug][0] > 0.10)
-        mass = movers >= max(MASS_MOVE_MIN, MASS_MOVE_FRACTION * len(state))
+        mass = date in mass_days
         for cost, slug, iq, note in by_date[date]:
             prev = state.get(slug)
             state[slug] = (cost, iq)
@@ -536,7 +579,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         cap_tier_cost=cap_tier_cost,
         cap_tier_summary=cap_tier_summary,
         eras=[[e["start"], e.get("note", ""), e.get("label", ""), e.get("label_before", "")] for e in eras or []],
-        era_snapshots=era_snapshots(eras, today),
+        era_snapshots=era_snapshots(eras, today, models, events),
         updated=history["updated"],
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
