@@ -3243,7 +3243,7 @@
    ],
    "open_weights": false,
    "release_date": "2026-09-03",
-   "retired": false
+   "retired": true
   },
   "gpt-6-astra-xhigh": {
    "capabilities": {
