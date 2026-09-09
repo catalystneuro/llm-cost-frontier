@@ -63,13 +63,15 @@
     return t.toISOString().slice(0, 10);
   }
   // Cost on the current era's basis at any date. Within the current era it is
-  // the cost measured then; before the recomposition it is today's cost
-  // scaled by the model's own price ratio from its dated history, so price
-  // changes carry over while suite changes never leak in.
+  // the cost measured then; before the recomposition it is the first settled
+  // measurement scaled by the model's own price ratio from its dated history,
+  // so price changes carry over, suite changes never leak in, and the series
+  // is continuous at the settle point.
   function basisCostAt(m, date) {
     if (!ERAS.length || eraOfDate(date) === ERAS.length) return costAt(m, date);
+    var anchor = costAt(m, ERAS[ERAS.length - 1][4] || ERAS[ERAS.length - 1][0]);
     var lastOld = costAt(m, dayBefore(ERAS[ERAS.length - 1][0]));
-    return lastOld > 0 ? m.mcost * costAt(m, date) / lastOld : m.mcost;
+    return lastOld > 0 ? anchor * costAt(m, date) / lastOld : m.mcost;
   }
   // Whether a model had been measured under the era of snapDate by that date;
   // a model dropped at a boundary and re-measured later must not appear at
