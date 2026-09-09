@@ -34,10 +34,13 @@
       <p>Built on <a href="https://artificialanalysis.ai/">Artificial Analysis</a>'s measured cost per task, refreshed four times a day; the <a href="/methodology/">methodology</a> has the details, and <a href="https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/">the original post</a> has the argument. Data as of <strong class="pfc-updated">&hellip;</strong>, covering <span class="pfc-count">&hellip;</span> models.</p>
     </div>
 
-    <h2>The Pareto Frontier Over Time</h2>
     <div class="pfc-tabs" id="pfc-cap-tabs" role="tablist" aria-label="Capability metric"></div>
-    <p class="pfc-lead" id="pfc-frontier-lead">The cheapest model at each level of the metric, and how that frontier has moved. The tabs switch between the aggregate Intelligence Index and single evaluations that map onto specific applications.</p>
     <div class="pfc-eranav" id="pfc-era-nav" hidden></div>
+
+    <div class="pfc-cols">
+    <section>
+    <h2>The Pareto Frontier Over Time</h2>
+    <p class="pfc-lead" id="pfc-frontier-lead">The cheapest model at each level of the metric, and how that frontier has moved. The tabs switch between the aggregate Intelligence Index and single evaluations that map onto specific applications.</p>
     <figure class="pfc-figure">
       <div class="pfc-side">
         <div class="pfc-side-chart" id="pfc-frontier"></div>
@@ -45,7 +48,7 @@
       </div>
       <figcaption>
         <details class="pfc-how"><summary>How to read this chart</summary>
-        <p>Each line is the Pareto frontier on the given date: the cheapest way to reach a given level of the selected metric among models released by then, at the prices then in effect. The darkest line is the current frontier; the Play button builds the history up one frontier at a time, and hovering any point names the model behind it. Small points are all measured models at their latest values, tinted by the two month window of their release; hollow points are open weights, filled are proprietary. The cost axis is the same measured cost per task on every tab, so switching tabs only moves models vertically. Capability scores are the latest measured values; only prices are tracked over time. Views never mix index eras: each era is drawn on its own scale with the scores and prices in effect at the time.</p>
+        <p>Each line is the Pareto frontier on the given date: the cheapest way to reach a given level of the selected metric among models released by then, at the prices then in effect. The darkest line is the current frontier; the Play button builds the history up one frontier at a time, and hovering any point names the model behind it. Small points are all measured models at their latest values, tinted by the two month window of their release; hollow points are open weights, filled are proprietary. The cost axis is the same measured cost per task on every tab, so switching tabs only moves models vertically. Capability scores are the latest measured values; only prices are tracked over time. The current view scores every model on the current index composition and estimates its pre-recomposition costs from the model's own price history, so earlier frontiers are comparable with today's; the archive views instead show exactly the scores and measured costs in effect at the time. Models never measured under the current composition appear only in the archives.</p>
         </details>
       </figcaption>
     </figure>
@@ -56,7 +59,9 @@
         <tbody id="pfc-cap-table"></tbody>
       </table>
     </div>
+    </section>
 
+    <section>
     <h2>Cost Records by Capability Tier</h2>
     <p class="pfc-lead" id="pfc-records-lead">The cheapest measured cost per task achieved by any released model at or above each Intelligence Index tier, by release date. Each step is a model that set a new low for its tier.</p>
     <figure class="pfc-figure">
@@ -76,6 +81,8 @@
         <thead><tr><th>Tier</th><th>First crossed</th><th>Current record</th><th>Collapse</th><th>Halving time</th></tr></thead>
         <tbody id="pfc-tier-table"></tbody>
       </table>
+    </div>
+    </section>
     </div>
 
     <h2 id="advances">Recent Frontier Advances</h2>
