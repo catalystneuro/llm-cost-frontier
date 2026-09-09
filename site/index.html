@@ -34,19 +34,24 @@
     </div>
 
     <div class="prose pfc-intro">
-      <p>This page keeps the figures from <a href="https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/">What Happens When the Cost of Intelligence Drops 100x</a> current. The data is Artificial Analysis's <a href="https://artificialanalysis.ai/">Intelligence Index</a> and their measured cost per Intelligence Index task (the average billed cost, including reasoning tokens, to run one task from their evaluation suite), pulled automatically four times a day by the <a href="https://github.com/catalystneuro/llm-cost-frontier">llm-cost-frontier</a> pipeline. Every observed price is kept, and models that drop out of their live benchmarking keep their history here, so the record only grows. Data as of <strong class="pfc-updated">&hellip;</strong>, covering <span class="pfc-count">&hellip;</span> models.</p>
+      <p>Built on <a href="https://artificialanalysis.ai/">Artificial Analysis</a>'s measured cost per task, refreshed four times a day; the <a href="/methodology/">methodology</a> has the details, and <a href="https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/">the original post</a> has the argument. Data as of <strong class="pfc-updated">&hellip;</strong>, covering <span class="pfc-count">&hellip;</span> models.</p>
     </div>
 
     <h2>The Pareto Frontier Over Time</h2>
     <div class="pfc-tabs" id="pfc-cap-tabs" role="tablist" aria-label="Capability metric"></div>
-    <p class="pfc-lead" id="pfc-frontier-lead">Intelligence against measured cost per task, with the Pareto frontier (the cheapest model at each intelligence level) reconstructed from model release dates and observed prices as it stood on the first of every second month, and as it stands today. The Intelligence Index is a broad aggregate; the tabs above switch the vertical axis to a single evaluation that maps more directly onto a kind of application. The Play button animates the chart, building up one frontier at a time. Hover any point for the model behind it.</p>
+    <div class="pfc-stats" id="pfc-stats"></div>
+    <p class="pfc-lead" id="pfc-frontier-lead">The cheapest model at each level of the metric, and how that frontier has moved. The tabs switch between the aggregate Intelligence Index and single evaluations that map onto specific applications.</p>
     <div class="pfc-eranav" id="pfc-era-nav" hidden></div>
     <figure class="pfc-figure">
       <div class="pfc-side">
         <div class="pfc-side-chart" id="pfc-frontier"></div>
         <div class="pfc-legend pfc-legend-side" id="pfc-frontier-legend"></div>
       </div>
-      <figcaption>Small points are all measured models at their latest measured cost, tinted by the two month window of their release; models released before the first window are grouped with it. Hollow points are open weights models; filled points are proprietary. Each line is the Pareto frontier on the given date: the cheapest way to reach a given level of the selected metric among models released by then. The darkest line is the current frontier as of the last update. Where successive frontiers share a segment, the older line is drawn on top. Capability scores are the latest measured values; only prices are tracked over time. Where the index has been recomposed, the toggle above the chart switches between eras; each era is drawn on its own scale with the scores and prices in effect at the time, ending on the era's last day.</figcaption>
+      <figcaption>
+        <details class="pfc-how"><summary>How to read this chart</summary>
+        <p>Each line is the Pareto frontier on the given date: the cheapest way to reach a given level of the selected metric among models released by then, at the prices then in effect. The darkest line is the current frontier; the Play button builds the history up one frontier at a time, and hovering any point names the model behind it. Small points are all measured models at their latest values, tinted by the two month window of their release; hollow points are open weights, filled are proprietary. The cost axis is the same measured cost per task on every tab, so switching tabs only moves models vertically. Capability scores are the latest measured values; only prices are tracked over time. Views never mix index eras: each era is drawn on its own scale with the scores and prices in effect at the time.</p>
+        </details>
+      </figcaption>
     </figure>
 
     <div class="pfc-table-wrap pfc-cap-wrap" id="pfc-cap-table-wrap" hidden>
@@ -63,7 +68,11 @@
         <div class="pfc-side-chart" id="pfc-records"></div>
         <div class="pfc-legend pfc-legend-side" id="pfc-records-legend"></div>
       </div>
-      <figcaption>Hollow markers are open weights models. Each model is placed at the price in effect on each date: observed prices from August 2026 onward, and recorded price events before that (see the <a href="methodology/">methodology</a>). A dashed vertical line marks a recomposition of the underlying benchmark; the running minimum resets there, since neither scores nor measured costs are comparable across it.</figcaption>
+      <figcaption>
+        <details class="pfc-how"><summary>How to read this chart</summary>
+        <p>Hollow markers are open weights models. Each model is placed at the price in effect on each date: observed prices from August 2026 onward, and recorded price events before that (see the <a href="methodology/">methodology</a>). A dashed vertical line marks a recomposition of the underlying benchmark; the running minimum resets there, since neither scores nor measured costs are comparable across it.</p>
+        </details>
+      </figcaption>
     </figure>
 
     <div class="pfc-table-wrap">

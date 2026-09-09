@@ -347,12 +347,12 @@
 
   // ---- shareable view state in the URL hash ----
   function hashFor() {
-    var key = CAP >= 0 ? CAPS[CAP].key : 'index';
+    if (CAP >= 0) return '#' + CAPS[CAP].key;
     if (ERAS.length && ERA_VIEW < ERAS.length && DATA.era_snapshots) {
       var snaps = DATA.era_snapshots[ERA_VIEW];
-      return '#' + key + '-through-' + snaps[snaps.length - 1][0];
+      return '#index-through-' + snaps[snaps.length - 1][0];
     }
-    return CAP >= 0 ? '#' + key : '';
+    return '';
   }
   function syncHash() {
     var h = hashFor();
@@ -365,45 +365,52 @@
     for (var i = 0; i < CAPS.length; i++) if (CAPS[i].key === h) { CAP = i; return; }
     var m = h.match(/^([a-z]+)-through-(\d{4}-\d{2}-\d{2})$/);
     if (m && DATA.era_snapshots) {
-      var cap = -1;
       if (m[1] !== 'index') {
-        for (var k = 0; k < CAPS.length; k++) if (CAPS[k].key === m[1]) cap = k;
-        if (cap === -1) return;
+        // Capability tabs no longer carry era views; old links land on the tab.
+        for (var k = 0; k < CAPS.length; k++) if (CAPS[k].key === m[1]) CAP = k;
+        return;
       }
       for (var e = 0; e < ERAS.length; e++) {
         var snaps = DATA.era_snapshots[e];
-        if (snaps[snaps.length - 1][0] === m[2]) { CAP = cap; ERA_VIEW = e; return; }
+        if (snaps[snaps.length - 1][0] === m[2]) { CAP = -1; ERA_VIEW = e; return; }
       }
     }
   }
 
-  // ---- era views for the Overall frontier chart ----
+  // ---- the era archive link on the Overall frontier chart ----
+  // Past eras are an archive, not a peer view: the Overall tab gets a quiet
+  // link to each frozen era (the score scale changed there); capability tabs
+  // get none, since their scores are comparable across eras and the records
+  // chart already shows the cost-basis break.
+  function switchEra(i) {
+    ERA_VIEW = i;
+    hideTip();
+    anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
+    syncHash();
+    renderEraNav(); renderStats(); renderFrontier();
+  }
   function renderEraNav() {
     var nav = document.getElementById('pfc-era-nav');
     if (!nav) return;
-    var show = ERAS.length > 0 && DATA.era_snapshots;
+    var show = CAP < 0 && ERAS.length > 0 && DATA.era_snapshots;
     nav.hidden = !show;
     if (!show) return;
     nav.replaceChildren();
-    for (var i = 0; i <= ERAS.length; i++) (function (i) {
+    function link(text, target) {
       var b = document.createElement('button');
-      b.type = 'button';
-      var end = DATA.era_snapshots[i][DATA.era_snapshots[i].length - 1][0];
-      var lbl = eraShortLabel(i);
-      b.textContent = i === ERAS.length
-        ? 'Index ' + (lbl || 'current') + (lbl ? ' (current)' : '')
-        : 'Index ' + (lbl ? lbl + ' ' : '') + '(through ' + fmtDate(end) + ')';
-      b.setAttribute('aria-pressed', ERA_VIEW === i ? 'true' : 'false');
-      b.addEventListener('click', function () {
-        if (ERA_VIEW === i) return;
-        ERA_VIEW = i;
-        hideTip();
-        anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
-        syncHash();
-        renderEraNav(); renderFrontier();
-      });
+      b.type = 'button'; b.textContent = text;
+      b.addEventListener('click', function () { switchEra(target); });
       nav.append(b);
-    })(i);
+    }
+    if (ERA_VIEW === ERAS.length) {
+      for (var i = ERAS.length - 1; i >= 0; i--) {
+        var end = DATA.era_snapshots[i][DATA.era_snapshots[i].length - 1][0];
+        var lbl = eraShortLabel(i);
+        link('View the ' + (lbl ? lbl + ' ' : '') + 'era (through ' + fmtDate(end) + ') →', i);
+      }
+    } else {
+      link('← Back to the current index' + (eraShortLabel(ERAS.length) ? ' (' + eraShortLabel(ERAS.length) + ')' : ''), ERAS.length);
+    }
   }
 
   // ---- capability tabs ----
@@ -426,7 +433,7 @@
         hideTip();
         anim.stage = 1e9;
         syncHash();
-        renderTabs(); renderEraNav(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
+        renderTabs(); renderEraNav(); renderStats(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
       });
       bar.append(b);
     });
@@ -438,7 +445,41 @@
     var c = capMeta();
     if (!c) { p.innerHTML = leadDefault; return; }
     var n = models.filter(function (m) { return score(m) != null; }).length;
-    p.textContent = c.blurb + ' Measured for ' + n + ' of ' + models.length + ' tracked models. The cost axis is unchanged, the measured cost per task on the full Intelligence Index suite, so switching tabs only moves each model vertically.';
+    p.textContent = c.blurb + ' Measured for ' + n + ' of ' + models.length + ' tracked models.';
+  }
+  // The stat strip: the answers a visitor came for, before any chart.
+  function renderStats() {
+    var box = document.getElementById('pfc-stats');
+    if (!box) return;
+    box.hidden = ERA_VIEW < ERAS.length;  // an archived era needs no live stats
+    if (box.hidden) return;
+    box.replaceChildren();
+    function tile(label, value, sub) {
+      var t = el('div', 'pfc-stat');
+      t.append(el('div', 'pfc-stat-label', label), el('div', 'pfc-stat-value', value));
+      if (sub) t.append(el('div', 'pfc-stat-sub', sub));
+      box.append(t);
+    }
+    var live = models.filter(function (m) { return !m.retired && m.era === ERAS.length && score(m) != null; });
+    var tiers = curTiers();
+    var headline = null, best = null;
+    for (var i = tiers.length - 1; i >= 0 && !best; i--) {
+      var cands = live.filter(function (m) { return score(m) >= tiers[i]; });
+      if (cands.length) {
+        headline = tiers[i];
+        best = cands.reduce(function (a, b) { return b.mcost < a.mcost ? b : a; });
+      }
+    }
+    if (best) tile('Cheapest at ' + (CAP < 0 ? 'index' : metricName()) + ' ' + tierLabel(headline), fmt$(best.mcost) + ' / task', best.name);
+    var summary = curTierSummary();
+    var halving = null, htier = null;
+    tiers.forEach(function (t) { var s = summary[t]; if (s && s.halving_days) { halving = s.halving_days; htier = t; } });
+    if (halving) tile('Record halving time', '~' + halving + ' days', 'at ' + (CAP < 0 ? 'index' : metricName()) + ' ' + tierLabel(htier) + ', across index eras');
+    var advs = CAP < 0 ? DATA.advances : ((DATA.cap_advances || {})[capMeta().key] || []);
+    if (advs.length) {
+      var a = advs[0];
+      tile('Latest advance', a.base || a.model, fmtDate(a.date) + ' · ' + a.kind);
+    }
   }
   function renderCapTable() {
     var wrap = document.getElementById('pfc-cap-table-wrap');
@@ -729,7 +770,7 @@
       }
     }
   }
-  function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
+  function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderStats(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
   fetch(DATA_URL, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
     loadData(d);
     applyHash();
