@@ -34,7 +34,8 @@ strong { color: var(--navy); }
 /* header and footer */
 .site-header { border-bottom: 1px solid var(--line); }
 .site-header .container { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 1.4rem; padding-top: 1rem; padding-bottom: 1rem; }
-.site-title { font-weight: 700; color: var(--navy); font-size: 1.05rem; text-decoration: none; margin-right: auto; }
+.site-title { font-weight: 700; font-size: 1.05rem; margin: 0; margin-right: auto; line-height: inherit; }
+a.site-title, .site-title a { color: var(--navy); text-decoration: none; }
 .site-nav { display: flex; flex-wrap: wrap; gap: 1.1rem; font-size: 0.88rem; }
 .site-nav a { color: var(--ink-muted); text-decoration: none; display: inline-flex; align-items: center; gap: 0.32rem; }
 .site-nav svg { width: 13px; height: 13px; flex: none; }
@@ -54,7 +55,8 @@ strong { color: var(--navy); }
 
 /* dashboard */
 .pfc-wrap h2 { font-size: 1.45rem; margin: 2.6rem 0 0.6rem; }
-.pfc-intro { margin-bottom: 1rem; }
+.pfc-intro { margin: 2.2rem 0 1rem; }
+.pfc-tagline { font-size: 1.15rem; color: var(--navy); max-width: 40rem; line-height: 1.5; }
 .pfc-lead { color: var(--ink-muted); font-size: 0.98rem; line-height: 1.6; margin-bottom: 1rem; }
 .pfc-figure { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem 1.1rem 0.9rem; margin: 2rem 0; }
 .pfc-figure figcaption { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.5; margin-top: 0.6rem; border-top: 1px solid var(--line-soft); padding-top: 0.6rem; }
