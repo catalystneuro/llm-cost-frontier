@@ -396,23 +396,20 @@
     nav.hidden = !show;
     if (!show) return;
     nav.replaceChildren();
-    function link(text, target) {
+    for (var i = 0; i <= ERAS.length; i++) (function (i) {
       var b = document.createElement('button');
-      b.type = 'button'; b.textContent = text;
-      b.addEventListener('click', function () { switchEra(target); });
+      b.type = 'button';
+      var end = DATA.era_snapshots[i][DATA.era_snapshots[i].length - 1][0];
+      var lbl = eraShortLabel(i);
+      b.textContent = i === ERAS.length
+        ? 'Index ' + (lbl || 'current') + (lbl ? ' (current)' : '')
+        : 'Index ' + (lbl ? lbl + ' ' : '') + '(through ' + fmtDate(end) + ')';
+      b.setAttribute('aria-pressed', ERA_VIEW === i ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        if (ERA_VIEW !== i) switchEra(i);
+      });
       nav.append(b);
-    }
-    if (ERA_VIEW === ERAS.length) {
-      for (var i = ERAS.length - 1; i >= 0; i--) {
-        var end = DATA.era_snapshots[i][DATA.era_snapshots[i].length - 1][0];
-        var lbl = eraShortLabel(i);
-        link(CAP < 0
-          ? 'View the ' + (lbl ? lbl + ' ' : '') + 'era (through ' + fmtDate(end) + ') →'
-          : 'View the earlier history (through ' + fmtDate(end) + ', on the era\'s own cost basis) →', i);
-      }
-    } else {
-      link('← Back to the current era' + (CAP < 0 && eraShortLabel(ERAS.length) ? ' (' + eraShortLabel(ERAS.length) + ')' : ''), ERAS.length);
-    }
+    })(i);
   }
 
   // ---- capability tabs ----
