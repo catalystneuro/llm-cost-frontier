@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Methodology &middot; LLM Cost Frontier</title>
+  <meta name="description" content="How the LLM Cost Frontier dashboard measures the falling cost of model capability: data source, observation history, index eras, and derivations.">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="site-title" href="../">LLM Cost Frontier</a>
+      <nav class="site-nav">
+        <a href="../">Dashboard</a>
+        <a href="./" aria-current="page">Methodology</a>
+        <a href="../feed.xml">Feed</a>
+        <a href="https://github.com/catalystneuro/llm-cost-frontier">GitHub</a>
+        <a href="https://catalystneuro.com">A CatalystNeuro project</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container prose">
+    <div class="page-head">
+      <h1>Methodology</h1>
+      <p class="subtitle">How every number on the dashboard is measured and derived. The argument for why the cheap end of the range matters is in the original post, <a href="https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/">What Happens When the Cost of Intelligence Drops 100x</a>.</p>
+    </div>
+
+    <h2>Source and Measurement</h2>
+    <p>The data is <a href="https://artificialanalysis.ai/">Artificial Analysis</a>'s Intelligence Index and their measured cost per Intelligence Index task: the average billed cost, including input, reasoning, and answer tokens, to run one task from their evaluation suite. An updater fetches the full comparison dataset four times a day, merges it into a cumulative history, and rebuilds everything this site serves. Free and promotional endpoints with a zero measured cost are excluded, since they distort the cost axis.</p>
+    <p>Beyond the aggregate index, the updater records a set of per-capability scores from the same source, each chosen because it maps onto a class of application better than the aggregate does: Terminal-Bench 2.1 (agentic coding), AutomationBench-AA (tool use, the successor to the retired Agentic Index), AA-LCR (long context), IFBench (instruction following), Omniscience (factual recall with hallucinated answers penalized), GPQA Diamond (scientific reasoning), GDPval-AA (office work products), and MMMU-Pro (multimodal input). The dashboard renders these as tabs. Capability scores are the latest measured values; only prices are tracked over time.</p>
+
+    <h2>The Observation History</h2>
+    <p>Prices have been recorded several times daily since August 19, 2026, and every change is kept, so from that date onward each snapshot and record uses the price that was in effect at the time. Before that date the only available value is a model's price at first observation, indexed by its release date, except where a price event is recorded by hand: OpenAI cut GPT-5.6 Luna by 80% and Terra by 20% on July 30, 2026. Earlier cuts that are not recorded make older points look cheaper than they were, which understates the collapse and dates it too early.</p>
+    <p>When Artificial Analysis retires a model from live benchmarking, its observations stay and it is marked retired, so the record only grows.</p>
+
+    <h2>Index Eras</h2>
+    <p>When the source recomposes the Intelligence Index, as it did on September 5, 2026 (v4.3: AutomationBench-AA joined the index, &tau;&sup3;-Banking was removed, and the live comparison set was cut), scores and measured costs before and after the change are not comparable. Such a change is declared by hand as an era. Observations store the index alongside the cost, so every derivation uses the index in effect on each date: frontiers before a boundary keep the old scores, cost records reset at the boundary, a model's first re-measurement under a new index is not reported as an advance, and models never re-scored under the current index compete only in the eras they were measured in. The frontier chart shows one era at a time, since neither axis is comparable across a boundary, and each view is labeled with the index composition it uses (v4.1 through September 4, 2026; v4.3 since).</p>
+    <p>A new suite's first measurements often settle over its first days. A date on which the measured cost moved by more than 10% for a large share of models at once is treated as a re-measurement of the evaluation suite rather than a wave of price changes, and produces no advances; September 7, 2026, when 129 models moved together, is the archetype. An era's baseline snapshot in the frontier chart is the day its measurement basis settled: the last such re-measurement within a week of the era's start.</p>
+
+    <h2>Derivations</h2>
+    <p>A frontier advance is any date on which the Pareto frontier of higher score at lower cost changed, through a release or a price change; advances are derived from the history, not curated. Each one records the range the model took over, the models it took that range from, any tier cost record it set, and whether it pushed the ceiling. A price change on a model already on the frontier counts only when it moved by at least two cents, so measurement wiggles do not flood the feed.</p>
+    <p>Halving time is the time for a tier's cost record to halve. A cost ratio is only ever taken within one index era, since a recomposition changes the cost basis; each era contributes its own decline and its own span of days, and the halving time is the pooled days per pooled halving. The collapse figure is likewise the product of the within-era declines, so it can differ from the ratio of the first-crossed and current-record costs shown beside it when those fall in different eras.</p>
+
+    <h2>Caveats</h2>
+    <p>The Intelligence Index is one aggregate of several evaluations, so two models with the same score may behave differently on a particular task; that is what the capability tabs are for. Cost per task is measured on a reasoning-heavy evaluation suite with long prompts; a chat workload with short prompts would scale differently across models. Prices are what buyers pay, which says nothing about what inference costs the provider.</p>
+
+    <h2>Reproducing It</h2>
+    <p>The updater, the full observation history, the hand-maintained price events and era declarations, and this site itself live in the <a href="https://github.com/catalystneuro/llm-cost-frontier">llm-cost-frontier repository</a> (BSD 3-Clause; the data is derived from Artificial Analysis, whose terms govern its use). The pipeline is standard-library Python and runs unattended in GitHub Actions.</p>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      A <a href="https://catalystneuro.com">CatalystNeuro</a> project &middot; data from <a href="https://artificialanalysis.ai/">Artificial Analysis</a> &middot; <a href="https://github.com/catalystneuro/llm-cost-frontier">source and history on GitHub</a>
+    </div>
+  </footer>
+</body>
+</html>

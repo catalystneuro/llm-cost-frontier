@@ -1,0 +1,45 @@
+name: Deploy site
+
+# The site is static: site/ holds the pages and assets, and build/ holds the
+# generated data, feed, and card images. Deploys run on pushes to main (code
+# and site changes) and are also called by the update workflow after each data
+# commit, since pushes made with the workflow token do not trigger this one.
+
+on:
+  push:
+    branches: [main]
+    paths: [site/**, build/**]
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Assemble the site
+        run: |
+          mkdir -p _site/data
+          cp -r site/* _site/
+          cp build/llm-frontier.json _site/data/llm-frontier.json
+          cp build/feed.xml _site/feed.xml
+          cp -r build/images _site/images
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
