@@ -708,6 +708,30 @@
    "release_date": "2026-06-30",
    "retired": false
   },
+  "claude-sonnet-5-high": {
+   "capabilities": {
+    "agentic": 32.1,
+    "knowledge": -3.7,
+    "knowledgework": 40.4,
+    "longcontext": 76.7
+   },
+   "cost_per_task": 1.792469,
+   "creator": "Anthropic",
+   "first_seen": "2026-09-10",
+   "intelligence_index": 32.0,
+   "last_seen": "2026-09-10",
+   "name": "Claude Sonnet 5 (Adaptive Reasoning, High Effort)",
+   "observations": [
+    [
+     "2026-09-10",
+     1.792469,
+     32.0
+    ]
+   ],
+   "open_weights": false,
+   "release_date": "2026-06-30",
+   "retired": false
+  },
   "claude-sonnet-5-low": {
    "capabilities": {
     "agentic": 19.9,
@@ -882,6 +906,31 @@
    ],
    "open_weights": true,
    "release_date": "2025-03-25",
+   "retired": false
+  },
+  "deepseek-v4-1-flash": {
+   "capabilities": {
+    "agentic": 68.9,
+    "knowledge": -5.3,
+    "knowledgework": 56.6,
+    "longcontext": 84.0,
+    "multimodal": 77.0
+   },
+   "cost_per_task": 0.265225,
+   "creator": "DeepSeek",
+   "first_seen": "2026-09-10",
+   "intelligence_index": 39.5,
+   "last_seen": "2026-09-10",
+   "name": "DeepSeek V4.1 Flash (Reasoning, Max Effort)",
+   "observations": [
+    [
+     "2026-09-10",
+     0.265225,
+     39.5
+    ]
+   ],
+   "open_weights": true,
+   "release_date": "2026-09-10",
    "retired": false
   },
   "deepseek-v4-flash": {
@@ -1767,7 +1816,7 @@
     "agentic": 62.2,
     "coding": 83.9,
     "knowledge": 14.3,
-    "knowledgework": 58.7,
+    "knowledgework": 58.4,
     "longcontext": 79.7,
     "science": 91.7
    },
