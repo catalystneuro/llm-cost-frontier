@@ -8,8 +8,9 @@
   var DATA = null;
 
   var C = {
-    surface: '#ffffff', grid: '#ecf1f8', axis: '#dfe6f1',
-    ink: '#101642', ink2: '#55607a', muted: '#68718b', deemph: '#c2cbdc', retired: '#9aa4bb',
+    surface: '#ffffff', grid: '#edf1f9', axis: '#d9e1f0',
+    ink: '#101642', ink2: '#55607a', muted: '#5b6580', deemph: '#c2cbdc', retired: '#9aa4bb',
+    mono: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
     snap: ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#4a3aa7', '#101642'],
     ord: ['#86b6ef', '#3987e5', '#1c5cab', '#0d366b']
   };
@@ -21,6 +22,7 @@
   var ERA_VIEW = 0; // which era the Overall frontier chart shows; defaults to the current era
 
   var models = [], retiredByName = {}, openByName = {};
+  var lastDrawnView = null;
   function capMeta() { return CAP >= 0 ? CAPS[CAP] : null; }
   function curTiers() { return CAP < 0 ? TIERS : ((DATA.cap_tiers || {})[capMeta().key] || []); }
   function curTierCost() { return CAP < 0 ? DATA.tier_cost : ((DATA.cap_tier_cost || {})[capMeta().key] || {}); }
@@ -252,13 +254,13 @@
     var cs = []; for (var c0 = 0.001; c0 <= xd[1]; c0 *= 10) if (c0 >= xd[0]) cs.push(c0);
     cs.forEach(function (c) {
       svg.append(svgEl('line', { x1: X(c), x2: X(c), y1: M.t, y2: H - M.b, stroke: C.grid, 'stroke-width': 1 }));
-      var lb = svgEl('text', { x: X(c), y: H - M.b + 18, 'text-anchor': 'middle', 'font-size': 11, fill: C.muted });
+      var lb = svgEl('text', { x: X(c), y: H - M.b + 18, 'text-anchor': 'middle', 'font-size': 10.5, fill: C.muted, 'font-family': C.mono });
       lb.textContent = '$' + (c >= 1 ? c.toFixed(0) : c.toFixed(2)); svg.append(lb);
     });
     var qs = []; for (var q0 = yd[0]; q0 <= yd[1] - 5; q0 += 10) qs.push(q0);
     qs.forEach(function (q) {
       svg.append(svgEl('line', { x1: M.l, x2: W - M.r, y1: Y(q), y2: Y(q), stroke: C.grid, 'stroke-width': 1 }));
-      var lb = svgEl('text', { x: M.l - 8, y: Y(q) + 4, 'text-anchor': 'end', 'font-size': 11, fill: C.muted });
+      var lb = svgEl('text', { x: M.l - 8, y: Y(q) + 4, 'text-anchor': 'end', 'font-size': 10.5, fill: C.muted, 'font-family': C.mono });
       lb.textContent = q; svg.append(lb);
     });
     svg.append(svgEl('line', { x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b, stroke: C.axis, 'stroke-width': 1 }));
@@ -318,7 +320,9 @@
       });
       d += ' H ' + (W - M.r);
       var sg = svgEl('g', {});
-      sg.append(svgEl('path', { d: d, fill: 'none', stroke: color, 'stroke-width': i === SNAPS.length - 1 ? 3 : 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }));
+      var pline = svgEl('path', { d: d, fill: 'none', stroke: color, 'stroke-width': i === SNAPS.length - 1 ? 3 : 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' });
+      if (i === SNAPS.length - 1) pline.setAttribute('data-current', '1');
+      sg.append(pline);
       svg.append(sg);
       anim.groups[i].push(sg);
       fr.forEach(function (p) {
@@ -336,6 +340,19 @@
       });
     });
     box.append(svg);
+    // The page's one authored motion: when the view changes, the current
+    // frontier draws itself in.
+    var viewKey = CAP + ':' + eraView;
+    if (viewKey !== lastDrawnView && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      lastDrawnView = viewKey;
+      var cur = svg.querySelector('path[data-current="1"]');
+      if (cur) {
+        var plen = cur.getTotalLength();
+        cur.style.strokeDasharray = plen;
+        cur.style.setProperty('--pfc-len', plen);
+        cur.classList.add('pfc-draw-in');
+      }
+    }
     attachHover(box, svg, pts);
     var ctl = el('div', 'pfc-controls');
     var stageLabel = el('span', 'pfc-stage'); stageLabel.id = 'pfc-frontier-stage';
@@ -566,13 +583,13 @@
 
     ticks.forEach(function (t) {
       svg.append(svgEl('line', { x1: X(t[0]), x2: X(t[0]), y1: M.t, y2: H - M.b, stroke: C.grid, 'stroke-width': 1 }));
-      var lb = svgEl('text', { x: X(t[0]), y: H - M.b + 18, 'text-anchor': 'middle', 'font-size': 11, fill: C.muted });
+      var lb = svgEl('text', { x: X(t[0]), y: H - M.b + 18, 'text-anchor': 'middle', 'font-size': 10.5, fill: C.muted, 'font-family': C.mono });
       lb.textContent = t[1]; svg.append(lb);
     });
     var vs = []; for (var v0 = 0.01; v0 <= yd[1] / 2; v0 *= 10) vs.push(v0);
     vs.forEach(function (v) {
       svg.append(svgEl('line', { x1: M.l, x2: W - M.r, y1: Y(v), y2: Y(v), stroke: C.grid, 'stroke-width': 1 }));
-      var lb = svgEl('text', { x: M.l - 8, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: C.muted });
+      var lb = svgEl('text', { x: M.l - 8, y: Y(v) + 4, 'text-anchor': 'end', 'font-size': 10.5, fill: C.muted, 'font-family': C.mono });
       lb.textContent = '$' + (v >= 1 ? v.toFixed(0) : v.toFixed(2)); svg.append(lb);
     });
     svg.append(svgEl('line', { x1: M.l, x2: W - M.r, y1: H - M.b, y2: H - M.b, stroke: C.axis, 'stroke-width': 1 }));
