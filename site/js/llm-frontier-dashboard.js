@@ -1180,7 +1180,22 @@
     }
   }
   function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderAxisNav(); renderSearch(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
-  fetch(DATA_URL, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
+  // If the data file has not been redeployed in well over an update cycle,
+  // the pipeline is stuck; say so instead of quietly serving stale numbers.
+  var STALE_HOURS = 9;
+  function renderStale(lastModified) {
+    var box = document.getElementById('pfc-stale');
+    if (!box || !lastModified) return;
+    var age = (Date.now() - Date.parse(lastModified)) / 3600000;
+    if (!(age > STALE_HOURS)) return;
+    box.hidden = false;
+    box.textContent = 'The last data update was ' + (age > 48 ? Math.round(age / 24) + ' days' : Math.round(age) + ' hours') +
+      ' ago; updates normally land every six hours, so the pipeline may be stuck. The numbers below are the last good measurements.';
+  }
+  fetch(DATA_URL, { cache: 'no-cache' }).then(function (r) {
+    renderStale(r.headers.get('last-modified'));
+    return r.json();
+  }).then(function (d) {
     loadData(d);
     applyHash();
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderAll);

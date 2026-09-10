@@ -81,7 +81,7 @@ PYTHONPATH=src python -m llm_cost_frontier.render --force   # re-render everythi
 
 ## Schedule
 
-`.github/workflows/update.yml` runs the updater four times a day, every six hours starting at 00:00 UTC, commits `data/history.json` and the build artifacts when they change, and then redeploys the site. The workflow can also be run by hand from the Actions tab.
+`.github/workflows/update.yml` runs the updater four times a day, every six hours starting at 00:00 UTC, commits `data/history.json` and the build artifacts when they change, and then redeploys the site. A failed run opens a `pipeline-failure` issue (or adds to the open one), and the next successful run closes it; while updates are stuck, the dashboard shows a staleness note based on how long ago its data file was deployed. The workflow can also be run by hand from the Actions tab.
 
 ## Caveats
 
