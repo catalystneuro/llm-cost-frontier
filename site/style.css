@@ -57,7 +57,7 @@ a.site-title, .site-title a { color: var(--navy); text-decoration: none; }
 
 .page-head { margin: 2.2rem 0 0.4rem; }
 .page-head h1 { font-size: 2rem; margin: 0 0 0.4rem; }
-.page-head .subtitle { color: var(--ink-muted); margin: 0; max-width: 42rem; }
+.page-head .subtitle { color: var(--ink-muted); margin: 0; }
 
 .prose p { margin: 0 0 1rem; }
 .prose li { margin-bottom: 0.55rem; }
