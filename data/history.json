@@ -2893,20 +2893,20 @@
   },
   "gpt-5-6-terra-low": {
    "capabilities": {
-    "agentic": 31.5,
+    "agentic": 29.1,
     "coding": 62.5,
     "instruction": 59.7,
     "knowledge": -6.8,
-    "knowledgework": 37.6,
-    "longcontext": 68.7,
+    "knowledgework": 33.9,
+    "longcontext": 71.3,
     "multimodal": 76.1,
     "science": 84.3
    },
-   "cost_per_task": 0.096154,
+   "cost_per_task": 0.144462,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
-   "intelligence_index": 41.3,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 27.9,
+   "last_seen": "2026-09-10",
    "name": "GPT-5.6 Terra (low)",
    "observations": [
     [
@@ -2918,28 +2918,33 @@
      "2026-08-26",
      0.096154,
      41.3
+    ],
+    [
+     "2026-09-10",
+     0.144462,
+     27.9
     ]
    ],
    "open_weights": false,
    "release_date": "2026-07-09",
-   "retired": true
+   "retired": false
   },
   "gpt-5-6-terra-medium": {
    "capabilities": {
-    "agentic": 39.1,
+    "agentic": 33.5,
     "coding": 72.3,
     "instruction": 62.2,
     "knowledge": -5.1,
-    "knowledgework": 45.0,
-    "longcontext": 70.3,
+    "knowledgework": 40.9,
+    "longcontext": 74.0,
     "multimodal": 76.8,
     "science": 87.2
    },
-   "cost_per_task": 0.123172,
+   "cost_per_task": 0.183373,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
-   "intelligence_index": 46.8,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 30.4,
+   "last_seen": "2026-09-10",
    "name": "GPT-5.6 Terra (medium)",
    "observations": [
     [
@@ -2951,11 +2956,16 @@
      "2026-08-26",
      0.123172,
      46.8
+    ],
+    [
+     "2026-09-10",
+     0.183373,
+     30.4
     ]
    ],
    "open_weights": false,
    "release_date": "2026-07-09",
-   "retired": true
+   "retired": false
   },
   "gpt-5-6-terra-non-reasoning": {
    "capabilities": {
@@ -5431,31 +5441,36 @@
   },
   "qwen3-6-35b-a3b": {
    "capabilities": {
-    "agentic": 21.6,
+    "agentic": 5.2,
     "coding": 44.9,
     "instruction": 64.4,
     "knowledge": -22.2,
-    "knowledgework": 27.8,
-    "longcontext": 66.7,
+    "knowledgework": 24.5,
+    "longcontext": 71.7,
     "multimodal": 75.0,
     "science": 84.1
    },
-   "cost_per_task": 0.294367,
+   "cost_per_task": 0.475053,
    "creator": "Alibaba",
    "first_seen": "2026-08-19",
-   "intelligence_index": 32.1,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 18.8,
+   "last_seen": "2026-09-10",
    "name": "Qwen3.6 35B A3B (Reasoning)",
    "observations": [
     [
      "2026-08-19",
      0.294367,
      32.1
+    ],
+    [
+     "2026-09-10",
+     0.475053,
+     18.8
     ]
    ],
    "open_weights": true,
    "release_date": "2026-04-16",
-   "retired": true
+   "retired": false
   },
   "qwen3-6-35b-a3b-non-reasoning": {
    "capabilities": {
@@ -5698,19 +5713,19 @@
   },
   "qwen3-8-27b-low": {
    "capabilities": {
-    "agentic": 43.7,
+    "agentic": 30.1,
     "coding": 67.4,
     "knowledge": -26.7,
-    "knowledgework": 49.4,
-    "longcontext": 74.7,
+    "knowledgework": 45.1,
+    "longcontext": 77.3,
     "multimodal": 73.8,
     "science": 84.5
    },
-   "cost_per_task": 0.264872,
+   "cost_per_task": 0.83401,
    "creator": "Alibaba",
    "first_seen": "2026-08-22",
-   "intelligence_index": 42.9,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 26.5,
+   "last_seen": "2026-09-10",
    "name": "Qwen3.8 27B (low)",
    "observations": [
     [
@@ -5732,11 +5747,16 @@
      "2026-08-26",
      0.264872,
      42.9
+    ],
+    [
+     "2026-09-10",
+     0.83401,
+     26.5
     ]
    ],
    "open_weights": true,
    "release_date": "2026-08-14",
-   "retired": true
+   "retired": false
   },
   "qwen3-8-27b-medium": {
    "capabilities": {
