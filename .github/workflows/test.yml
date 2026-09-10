@@ -14,4 +14,17 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install pytest
-      - run: pytest -q
+      - run: pytest -q tests/test_update.py
+
+  # Headless-browser smoke tests of the dashboard itself: clean console,
+  # tab and era switching, and phone-width behavior including rotation.
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest playwright
+      - run: python -m playwright install --with-deps chromium
+      - run: pytest -q tests/test_site.py

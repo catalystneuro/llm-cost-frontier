@@ -62,7 +62,7 @@ llm-cost-frontier --history data/history.json --out build/llm-frontier.json \
 
 A run refuses to rewrite the history if it parses fewer than 50 live models, which guards against a change in the source page's layout quietly emptying the dataset.
 
-The test suite runs offline and needs only pytest. It covers the payload parsing, the history merge, the frontier derivations, and the output assembly, and it checks invariants against the repository's real data, so it keeps passing as the data grows. `.github/workflows/test.yml` runs it on every pull request and push to main.
+The test suite runs offline. The unit tests need only pytest and cover the payload parsing, the history merge, the frontier derivations, and the output assembly, checking invariants against the repository's real data so they keep passing as the data grows. A second suite drives the assembled site in a headless browser (`pip install playwright && playwright install chromium`), asserting a clean console, working tab and era switching, and phone-width behavior including rotation; it is skipped when playwright is absent. `.github/workflows/test.yml` runs both on every pull request and push to main.
 
 ```bash
 pip install pytest
