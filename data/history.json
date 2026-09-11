@@ -2421,19 +2421,19 @@
   },
   "gpt-5-6-luna-low": {
    "capabilities": {
-    "agentic": 25.7,
+    "agentic": 11.7,
     "coding": 43.4,
     "knowledge": -14.7,
-    "knowledgework": 32.6,
-    "longcontext": 65.3,
+    "knowledgework": 28.8,
+    "longcontext": 70.0,
     "multimodal": 74.0,
     "science": 83.5
    },
-   "cost_per_task": 0.008977,
+   "cost_per_task": 0.009827,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
-   "intelligence_index": 33.9,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 21.5,
+   "last_seen": "2026-09-11",
    "name": "GPT-5.6 Luna (low)",
    "observations": [
     [
@@ -2445,27 +2445,32 @@
      "2026-08-26",
      0.008977,
      33.9
+    ],
+    [
+     "2026-09-11",
+     0.009827,
+     21.5
     ]
    ],
    "open_weights": false,
    "release_date": "2026-07-09",
-   "retired": true
+   "retired": false
   },
   "gpt-5-6-luna-medium": {
    "capabilities": {
-    "agentic": 31.8,
+    "agentic": 23.1,
     "coding": 53.2,
     "knowledge": -13.2,
-    "knowledgework": 38.5,
-    "longcontext": 72.0,
+    "knowledgework": 34.5,
+    "longcontext": 75.0,
     "multimodal": 75.8,
     "science": 85.9
    },
-   "cost_per_task": 0.011576,
+   "cost_per_task": 0.015598,
    "creator": "OpenAI",
    "first_seen": "2026-08-19",
-   "intelligence_index": 38.9,
-   "last_seen": "2026-09-04",
+   "intelligence_index": 25.5,
+   "last_seen": "2026-09-11",
    "name": "GPT-5.6 Luna (medium)",
    "observations": [
     [
@@ -2477,11 +2482,16 @@
      "2026-08-26",
      0.011576,
      38.9
+    ],
+    [
+     "2026-09-11",
+     0.015598,
+     25.5
     ]
    ],
    "open_weights": false,
    "release_date": "2026-07-09",
-   "retired": true
+   "retired": false
   },
   "gpt-5-6-luna-non-reasoning": {
    "capabilities": {
