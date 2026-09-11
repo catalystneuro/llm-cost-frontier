@@ -146,6 +146,8 @@ def extract_models(payload: str) -> dict:
             v = o.get(cap["field"])
             if v is not None:
                 caps[cap["key"]] = round(float(v) * 100, 1) if cap["percent"] else round(float(v), 1)
+        tpt = o.get("intelligenceIndexTimePerTask")
+        ts = o.get("timescaleData") or {}
         models[o["slug"]] = dict(
             name=o["name"],
             creator=(o.get("creator") or {}).get("name") or "",
@@ -155,6 +157,9 @@ def extract_models(payload: str) -> dict:
             open_weights=bool(o.get("isOpenWeights")),
             deprecated=bool(o.get("deprecated")),
             capabilities=caps,
+            time_per_task=round(float(tpt), 2) if tpt else None,
+            speed_tps=round(float(ts["medianOutputSpeed"]), 1) if ts.get("medianOutputSpeed") else None,
+            ttft=round(float(ts["medianTimeToFirstChunk"]), 2) if ts.get("medianTimeToFirstChunk") else None,
         )
     return models
 
@@ -167,8 +172,14 @@ def merge(history: dict, live: dict, today: str) -> dict:
         if not obs and prev.get("cost_per_task") is not None:
             obs = [[prev.get("last_seen", today), prev["cost_per_task"], prev["intelligence_index"]]]
         last = obs[-1] if obs else None
-        if last is None or abs(last[1] - rec["cost_per_task"]) > 1e-9 or abs(last[2] - rec["intelligence_index"]) > 0.049:
-            obs.append([today, rec["cost_per_task"], rec["intelligence_index"]])
+        tpt = rec.get("time_per_task")
+        last_t = (last[3] if last and len(last) > 3 else None) or prev.get("time_per_task")
+        time_moved = tpt and last_t and abs(tpt - last_t) / last_t > 0.2
+        if last is None or abs(last[1] - rec["cost_per_task"]) > 1e-9 or abs(last[2] - rec["intelligence_index"]) > 0.049 or time_moved:
+            row = [today, rec["cost_per_task"], rec["intelligence_index"]]
+            if tpt:
+                row.append(tpt)
+            obs.append(row)
         models[slug] = dict(
             name=rec["name"],
             creator=rec["creator"] or prev.get("creator", ""),
@@ -177,6 +188,9 @@ def merge(history: dict, live: dict, today: str) -> dict:
             cost_per_task=rec["cost_per_task"],
             open_weights=rec["open_weights"],
             capabilities=rec.get("capabilities") or prev.get("capabilities") or {},
+            time_per_task=tpt or prev.get("time_per_task"),
+            speed_tps=rec.get("speed_tps") or prev.get("speed_tps"),
+            ttft=rec.get("ttft") or prev.get("ttft"),
             retired=False,
             first_seen=prev.get("first_seen", today),
             last_seen=today,
@@ -298,17 +312,21 @@ def cost_changes(slug: str, m: dict, events: list) -> list:
     index a model had on a given date is recoverable."""
     obs = sorted(m.get("observations") or [[m.get("last_seen", m["release_date"]), m["cost_per_task"], m["intelligence_index"]]])
     first_cost, first_iq = obs[0][1], obs[0][2]
+    first_t = obs[0][3] if len(obs[0]) > 3 else None
     out = []
     ev = next((e for e in events if slug.startswith(e["slug_prefix"])), None)
     if ev and m["release_date"] < ev["cut_date"]:
-        out.append([m["release_date"], first_cost * ev["multiplier_before"], first_iq, "at launch price"])
-        out.append([ev["cut_date"], first_cost, first_iq, f"price cut (released {m['release_date']})"])
+        out.append([m["release_date"], first_cost * ev["multiplier_before"], first_iq, first_t, "at launch price"])
+        out.append([ev["cut_date"], first_cost, first_iq, first_t, f"price cut (released {m['release_date']})"])
     else:
-        out.append([m["release_date"], first_cost, first_iq, None])
-    for date, cost, iq in obs[1:]:
-        if abs(cost - out[-1][1]) > 1e-9 or abs(iq - out[-1][2]) > 0.049:
+        out.append([m["release_date"], first_cost, first_iq, first_t, None])
+    for o in obs[1:]:
+        date, cost, iq = o[0], o[1], o[2]
+        t = o[3] if len(o) > 3 else None
+        prev_t = out[-1][3]
+        if abs(cost - out[-1][1]) > 1e-9 or abs(iq - out[-1][2]) > 0.049 or (t and prev_t and abs(t - prev_t) / prev_t > 0.2) or (t and not prev_t):
             note = f"price change observed (released {m['release_date']})" if abs(cost - out[-1][1]) > 1e-9 else None
-            out.append([date, cost, iq, note])
+            out.append([date, cost, iq, t or prev_t, note])
     return out
 
 
@@ -317,7 +335,7 @@ def price_timeline(models: dict, events: list) -> list:
     the cost and index in effect on each date."""
     out = []
     for slug, m in models.items():
-        for date, cost, iq, note in cost_changes(slug, m, events):
+        for date, cost, iq, _t, note in cost_changes(slug, m, events):
             out.append([date, cost, slug, iq, note])
     out.sort(key=lambda e: (e[0], e[1]))
     return out
@@ -548,6 +566,32 @@ def rebased_models(models: dict, eras: list) -> dict:
     return out
 
 
+def time_models(models: dict, eras: list) -> dict:
+    """Models on the time-per-task axis: the current-basis (rebased) models
+    with the cost column carrying seconds instead of dollars. Dated time
+    observations are used where the history has recorded them; before the
+    first one, the earliest known time stands across the model's life, the
+    same latest-measured convention capability scores use."""
+    base = rebased_models(models, eras)
+    out = {}
+    for slug, m in base.items():
+        t_latest = models[slug].get("time_per_task")
+        dated = {o[0]: o[3] for o in (models[slug].get("observations") or []) if len(o) > 3 and o[3]}
+        if not t_latest and not dated:
+            continue
+        robs = []
+        last_t = None
+        for o in m["observations"]:
+            t = dated.get(o[0]) or last_t or t_latest or sorted(dated.values())[0]
+            last_t = t
+            robs.append([o[0], round(t, 2), o[2]])
+        mm = dict(m)
+        mm["observations"] = robs
+        mm["cost_per_task"] = robs[-1][1]
+        out[slug] = mm
+    return out
+
+
 def capability_models(models: dict, key: str) -> dict:
     """The models measured on one capability, with the capability score standing
     in for the intelligence index so the frontier machinery applies unchanged.
@@ -605,12 +649,13 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
     current_era = len(eras or [])
     rows = []
     for slug, m in sorted(models.items(), key=lambda kv: (kv[1]["release_date"], kv[1]["name"])):
-        changes = [[d, round(c, 6), iq] for d, c, iq, _n in cost_changes(slug, m, events)]
+        changes = [[d, round(c, 6), iq] + ([t] if t else []) for d, c, iq, t, _n in cost_changes(slug, m, events)]
         caps = m.get("capabilities") or {}
         row = [m["name"], m["creator"], m["release_date"], m["intelligence_index"], m["cost_per_task"], int(m["retired"]), int(m["open_weights"]),
                changes if len(changes) > 1 else 0,
                [caps.get(c["key"]) for c in CAPABILITIES],
-               model_era(m, eras)]
+               model_era(m, eras),
+               m.get("time_per_task"), m.get("speed_tps"), m.get("ttft")]
         rows.append(row)
     records = tier_records(models, events, eras=eras)
     advances = frontier_advances(models, events, records, eras=eras)
@@ -621,6 +666,9 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
     # measurements are current-era.
     cap_tiers, cap_tier_cost, cap_tier_summary, cap_advances = {}, {}, {}, {}
     cap_tier_cost_rebased, cap_tier_summary_rebased = {}, {}
+    cap_tier_time, cap_tier_time_summary = {}, {}
+    tmodels = time_models(models, eras or [])
+    tier_time = tier_records(tmodels, [], TIERS)
     for c in CAPABILITIES:
         cm = capability_models(models, c["key"])
         current = [m for m in cm.values() if model_era(m, eras) == current_era]
@@ -637,6 +685,10 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         recs_r = tier_records(cmr, events, tiers)
         cap_tier_cost_rebased[c["key"]] = recs_r
         cap_tier_summary_rebased[c["key"]] = tier_summary(recs_r)
+        cmt = capability_models(tmodels, c["key"])
+        recs_t = tier_records(cmt, [], tiers)
+        cap_tier_time[c["key"]] = recs_t
+        cap_tier_time_summary[c["key"]] = tier_summary(recs_t)
     return dict(
         advances=advances,
         cap_advances=cap_advances,
@@ -657,6 +709,10 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         tier_summary_rebased=tier_summary(records_rebased),
         cap_tier_cost_rebased=cap_tier_cost_rebased,
         cap_tier_summary_rebased=cap_tier_summary_rebased,
+        tier_time=tier_time,
+        tier_time_summary=tier_summary(tier_time),
+        cap_tier_time=cap_tier_time,
+        cap_tier_time_summary=cap_tier_time_summary,
         price_events=events,
         counts=dict(total=len(rows), live=sum(1 for m in models.values() if not m["retired"]), retired=sum(1 for m in models.values() if m["retired"])),
     )

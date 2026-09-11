@@ -92,6 +92,28 @@ def test_capability_tab_switches_everything(browser, site_url):
         ctx.close()
 
 
+def test_axis_toggle_switches_to_time_and_archives_force_cost(browser, site_url):
+    ctx, page, errors = open_page(browser, site_url)
+    try:
+        toggle = page.locator("#pfc-axis-nav button", has_text="Time per task")
+        if toggle.count() == 0:
+            pytest.skip("no time measurements in the data yet")
+        toggle.click()
+        page.wait_for_selector("#pfc-frontier svg text:text('Time per task (log)')")
+        assert page.evaluate("location.hash") == "#index-time"
+        assert page.locator("#pfc-records-title").inner_text().startswith("Speed Records")
+        assert "time per task" in page.locator("#pfc-records-lead").inner_text()
+        # An archive era has no time measurements: it hides the toggle and
+        # falls back to the cost axis.
+        page.locator("#pfc-era-nav button").first.click()
+        page.wait_for_selector("#pfc-frontier svg text:text('Cost per task (log)')")
+        assert page.locator("#pfc-axis-nav").is_hidden()
+        assert page.locator("#pfc-records-title").inner_text().startswith("Cost Records")
+        assert errors == []
+    finally:
+        ctx.close()
+
+
 def test_era_archive_view(browser, site_url):
     ctx, page, errors = open_page(browser, site_url)
     try:
