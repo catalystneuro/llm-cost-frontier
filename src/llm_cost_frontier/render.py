@@ -36,7 +36,7 @@ DEFAULT_IMAGES = Path("build/images")
 # the frontier visible, where small models like Granite 4.2 3B still land.
 Y_MIN_10_AFTER = "2026-04-22"
 
-# Palette shared with the dashboard at llm-cost-frontier.catalystneuro.com.
+# Palette shared with the dashboard at llm-frontier.catalystneuro.com.
 C = dict(
     surface="#ffffff", grid="#ecf1f8", axis="#dfe6f1",
     ink="#101642", ink2="#55607a", muted="#68718b", deemph="#c2cbdc",
@@ -168,7 +168,7 @@ def new_figure(kicker: str, title: str, summary_lines: list, table: list = None)
         y -= 0.042
     fig.text(0.048, 0.028, "Data: Artificial Analysis · measured cost per Intelligence Index task",
              fontsize=11.5, color=C["muted"], va="bottom")
-    fig.text(0.952, 0.028, "llm-cost-frontier.catalystneuro.com",
+    fig.text(0.952, 0.028, "llm-frontier.catalystneuro.com",
              fontsize=12.5, color=C["ink2"], va="bottom", ha="right", fontweight="bold")
     ax = fig.add_axes([0.058, 0.135, 0.894, (last - 0.100) - 0.135])
     return fig, ax
@@ -421,7 +421,7 @@ def render_current(out: dict, models: dict, timeline: list, path: Path, eras: li
         first = dt.date.fromisoformat(s50["first_date"])
         summary += (f" Index ≥ 50 cost has fallen {s50['collapse']:g}x since "
                     f"{first.strftime('%B %Y')}, halving about every {s50['halving_days']} days.")
-    fig, ax = new_figure(f"Updated {long_date(out['updated'])}", "The LLM Cost Frontier", wrap(summary))
+    fig, ax = new_figure(f"Updated {long_date(out['updated'])}", "The LLM Frontier", wrap(summary))
     draw_chart(ax, state, models, front, y_min=10 if out["updated"] > Y_MIN_10_AFTER else 0)
     save(fig, path)
 

@@ -4,7 +4,7 @@ Any model page on artificialanalysis.ai embeds the full comparison dataset for
 every currently benchmarked model, including the measured cost per Intelligence
 Index task. This module fetches one page, parses that payload, merges it into a
 cumulative history, applies known price events, and writes the JSON and Atom
-feed that the dashboard at llm-cost-frontier.catalystneuro.com renders.
+feed that the dashboard at llm-frontier.catalystneuro.com renders.
 
 The history keeps every observed (date, cost, index) per model, appending an
 observation whenever a value changes. Snapshots and tier records use the cost in
@@ -28,7 +28,7 @@ DEFAULT_OVERRIDES = Path("data/overrides.json")
 DEFAULT_ERAS = Path("data/eras.json")
 DEFAULT_OUTPUT = Path("build/llm-frontier.json")
 DEFAULT_FEED = Path("build/feed.xml")
-DEFAULT_SITE = "https://llm-cost-frontier.catalystneuro.com"
+DEFAULT_SITE = "https://llm-frontier.catalystneuro.com"
 FEED_ENTRIES = 60
 
 # Any model page works; this one is stable and cheap to serve.
@@ -905,7 +905,7 @@ def write_feed(out: dict, feed_path: Path, site: str) -> None:
     entries = out["advances"][:FEED_ENTRIES]
     updated = out["updated"] + "T06:00:00Z"
     lines = ['<?xml version="1.0" encoding="utf-8"?>', '<feed xmlns="http://www.w3.org/2005/Atom">',
-             "  <title>LLM Cost Frontier: frontier advances</title>",
+             "  <title>LLM Frontier: frontier advances</title>",
              f'  <link href="{site}/" />',
              f'  <link rel="self" href="{site}/feed.xml" />',
              f"  <id>{site}/feed.xml</id>",
