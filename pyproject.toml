@@ -17,8 +17,8 @@ dependencies = []
 render = ["matplotlib"]
 
 [project.urls]
-Homepage = "https://catalystneuro.com/llm-cost-frontier/"
-Source = "https://github.com/catalystneuro/llm-cost-frontier"
+Homepage = "https://llm-frontier.catalystneuro.com"
+Source = "https://github.com/catalystneuro/llm-frontier"
 Background = "https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/"
 
 [project.scripts]

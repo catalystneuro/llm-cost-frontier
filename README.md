@@ -1,6 +1,6 @@
-# LLM Cost Frontier
+# LLM Frontier
 
-This repository tracks how cheaply a given level of large language model capability can be bought, and how that price changes over time. Four times a day it reads Artificial Analysis's measured cost per Intelligence Index task for every model they benchmark, merges the result into a cumulative history, and rebuilds two artifacts: the JSON that the dashboard at [llm-cost-frontier.catalystneuro.com](https://llm-cost-frontier.catalystneuro.com/) renders, and an Atom feed of frontier advances.
+This repository tracks how cheaply a given level of large language model capability can be bought, and how that price changes over time. Four times a day it reads Artificial Analysis's measured cost per Intelligence Index task for every model they benchmark, merges the result into a cumulative history, and rebuilds two artifacts: the JSON that the dashboard at [llm-frontier.catalystneuro.com](https://llm-frontier.catalystneuro.com/) renders, and an Atom feed of frontier advances.
 
 The background, the method, and the argument for why the cheap end of the range matters are in the post [What Happens When the Cost of Intelligence Drops 100x](https://catalystneuro.com/blog/cost-of-intelligence-drops-100x/).
 
@@ -17,7 +17,7 @@ The background, the method, and the argument for why the cheap end of the range 
 | `build/images/advances/` | A 1200x630 social card per advancing model per date, reasoning levels grouped, named `{date}-{base model}.png`; capability advances get theirs under `advances/{capability}/` |
 | `build/images/frontier-card.png` | A social card of the current frontier, for the dashboard page's link preview |
 
-The dashboard itself lives in `site/` and is served from this repository via GitHub Pages at [llm-cost-frontier.catalystneuro.com](https://llm-cost-frontier.catalystneuro.com/): a deploy workflow copies `site/` and the `build/` artifacts into the Pages tree on every push that touches them, and the update workflow redeploys after each data commit. Every same-repository pull request gets a live preview of the site at `/previews/pr-<number>/`, linked by a sticky comment on the PR and removed when it closes. The old catalystneuro.com/llm-cost-frontier URLs redirect here.
+The dashboard itself lives in `site/` and is served from this repository via GitHub Pages at [llm-frontier.catalystneuro.com](https://llm-frontier.catalystneuro.com/): a deploy workflow copies `site/` and the `build/` artifacts into the Pages tree on every push that touches them, and the update workflow redeploys after each data commit. Every same-repository pull request gets a live preview of the site at `/previews/pr-<number>/`, linked by a sticky comment on the PR and removed when it closes. The old catalystneuro.com/llm-cost-frontier URLs redirect here.
 
 ## Method
 
@@ -49,7 +49,7 @@ PYTHONPATH=src python -m llm_cost_frontier --offline  # rebuild from the stored 
 Or install it and use the console script:
 
 ```bash
-pip install git+https://github.com/catalystneuro/llm-cost-frontier
+pip install git+https://github.com/catalystneuro/llm-frontier
 llm-cost-frontier --help
 ```
 

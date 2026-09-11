@@ -33,7 +33,7 @@ MIN_MODELS = 60  # a complete payload carries the whole comparison set
 
 
 def fetch(url, timeout=180):
-    req = urllib.request.Request(url, headers={"User-Agent": "llm-cost-frontier backfill (catalystneuro.com)"})
+    req = urllib.request.Request(url, headers={"User-Agent": "llm-frontier backfill (catalystneuro.com)"})
     raw = urllib.request.urlopen(req, timeout=timeout).read()
     if raw[:2] == b"\x1f\x8b":
         raw = gzip.decompress(raw)
