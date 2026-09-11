@@ -4,11 +4,15 @@
 (function () {
   'use strict';
   var BASE = location.pathname.replace(/[^/]*$/, '');
+  // Per-metric pages live one level below the site root and declare which
+  // metric they are about; the root page declares neither.
+  var PAGE_CAP = document.body.getAttribute('data-cap') || null;
+  var ROOT = (BASE + (document.body.getAttribute('data-root') || '')).replace(/[^/]+\/\.\.\//, '');
   // PR previews live under /previews/pr-N/ on the production host and do
   // not carry the card images; SITE_ROOT points shared assets at the real
   // site, which serves them for every preview.
-  var SITE_ROOT = BASE.replace(/previews\/[^/]+\/$/, '');
-  var DATA_URL = BASE + 'data/llm-frontier.json';
+  var SITE_ROOT = ROOT.replace(/previews\/[^/]+\/$/, '');
+  var DATA_URL = ROOT + 'data/llm-frontier.json';
   var DATA = null;
 
   var C = {
@@ -504,7 +508,7 @@
       return '#' + key + '-through-' + snaps[snaps.length - 1][0] + (isTimeAxis() ? '-time' : '') + sel;
     }
     if (isTimeAxis()) return '#' + key + '-time' + sel;
-    if (CAP >= 0) return '#' + key + sel;
+    if (CAP >= 0) return key === PAGE_CAP && !sel ? '' : '#' + key + sel;
     return sel ? '#index' + sel : '';
   }
   function syncHash() {
@@ -604,7 +608,7 @@
         hideTip();
         anim.stage = 1e9;
         syncHash();
-        renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
+        renderTabs(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
       });
       nav.append(b);
     });
@@ -622,7 +626,7 @@
     SEL_KIND = SEL ? kind : 'model';
     hideTip();
     syncHash();
-    renderFrontier(); renderRecords();
+    renderTabs(); renderFrontier(); renderRecords();
   }
   function setModel(name) { setSel('model', name); }
   function selMatches(m) {
@@ -754,26 +758,27 @@
 
   // ---- capability tabs ----
   var leadDefault = null;
+  // Each metric is a real page; the tabs are links between them, carrying
+  // the axis and any highlighted model along so a view survives the hop.
   function renderTabs() {
     var bar = document.getElementById('pfc-cap-tabs');
     if (!bar || !CAPS.length) return;
     bar.replaceChildren();
     var tabs = [['Overall', -1]].concat(CAPS.map(function (c, i) { return [c.label, i]; }));
     tabs.forEach(function (t) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'pfc-tab'; b.textContent = t[0];
+      var cur = CAP === t[1];
+      var b = document.createElement(cur ? 'span' : 'a');
+      b.className = 'pfc-tab';
+      b.textContent = t[0];
       b.setAttribute('role', 'tab');
-      b.setAttribute('aria-selected', CAP === t[1] ? 'true' : 'false');
-      b.addEventListener('click', function () {
-        if (CAP === t[1]) return;
-        CAP = t[1];
-        advPage = 1;
-        ERA_VIEW = ERAS.length;
-        hideTip();
-        anim.stage = 1e9;
-        syncHash();
-        renderTabs(); renderEraNav(); renderAxisNav(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
-      });
+      b.setAttribute('aria-selected', cur ? 'true' : 'false');
+      if (!cur) {
+        var key = t[1] < 0 ? 'index' : CAPS[t[1]].key;
+        var frag = '';
+        if (isTimeAxis() && (!ERAS.length || ERA_VIEW === ERAS.length)) frag = '#' + key + '-time';
+        if (SEL) frag = (frag || '#' + key) + '~' + slugify(SEL);
+        b.href = (t[1] < 0 ? ROOT : ROOT + CAPS[t[1]].key + '/') + frag;
+      }
       bar.append(b);
     });
   }
@@ -1185,6 +1190,7 @@
   function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderAxisNav(); renderSearch(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
   fetch(DATA_URL, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
     loadData(d);
+    if (PAGE_CAP) for (var i = 0; i < CAPS.length; i++) if (CAPS[i].key === PAGE_CAP) CAP = i;
     applyHash();
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderAll);
     else renderAll();

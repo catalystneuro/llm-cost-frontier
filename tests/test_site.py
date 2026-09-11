@@ -33,6 +33,8 @@ def site_url(tmp_path_factory):
     (root / "data").mkdir(exist_ok=True)
     shutil.copy(REPO / "build/llm-frontier.json", root / "data/llm-frontier.json")
     shutil.copy(REPO / "build/feed.xml", root / "feed.xml")
+    for f in (REPO / "build").glob("feed-*.xml"):
+        shutil.copy(f, root / f.name)
     handler = functools.partial(SimpleHTTPRequestHandler, directory=str(root))
     handler.log_message = lambda *a, **k: None
     srv = ThreadingHTTPServer(("127.0.0.1", 0), handler)
@@ -80,9 +82,10 @@ def test_loads_clean_and_renders(browser, site_url):
 def test_capability_tab_switches_everything(browser, site_url):
     ctx, page, errors = open_page(browser, site_url)
     try:
+        # Tabs are links to the per-metric pages now.
         page.locator(".pfc-tab", has_text="Coding").click()
         page.wait_for_selector("#pfc-frontier svg text:text('Terminal-Bench 2.1')")
-        assert page.evaluate("location.hash") == "#coding"
+        assert page.evaluate("location.pathname").endswith("/coding/")
         assert page.locator("#pfc-cap-table tr").count() > 0
         # The records chart follows the tab too.
         assert page.locator("#pfc-records-lead").inner_text().startswith("The cheapest cost per task")
@@ -217,6 +220,29 @@ def test_clicking_a_point_selects_the_model(browser, site_url):
         page.mouse.click(box["x"] + box["width"] * 0.15, box["y"] + 10)
         page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring", state="detached")
         assert page.locator("#pfc-model-chip").is_hidden()
+        assert errors == []
+    finally:
+        ctx.close()
+
+
+def test_metric_page_defaults_to_its_metric(browser, site_url):
+    ctx = browser.new_context(viewport={"width": 1300, "height": 900})
+    page = ctx.new_page()
+    errors = []
+    page.on("pageerror", lambda e: errors.append(f"pageerror: {e}"))
+    page.on("console", lambda m: errors.append(f"console: {m.text}") if m.type == "error" else None)
+    try:
+        page.goto(site_url + "/coding/")
+        page.wait_for_selector("#pfc-frontier svg text:text('Terminal-Bench 2.1')")
+        # The page's own hash stays clean; the tab bar is links except itself.
+        assert page.evaluate("location.hash") == ""
+        assert page.locator("#pfc-cap-tabs a").count() == 8
+        assert page.locator("#pfc-cap-tabs span[aria-selected='true']").inner_text() == "Coding"
+        assert page.locator("#pfc-cap-tabs a", has_text="Overall").get_attribute("href").endswith("/")
+        # Its feed link points at the capability feed, which is served.
+        href = page.locator("head link[rel='alternate']").get_attribute("href")
+        assert href.endswith("feed-coding.xml")
+        assert page.request.get(site_url + "/feed-coding.xml").status == 200
         assert errors == []
     finally:
         ctx.close()

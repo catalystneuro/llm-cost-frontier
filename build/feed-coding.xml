@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>LLM Frontier: Terminal-Bench 2.1 advances</title>
+  <link href="https://llm-frontier.catalystneuro.com/coding/" />
+  <link rel="self" href="https://llm-frontier.catalystneuro.com/feed-coding.xml" />
+  <id>https://llm-frontier.catalystneuro.com/feed-coding.xml</id>
+  <updated>2026-09-11T06:00:00Z</updated>
+  <author><name>CatalystNeuro</name></author>
+  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of Terminal-Bench 2.1, through a release or a price change.</subtitle>
+  <entry>
+    <title>2026-09-03: GPT-6 Astra (high) (new model, Terminal-Bench 2.1 89.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-09-03-gpt-6-astra.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-09-03/gpt-6-astra-high</id>
+    <updated>2026-09-03T00:00:00Z</updated>
+    <summary>GPT-6 Astra (high): now the cheapest way to reach Terminal-Bench 2.1 89.5% to 89.9% at $0.96 per task, taking it from Claude Fable 5.1. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-03: GPT-6 Astra (low) (new model, Terminal-Bench 2.1 88.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-09-03-gpt-6-astra.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-09-03/gpt-6-astra-low</id>
+    <updated>2026-09-03T00:00:00Z</updated>
+    <summary>GPT-6 Astra (low): now the cheapest way to reach Terminal-Bench 2.1 87.3% to 88.0% at $0.46 per task, taking it from GPT-5.6 Terra, which left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-01: Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback) (new model, Terminal-Bench 2.1 91.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-09-01-claude-fable-5-1.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-09-01/claude-fable-5-1</id>
+    <updated>2026-09-01T00:00:00Z</updated>
+    <summary>Claude Fable 5.1 (Adaptive Reasoning, Max Effort, Default Fallback): pushed the Terminal-Bench 2.1 ceiling from 89.5% to 91.4%, at $3.69 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-01: Claude Fable 5.1 (Adaptive Reasoning, Xhigh Effort, Default Fallback) (new model, Terminal-Bench 2.1 91.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-09-01-claude-fable-5-1.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-09-01/claude-fable-5-1-xhigh</id>
+    <updated>2026-09-01T00:00:00Z</updated>
+    <summary>Claude Fable 5.1 (Adaptive Reasoning, Xhigh Effort, Default Fallback): pushed the Terminal-Bench 2.1 ceiling from 89.5% to 91.0%, at $2.65 per task. New cost record for Terminal-Bench 2.1 ≥ 90%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-01: Claude Fable 5.1 (Adaptive Reasoning, High Effort, Default Fallback) (new model, Terminal-Bench 2.1 89.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-09-01-claude-fable-5-1.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-09-01/claude-fable-5-1-high</id>
+    <updated>2026-09-01T00:00:00Z</updated>
+    <summary>Claude Fable 5.1 (Adaptive Reasoning, High Effort, Default Fallback): pushed the Terminal-Bench 2.1 ceiling from 89.5% to 89.9%, at $1.43 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-28: GPT-5.6 Sol (xhigh) (price change, Terminal-Bench 2.1 89.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-28-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-28/gpt-5-6-sol-xhigh</id>
+    <updated>2026-08-28T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (xhigh): price moved from $0.671 to $0.63 per task; now the cheapest way to reach Terminal-Bench 2.1 88.0% to 89.5%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-28: GPT-5.6 Sol (high) (price change, Terminal-Bench 2.1 87.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-28-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-28/gpt-5-6-sol-high</id>
+    <updated>2026-08-28T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (high): price moved from $0.456 to $0.43 per task; now the cheapest way to reach Terminal-Bench 2.1 86.1% to 87.3%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-26: Qwen3.8-Flash-Next (new model, Terminal-Bench 2.1 86.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-26-qwen3-8-flash-next.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-26/qwen3-8-flash-next</id>
+    <updated>2026-08-26T00:00:00Z</updated>
+    <summary>Qwen3.8-Flash-Next: now the cheapest way to reach Terminal-Bench 2.1 84.3% to 86.1% at $0.097 per task, taking it from GPT-5.6 Sol. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-26: GLM-5.3-Flash (new model, Terminal-Bench 2.1 84.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-26-glm-5-3-flash.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-26/glm-5-3-flash</id>
+    <updated>2026-08-26T00:00:00Z</updated>
+    <summary>GLM-5.3-Flash: now the cheapest way to reach Terminal-Bench 2.1 80.9% to 84.3% at $0.087 per task, taking it from GPT-5.6 Sol and Kimi K3; Kimi K3 left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-25: GPT-5.6 Sol (xhigh) (price change, Terminal-Bench 2.1 89.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-25-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-25/gpt-5-6-sol-xhigh</id>
+    <updated>2026-08-25T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (xhigh): price moved from $0.807 to $0.64 per task; now the cheapest way to reach Terminal-Bench 2.1 88.0% to 89.5%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-25: GPT-5.6 Sol (high) (price change, Terminal-Bench 2.1 87.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-25-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-25/gpt-5-6-sol-high</id>
+    <updated>2026-08-25T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (high): price moved from $0.548 to $0.43 per task; now the cheapest way to reach Terminal-Bench 2.1 86.1% to 87.3%, taking it from GPT-5.6 Terra. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-25: GPT-5.6 Sol (medium) (price change, Terminal-Bench 2.1 86.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-25-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-25/gpt-5-6-sol-medium</id>
+    <updated>2026-08-25T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (medium): price moved from $0.372 to $0.30 per task; now the cheapest way to reach Terminal-Bench 2.1 82.4% to 86.1%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-25: Granite 4.2 3B (new model, Terminal-Bench 2.1 13.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-08-25-granite-4-2-3b.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-08-25/granite-4-2-3b</id>
+    <updated>2026-08-25T00:00:00Z</updated>
+    <summary>Granite 4.2 3B: now the cheapest way to reach Terminal-Bench 2.1 0.0% to 13.9% at $0.0047 per task, taking it from GPT-5.6 Luna. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Terra (max) (price change, Terminal-Bench 2.1 88.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-30-gpt-5-6-terra.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-30/gpt-5-6-terra</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Terra (max): price moved from $0.635 to $0.51 per task; now the cheapest way to reach Terminal-Bench 2.1 86.1% to 88.0%, taking it from GPT-5.6 Sol. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (max) (price change, Terminal-Bench 2.1 80.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-30/gpt-5-6-luna</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (max): price moved from $0.236 to $0.047 per task; now the cheapest way to reach Terminal-Bench 2.1 77.9% to 80.9%. New cost record for Terminal-Bench 2.1 ≥ 80%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (xhigh) (price change, Terminal-Bench 2.1 77.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-30/gpt-5-6-luna-xhigh</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (xhigh): price moved from $0.158 to $0.032 per task; now the cheapest way to reach Terminal-Bench 2.1 69.7% to 77.9%, taking it from GPT-5.6 Terra. New cost record for Terminal-Bench 2.1 ≥ 70%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (high) (price change, Terminal-Bench 2.1 69.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-30/gpt-5-6-luna-high</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (high): price moved from $0.108 to $0.022 per task; now the cheapest way to reach Terminal-Bench 2.1 63.7% to 69.7%, taking it from MiMo-V2.5-Pro, which left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (low) (price change, Terminal-Bench 2.1 43.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-30/gpt-5-6-luna-low</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (low): price moved from $0.044 to $0.0088 per task; now the cheapest way to reach Terminal-Bench 2.1 0.0% to 43.4%, taking it from MiMo-V2.5. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-16: Kimi K3 (low) (new model, Terminal-Bench 2.1 82.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-16-kimi-k3.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-16/kimi-k3-low</id>
+    <updated>2026-07-16T00:00:00Z</updated>
+    <summary>Kimi K3 (low): now the cheapest way to reach Terminal-Bench 2.1 80.9% to 82.4% at $0.24 per task, taking it from GPT-5.6 Sol and Grok 4.5; Grok 4.5 left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Sol (xhigh) (new model, Terminal-Bench 2.1 89.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-sol-xhigh</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (xhigh): pushed the Terminal-Bench 2.1 ceiling from 84.6% to 89.5%, at $0.81 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Terra (max) (new model, Terminal-Bench 2.1 88.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-terra.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-terra</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Terra (max): pushed the Terminal-Bench 2.1 ceiling from 84.6% to 88.0%, at $0.64 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Sol (high) (new model, Terminal-Bench 2.1 87.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-sol-high</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (high): pushed the Terminal-Bench 2.1 ceiling from 84.6% to 87.3%, at $0.55 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Sol (medium) (new model, Terminal-Bench 2.1 86.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-sol-medium</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (medium): pushed the Terminal-Bench 2.1 ceiling from 84.6% to 86.1%, at $0.37 per task, taking it from Claude Opus 4.8 and GPT-5.5, both of which left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Luna (max) (new model, Terminal-Bench 2.1 80.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-luna</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (max): now the cheapest way to reach Terminal-Bench 2.1 77.9% to 80.9% at $0.24 per task, taking it from Grok 4.5. New cost record for Terminal-Bench 2.1 ≥ 80%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Luna (xhigh) (new model, Terminal-Bench 2.1 77.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-luna-xhigh</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (xhigh): now the cheapest way to reach Terminal-Bench 2.1 72.3% to 77.9% at $0.16 per task, taking it from Grok 4.5 and Gemini 3.1 Pro Preview; Gemini 3.1 Pro Preview left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Terra (medium) (new model, Terminal-Bench 2.1 72.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-terra.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-terra-medium</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Terra (medium): now the cheapest way to reach Terminal-Bench 2.1 69.7% to 72.3% at $0.15 per task, taking it from Gemini 3.1 Pro Preview. New cost record for Terminal-Bench 2.1 ≥ 70%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Luna (high) (new model, Terminal-Bench 2.1 69.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-09-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-09/gpt-5-6-luna-high</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (high): now the cheapest way to reach Terminal-Bench 2.1 65.2% to 69.7% at $0.11 per task, taking it from Gemini 3.1 Pro Preview and Kimi K2.7 Code; Kimi K2.7 Code left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-08: Grok 4.5 (high) (new model, Terminal-Bench 2.1 81.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-07-08-grok-4-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-07-08/grok-4-5</id>
+    <updated>2026-07-08T00:00:00Z</updated>
+    <summary>Grok 4.5 (high): now the cheapest way to reach Terminal-Bench 2.1 73.8% to 81.6% at $0.36 per task, taking it from GPT-5.5, GLM-5.2, and Claude Sonnet 5; GLM-5.2 and Claude Sonnet 5 left the frontier. New cost record for Terminal-Bench 2.1 ≥ 80%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-06-30: Claude Sonnet 5 (Non-reasoning, High Effort) (new model, Terminal-Bench 2.1 75.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-06-30-claude-sonnet-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-06-30/claude-sonnet-5-non-reasoning</id>
+    <updated>2026-06-30T00:00:00Z</updated>
+    <summary>Claude Sonnet 5 (Non-reasoning, High Effort): now the cheapest way to reach Terminal-Bench 2.1 73.8% to 75.3% at $0.42 per task, taking it from GLM-5.2. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-06-16: GLM-5.2 (max) (new model, Terminal-Bench 2.1 77.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-06-16-glm-5-2.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-06-16/glm-5-2</id>
+    <updated>2026-06-16T00:00:00Z</updated>
+    <summary>GLM-5.2 (max): now the cheapest way to reach Terminal-Bench 2.1 73.8% to 77.9% at $0.44 per task, taking it from GPT-5.5. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-06-12: Kimi K2.7 Code (new model, Terminal-Bench 2.1 67.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-06-12-kimi-k2-7-code.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-06-12/kimi-k2-7-code</id>
+    <updated>2026-06-12T00:00:00Z</updated>
+    <summary>Kimi K2.7 Code: now the cheapest way to reach Terminal-Bench 2.1 65.2% to 67.4% at $0.22 per task, taking it from Gemini 3.1 Pro Preview and GPT-5.5. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-05-28: Claude Opus 4.8 (Adaptive Reasoning, Max Effort) (new model, Terminal-Bench 2.1 84.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-05-28-claude-opus-4-8.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-05-28/claude-opus-4-8</id>
+    <updated>2026-05-28T00:00:00Z</updated>
+    <summary>Claude Opus 4.8 (Adaptive Reasoning, Max Effort): pushed the Terminal-Bench 2.1 ceiling from 84.3% to 84.6%, at $2.03 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (xhigh) (new model, Terminal-Bench 2.1 84.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-23/gpt-5-5</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (xhigh): pushed the Terminal-Bench 2.1 ceiling from 83.1% to 84.3%, at $1.17 per task, taking it from Claude Opus 4.7, which left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (medium) (new model, Terminal-Bench 2.1 80.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-23/gpt-5-5-medium</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (medium): now the cheapest way to reach Terminal-Bench 2.1 73.8% to 80.5% at $0.50 per task, taking it from Claude Opus 4.7 and GPT-5.4; GPT-5.4 left the frontier. New cost record for Terminal-Bench 2.1 ≥ 80%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (low) (new model, Terminal-Bench 2.1 65.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-23/gpt-5-5-low</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (low): now the cheapest way to reach Terminal-Bench 2.1 65.2% to 65.5% at $0.26 per task, taking it from Gemini 3.1 Pro Preview. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-22: MiMo-V2.5-Pro (new model, Terminal-Bench 2.1 65.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-22-mimo-v2-5-pro.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-22/mimo-v2-5-pro</id>
+    <updated>2026-04-22T00:00:00Z</updated>
+    <summary>MiMo-V2.5-Pro: now the cheapest way to reach Terminal-Bench 2.1 63.7% to 65.2% at $0.034 per task, taking it from Gemini 3.1 Pro Preview. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-22: MiMo-V2.5 (new model, Terminal-Bench 2.1 63.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-22-mimo-v2-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-22/mimo-v2-5-0424</id>
+    <updated>2026-04-22T00:00:00Z</updated>
+    <summary>MiMo-V2.5: now the cheapest way to reach Terminal-Bench 2.1 0.0% to 63.7% at $0.010 per task, taking it from Gemini 3.1 Pro Preview, GLM-5.1, GPT-5.4 nano, MiniMax-M2.7, Gemma 4 26B A4B, DeepSeek V3, gpt-oss-120b, and Llama 4 Scout; GLM-5.1, GPT-5.4 nano, MiniMax-M2.7, Gemma 4 26B A4B, DeepSeek V3, gpt-oss-120b, and Llama 4 Scout left the frontier. New cost record for Terminal-Bench 2.1 ≥ 60%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-16: Claude Opus 4.7 (Adaptive Reasoning, Max Effort) (new model, Terminal-Bench 2.1 83.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-16-claude-opus-4-7.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-16/claude-opus-4-7</id>
+    <updated>2026-04-16T00:00:00Z</updated>
+    <summary>Claude Opus 4.7 (Adaptive Reasoning, Max Effort): pushed the Terminal-Bench 2.1 ceiling from 78.3% to 83.1%, at $2.23 per task. New cost record for Terminal-Bench 2.1 ≥ 80%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-07: GLM-5.1 (Reasoning) (new model, Terminal-Bench 2.1 61.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-07-glm-5-1.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-07/glm-5-1</id>
+    <updated>2026-04-07T00:00:00Z</updated>
+    <summary>GLM-5.1 (Reasoning): now the cheapest way to reach Terminal-Bench 2.1 60.7% to 61.8% at $0.30 per task, taking it from Gemini 3.1 Pro Preview. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-02: Gemma 4 26B A4B (Reasoning) (new model, Terminal-Bench 2.1 39.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-04-02-gemma-4-26b-a4b.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-04-02/gemma-4-26b-a4b</id>
+    <updated>2026-04-02T00:00:00Z</updated>
+    <summary>Gemma 4 26B A4B (Reasoning): now the cheapest way to reach Terminal-Bench 2.1 16.9% to 39.0% at $0.039 per task, taking it from MiniMax-M2.7 and Gemini 3.1 Flash-Lite; Gemini 3.1 Flash-Lite left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-03-18: MiniMax-M2.7 (new model, Terminal-Bench 2.1 55.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-03-18-minimax-m2-7.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-03-18/minimax-m2-7</id>
+    <updated>2026-03-18T00:00:00Z</updated>
+    <summary>MiniMax-M2.7: now the cheapest way to reach Terminal-Bench 2.1 31.1% to 55.4% at $0.078 per task, taking it from GPT-5.4 nano and Kimi K2.5; Kimi K2.5 left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-03-17: GPT-5.4 nano (xhigh) (new model, Terminal-Bench 2.1 60.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-03-17-gpt-5-4-nano.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-03-17/gpt-5-4-nano</id>
+    <updated>2026-03-17T00:00:00Z</updated>
+    <summary>GPT-5.4 nano (xhigh): now the cheapest way to reach Terminal-Bench 2.1 45.7% to 60.7% at $0.15 per task, taking it from Gemini 3.1 Pro Preview, GPT-5.1, and Qwen3.5 122B A10B; GPT-5.1 and Qwen3.5 122B A10B left the frontier. New cost record for Terminal-Bench 2.1 ≥ 60%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-03-05: GPT-5.4 (xhigh) (new model, Terminal-Bench 2.1 78.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-03-05-gpt-5-4.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-03-05/gpt-5-4</id>
+    <updated>2026-03-05T00:00:00Z</updated>
+    <summary>GPT-5.4 (xhigh): pushed the Terminal-Bench 2.1 ceiling from 73.8% to 78.3%, at $1.10 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-03-03: Gemini 3.1 Flash-Lite (new model, Terminal-Bench 2.1 31.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-03-03-gemini-3-1-flash-lite.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-03-03/gemini-3-1-flash-lite-preview</id>
+    <updated>2026-03-03T00:00:00Z</updated>
+    <summary>Gemini 3.1 Flash-Lite: now the cheapest way to reach Terminal-Bench 2.1 16.9% to 31.1% at $0.043 per task, taking it from Kimi K2.5, Mercury 2, and Mistral Small 3.1; Mercury 2 and Mistral Small 3.1 left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-24: Qwen3.5 122B A10B (Reasoning) (new model, Terminal-Bench 2.1 47.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-02-24-qwen3-5-122b-a10b.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-02-24/qwen3-5-122b-a10b</id>
+    <updated>2026-02-24T00:00:00Z</updated>
+    <summary>Qwen3.5 122B A10B (Reasoning): now the cheapest way to reach Terminal-Bench 2.1 47.2% to 47.6% at $0.25 per task, taking it from GPT-5.1. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-24: Qwen3.5 122B A10B (Non-reasoning) (new model, Terminal-Bench 2.1 47.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-02-24-qwen3-5-122b-a10b.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-02-24/qwen3-5-122b-a10b-non-reasoning</id>
+    <updated>2026-02-24T00:00:00Z</updated>
+    <summary>Qwen3.5 122B A10B (Non-reasoning): now the cheapest way to reach Terminal-Bench 2.1 45.7% to 47.2% at $0.20 per task, taking it from GPT-5.1. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-20: Mercury 2 (new model, Terminal-Bench 2.1 27.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-02-20-mercury-2.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-02-20/mercury-2</id>
+    <updated>2026-02-20T00:00:00Z</updated>
+    <summary>Mercury 2: now the cheapest way to reach Terminal-Bench 2.1 26.2% to 27.3% at $0.080 per task, taking it from Kimi K2.5. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-19: Gemini 3.1 Pro Preview (new model, Terminal-Bench 2.1 73.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-02-19-gemini-3-1-pro-preview.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-02-19/gemini-3-1-pro-preview</id>
+    <updated>2026-02-19T00:00:00Z</updated>
+    <summary>Gemini 3.1 Pro Preview: pushed the Terminal-Bench 2.1 ceiling from 71.2% to 73.8%, at $0.33 per task, taking it from Claude Sonnet 4.6 and Claude 4.5 Sonnet, both of which left the frontier. New cost record for Terminal-Bench 2.1 ≥ 70%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-17: Claude Sonnet 4.6 (Adaptive Reasoning, Max Effort) (new model, Terminal-Bench 2.1 71.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-02-17-claude-sonnet-4-6.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-02-17/claude-sonnet-4-6-adaptive</id>
+    <updated>2026-02-17T00:00:00Z</updated>
+    <summary>Claude Sonnet 4.6 (Adaptive Reasoning, Max Effort): pushed the Terminal-Bench 2.1 ceiling from 55.8% to 71.2%, at $1.22 per task. New cost record for Terminal-Bench 2.1 ≥ 70%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-01-27: Kimi K2.5 (Reasoning) (new model, Terminal-Bench 2.1 45.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2026-01-27-kimi-k2-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2026-01-27/kimi-k2-5</id>
+    <updated>2026-01-27T00:00:00Z</updated>
+    <summary>Kimi K2.5 (Reasoning): now the cheapest way to reach Terminal-Bench 2.1 26.2% to 45.7% at $0.096 per task, taking it from GPT-5.1, Claude 4.5 Haiku, and Gemini 2.5 Pro; Claude 4.5 Haiku and Gemini 2.5 Pro left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-11-13: GPT-5.1 (high) (new model, Terminal-Bench 2.1 52.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-11-13-gpt-5-1.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-11-13/gpt-5-1</id>
+    <updated>2025-11-13T00:00:00Z</updated>
+    <summary>GPT-5.1 (high): now the cheapest way to reach Terminal-Bench 2.1 44.2% to 52.4% at $0.30 per task, taking it from Claude 4.5 Sonnet and GLM-4.6; GLM-4.6 left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-10-15: Claude 4.5 Haiku (Reasoning) (new model, Terminal-Bench 2.1 44.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-10-15-claude-4-5-haiku.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-10-15/claude-4-5-haiku-reasoning</id>
+    <updated>2025-10-15T00:00:00Z</updated>
+    <summary>Claude 4.5 Haiku (Reasoning): now the cheapest way to reach Terminal-Bench 2.1 28.5% to 44.2% at $0.22 per task, taking it from GLM-4.6 and GPT-5; GPT-5 left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-09-30: GLM-4.6 (Reasoning) (new model, Terminal-Bench 2.1 49.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-09-30-glm-4-6.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-09-30/glm-4-6-reasoning</id>
+    <updated>2025-09-30T00:00:00Z</updated>
+    <summary>GLM-4.6 (Reasoning): now the cheapest way to reach Terminal-Bench 2.1 35.2% to 49.4% at $0.30 per task, taking it from Claude 4.5 Sonnet. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-09-29: Claude 4.5 Sonnet (Reasoning) (new model, Terminal-Bench 2.1 55.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-09-29-claude-4-5-sonnet.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-09-29/claude-4-5-sonnet-thinking</id>
+    <updated>2025-09-29T00:00:00Z</updated>
+    <summary>Claude 4.5 Sonnet (Reasoning): pushed the Terminal-Bench 2.1 ceiling from 35.2% to 55.8%, at $0.46 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-07: GPT-5 (high) (new model, Terminal-Bench 2.1 35.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-08-07-gpt-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-08-07/gpt-5</id>
+    <updated>2025-08-07T00:00:00Z</updated>
+    <summary>GPT-5 (high): pushed the Terminal-Bench 2.1 ceiling from 28.5% to 35.2%, at $0.26 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-05: gpt-oss-120b (low) (new model, Terminal-Bench 2.1 13.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-08-05-gpt-oss-120b.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-08-05/gpt-oss-120b-low</id>
+    <updated>2025-08-05T00:00:00Z</updated>
+    <summary>gpt-oss-120b (low): now the cheapest way to reach Terminal-Bench 2.1 3.7% to 13.9% at $0.020 per task, taking it from DeepSeek V3. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-06-05: Gemini 2.5 Pro (new model, Terminal-Bench 2.1 28.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-06-05-gemini-2-5-pro.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-06-05/gemini-2-5-pro</id>
+    <updated>2025-06-05T00:00:00Z</updated>
+    <summary>Gemini 2.5 Pro: pushed the Terminal-Bench 2.1 ceiling from 26.2% to 28.5%, at $0.22 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-04-05: Llama 4 Scout (new model, Terminal-Bench 2.1 3.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-04-05-llama-4-scout.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-04-05/llama-4-scout</id>
+    <updated>2025-04-05T00:00:00Z</updated>
+    <summary>Llama 4 Scout: now the cheapest way to reach Terminal-Bench 2.1 0.0% to 3.7% at $0.011 per task, taking it from DeepSeek V3. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-03-17: Mistral Small 3.1 (new model, Terminal-Bench 2.1 26.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-03-17-mistral-small-3-1.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-03-17/mistral-small-3-1</id>
+    <updated>2025-03-17T00:00:00Z</updated>
+    <summary>Mistral Small 3.1: pushed the Terminal-Bench 2.1 ceiling from 19.1% to 26.2%, at $0.044 per task, taking it from DeepSeek R1, which left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-01-20: DeepSeek R1 (Jan '25) (new model, Terminal-Bench 2.1 19.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/coding/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/coding/2025-01-20-deepseek-r1.png" />
+    <id>https://llm-frontier.catalystneuro.com/coding/advance/2025-01-20/deepseek-r1-0120</id>
+    <updated>2025-01-20T00:00:00Z</updated>
+    <summary>DeepSeek R1 (Jan '25): pushed the Terminal-Bench 2.1 ceiling from 16.9% to 19.1%, at $0.32 per task. Open weights.</summary>
+  </entry>
+</feed>

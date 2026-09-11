@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>LLM Frontier: AutomationBench-AA advances</title>
+  <link href="https://llm-frontier.catalystneuro.com/agentic/" />
+  <link rel="self" href="https://llm-frontier.catalystneuro.com/feed-agentic.xml" />
+  <id>https://llm-frontier.catalystneuro.com/feed-agentic.xml</id>
+  <updated>2026-09-11T06:00:00Z</updated>
+  <author><name>CatalystNeuro</name></author>
+  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of AutomationBench-AA, through a release or a price change.</subtitle>
+  <entry>
+    <title>2026-09-10: DeepSeek V4.1 Flash (Reasoning, Max Effort) (new model, AutomationBench-AA 68.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-09-10-deepseek-v4-1-flash.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-09-10/deepseek-v4-1-flash</id>
+    <updated>2026-09-10T00:00:00Z</updated>
+    <summary>DeepSeek V4.1 Flash (Reasoning, Max Effort): pushed the AutomationBench-AA ceiling from 68.5% to 68.9%, at $0.27 per task, taking it from GPT-6 Astra, Grok 4.6, and Gemini 3.7 Flash, all of which left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-03: GPT-6 Astra (max) (new model, AutomationBench-AA 68.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-09-03-gpt-6-astra.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-09-03/gpt-6-astra</id>
+    <updated>2026-09-03T00:00:00Z</updated>
+    <summary>GPT-6 Astra (max): pushed the AutomationBench-AA ceiling from 67.0% to 68.5%, at $1.67 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-03: GPT-6 Astra (xhigh) (new model, AutomationBench-AA 67.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-09-03-gpt-6-astra.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-09-03/gpt-6-astra-xhigh</id>
+    <updated>2026-09-03T00:00:00Z</updated>
+    <summary>GPT-6 Astra (xhigh): pushed the AutomationBench-AA ceiling from 67.0% to 67.2%, at $1.20 per task, taking it from Grok 4.6. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-09-03: GPT-6 Astra (medium) (new model, AutomationBench-AA 64.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-09-03-gpt-6-astra.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-09-03/gpt-6-astra-medium</id>
+    <updated>2026-09-03T00:00:00Z</updated>
+    <summary>GPT-6 Astra (medium): now the cheapest way to reach AutomationBench-AA 62.2% to 64.6% at $0.75 per task, taking it from Grok 4.6. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-26: GLM-5.3-Flash (new model, AutomationBench-AA 60.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-26-glm-5-3-flash.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-26/glm-5-3-flash</id>
+    <updated>2026-08-26T00:00:00Z</updated>
+    <summary>GLM-5.3-Flash: now the cheapest way to reach AutomationBench-AA 56.3% to 60.4% at $0.087 per task, taking it from Gemini 3.7 Flash, Grok 4.5, and DeepSeek V4 Pro 0813; Grok 4.5 and DeepSeek V4 Pro 0813 left the frontier. New cost record for AutomationBench-AA ≥ 60%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-26: Agnes 2.5 Pro Beta (new model, AutomationBench-AA 43.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-26-agnes-2-5-pro-beta.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-26/agnes-2-5-pro-beta</id>
+    <updated>2026-08-26T00:00:00Z</updated>
+    <summary>Agnes 2.5 Pro Beta: now the cheapest way to reach AutomationBench-AA 35.6% to 43.8% at $0.027 per task, taking it from GPT-5.6 Luna. New cost record for AutomationBench-AA ≥ 40%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-25: Granite 4.2 3B (new model, AutomationBench-AA 0.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-25-granite-4-2-3b.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-25/granite-4-2-3b</id>
+    <updated>2026-08-25T00:00:00Z</updated>
+    <summary>Granite 4.2 3B: now the cheapest way to reach AutomationBench-AA 0.0% to 0.4% at $0.0047 per task, taking it from GPT-5.6 Luna. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-13: Gemini 3.7 Flash (high) (new model, AutomationBench-AA 62.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-13-gemini-3-7-flash.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-13/gemini-3-7-flash</id>
+    <updated>2026-08-13T00:00:00Z</updated>
+    <summary>Gemini 3.7 Flash (high): now the cheapest way to reach AutomationBench-AA 57.9% to 62.0% at $0.40 per task, taking it from Grok 4.6 and GPT-5.6 Terra; GPT-5.6 Terra left the frontier. New cost record for AutomationBench-AA ≥ 60%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-13: DeepSeek V4 Pro 0813 (Reasoning, Max Effort) (new model, AutomationBench-AA 56.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-13-deepseek-v4-pro-0813.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-13/deepseek-v4-pro</id>
+    <updated>2026-08-13T00:00:00Z</updated>
+    <summary>DeepSeek V4 Pro 0813 (Reasoning, Max Effort): now the cheapest way to reach AutomationBench-AA 56.3% to 56.7% at $0.25 per task, taking it from Grok 4.5. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-12: Grok 4.6 (xhigh) (new model, AutomationBench-AA 67.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-12-grok-4-6.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-12/grok-4-6-xhigh</id>
+    <updated>2026-08-12T00:00:00Z</updated>
+    <summary>Grok 4.6 (xhigh): pushed the AutomationBench-AA ceiling from 60.1% to 67.0%, at $1.04 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-12: Grok 4.6 (high) (new model, AutomationBench-AA 66.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-12-grok-4-6.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-12/grok-4-6</id>
+    <updated>2026-08-12T00:00:00Z</updated>
+    <summary>Grok 4.6 (high): pushed the AutomationBench-AA ceiling from 60.1% to 66.7%, at $0.84 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-08-12: Grok 4.6 (medium) (new model, AutomationBench-AA 63.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-08-12-grok-4-6.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-08-12/grok-4-6-medium</id>
+    <updated>2026-08-12T00:00:00Z</updated>
+    <summary>Grok 4.6 (medium): pushed the AutomationBench-AA ceiling from 60.1% to 63.2%, at $0.67 per task, taking it from GPT-5.6 Sol, which left the frontier. New cost record for AutomationBench-AA ≥ 60%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Terra (max) (price change, AutomationBench-AA 59.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-30-gpt-5-6-terra.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-30/gpt-5-6-terra</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Terra (max): price moved from $0.635 to $0.51 per task; now the cheapest way to reach AutomationBench-AA 57.9% to 59.6%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (max) (price change, AutomationBench-AA 50.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-30/gpt-5-6-luna</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (max): price moved from $0.236 to $0.047 per task; now the cheapest way to reach AutomationBench-AA 42.6% to 50.2%, taking it from DeepSeek V4 Pro. New cost record for AutomationBench-AA ≥ 50%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (xhigh) (price change, AutomationBench-AA 42.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-30/gpt-5-6-luna-xhigh</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (xhigh): price moved from $0.158 to $0.032 per task; now the cheapest way to reach AutomationBench-AA 35.6% to 42.6%, taking it from DeepSeek V4 Pro. New cost record for AutomationBench-AA ≥ 40%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (high) (price change, AutomationBench-AA 35.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-30/gpt-5-6-luna-high</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (high): price moved from $0.108 to $0.022 per task; now the cheapest way to reach AutomationBench-AA 23.1% to 35.6%, taking it from DeepSeek V4 Pro. New cost record for AutomationBench-AA ≥ 30%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (medium) (price change, AutomationBench-AA 23.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-30/gpt-5-6-luna-medium</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (medium): price moved from $0.056 to $0.011 per task; now the cheapest way to reach AutomationBench-AA 18.4% to 23.1%, taking it from DeepSeek V4 Pro. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-30: GPT-5.6 Luna (low) (price change, AutomationBench-AA 11.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-30-gpt-5-6-luna.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-30/gpt-5-6-luna-low</id>
+    <updated>2026-07-30T00:00:00Z</updated>
+    <summary>GPT-5.6 Luna (low): price moved from $0.044 to $0.0088 per task; now the cheapest way to reach AutomationBench-AA 0.0% to 11.7%, taking it from MiMo-V2.5. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Sol (max) (new model, AutomationBench-AA 60.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-09-gpt-5-6-sol.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-09/gpt-5-6-sol</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Sol (max): pushed the AutomationBench-AA ceiling from 57.9% to 60.1%, at $1.23 per task. New cost record for AutomationBench-AA ≥ 60%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-09: GPT-5.6 Terra (max) (new model, AutomationBench-AA 59.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-09-gpt-5-6-terra.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-09/gpt-5-6-terra</id>
+    <updated>2026-07-09T00:00:00Z</updated>
+    <summary>GPT-5.6 Terra (max): pushed the AutomationBench-AA ceiling from 57.9% to 59.6%, at $0.64 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-07-08: Grok 4.5 (high) (new model, AutomationBench-AA 57.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-07-08-grok-4-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-07-08/grok-4-5</id>
+    <updated>2026-07-08T00:00:00Z</updated>
+    <summary>Grok 4.5 (high): pushed the AutomationBench-AA ceiling from 56.3% to 57.9%, at $0.36 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-24: DeepSeek V4 Pro (Reasoning, Max Effort) (new model, AutomationBench-AA 56.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-24-deepseek-v4-pro.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-24/deepseek-v4-pro-0424</id>
+    <updated>2026-04-24T00:00:00Z</updated>
+    <summary>DeepSeek V4 Pro (Reasoning, Max Effort): pushed the AutomationBench-AA ceiling from 47.3% to 56.3%, at $0.047 per task, taking it from GPT-5.5 and Gemini 3.1 Pro Preview, both of which left the frontier. New cost record for AutomationBench-AA ≥ 50%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-24: DeepSeek V4 Pro (Reasoning, High Effort) (new model, AutomationBench-AA 35.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-24-deepseek-v4-pro.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-24/deepseek-v4-pro-0424-high</id>
+    <updated>2026-04-24T00:00:00Z</updated>
+    <summary>DeepSeek V4 Pro (Reasoning, High Effort): now the cheapest way to reach AutomationBench-AA 18.4% to 35.3% at $0.043 per task, taking it from Gemini 3.1 Pro Preview, GPT-5.5, GPT-5, and Kimi K2.5; GPT-5 and Kimi K2.5 left the frontier. New cost record for AutomationBench-AA ≥ 30%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (xhigh) (new model, AutomationBench-AA 47.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-23/gpt-5-5</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (xhigh): pushed the AutomationBench-AA ceiling from 46.3% to 47.3%, at $1.17 per task, taking it from Claude Opus 4.7, which left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (high) (new model, AutomationBench-AA 44.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-23/gpt-5-5-high</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (high): now the cheapest way to reach AutomationBench-AA 40.1% to 44.3% at $0.80 per task, taking it from Claude Opus 4.7 and GPT-5.4; GPT-5.4 left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (medium) (new model, AutomationBench-AA 40.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-23/gpt-5-5-medium</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (medium): now the cheapest way to reach AutomationBench-AA 35.4% to 40.1% at $0.50 per task, taking it from GPT-5.4. New cost record for AutomationBench-AA ≥ 40%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (low) (new model, AutomationBench-AA 31.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-23/gpt-5-5-low</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (low): now the cheapest way to reach AutomationBench-AA 26.5% to 31.7% at $0.26 per task, taking it from Gemini 3.1 Pro Preview. New cost record for AutomationBench-AA ≥ 30%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-23: GPT-5.5 (Non-reasoning) (new model, AutomationBench-AA 26.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-23-gpt-5-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-23/gpt-5-5-non-reasoning</id>
+    <updated>2026-04-23T00:00:00Z</updated>
+    <summary>GPT-5.5 (Non-reasoning): now the cheapest way to reach AutomationBench-AA 21.7% to 26.1% at $0.21 per task, taking it from GPT-5. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-22: MiMo-V2.5 (new model, AutomationBench-AA 18.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-22-mimo-v2-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-22/mimo-v2-5-0424</id>
+    <updated>2026-04-22T00:00:00Z</updated>
+    <summary>MiMo-V2.5: now the cheapest way to reach AutomationBench-AA 0.0% to 18.4% at $0.010 per task, taking it from Kimi K2.5, Gemma 4 31B, Gemma 4 26B A4B, GPT-5 mini, GPT-4.1 nano, gpt-oss-120b, and Llama 4 Scout; Gemma 4 31B, Gemma 4 26B A4B, GPT-5 mini, GPT-4.1 nano, gpt-oss-120b, and Llama 4 Scout left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-16: Claude Opus 4.7 (Adaptive Reasoning, Max Effort) (new model, AutomationBench-AA 46.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-16-claude-opus-4-7.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-16/claude-opus-4-7</id>
+    <updated>2026-04-16T00:00:00Z</updated>
+    <summary>Claude Opus 4.7 (Adaptive Reasoning, Max Effort): pushed the AutomationBench-AA ceiling from 44.2% to 46.3%, at $2.23 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-02: Gemma 4 31B (Non-reasoning) (new model, AutomationBench-AA 11.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-02-gemma-4-31b.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-02/gemma-4-31b-non-reasoning</id>
+    <updated>2026-04-02T00:00:00Z</updated>
+    <summary>Gemma 4 31B (Non-reasoning): now the cheapest way to reach AutomationBench-AA 11.0% to 11.1% at $0.044 per task, taking it from Kimi K2.5. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-02: Gemma 4 26B A4B (Reasoning) (new model, AutomationBench-AA 11.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-04-02-gemma-4-26b-a4b.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-04-02/gemma-4-26b-a4b</id>
+    <updated>2026-04-02T00:00:00Z</updated>
+    <summary>Gemma 4 26B A4B (Reasoning): now the cheapest way to reach AutomationBench-AA 6.5% to 11.0% at $0.039 per task, taking it from Kimi K2.5 and Gemini 3.1 Flash-Lite; Gemini 3.1 Flash-Lite left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-03-05: GPT-5.4 (xhigh) (new model, AutomationBench-AA 44.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-03-05-gpt-5-4.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-03-05/gpt-5-4</id>
+    <updated>2026-03-05T00:00:00Z</updated>
+    <summary>GPT-5.4 (xhigh): pushed the AutomationBench-AA ceiling from 35.4% to 44.2%, at $1.10 per task. New cost record for AutomationBench-AA ≥ 40%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-03-03: Gemini 3.1 Flash-Lite (new model, AutomationBench-AA 6.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-03-03-gemini-3-1-flash-lite.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-03-03/gemini-3-1-flash-lite-preview</id>
+    <updated>2026-03-03T00:00:00Z</updated>
+    <summary>Gemini 3.1 Flash-Lite: now the cheapest way to reach AutomationBench-AA 6.5% to 6.8% at $0.043 per task, taking it from Kimi K2.5. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-19: Gemini 3.1 Pro Preview (new model, AutomationBench-AA 35.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-02-19-gemini-3-1-pro-preview.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-02-19/gemini-3-1-pro-preview</id>
+    <updated>2026-02-19T00:00:00Z</updated>
+    <summary>Gemini 3.1 Pro Preview: pushed the AutomationBench-AA ceiling from 26.5% to 35.4%, at $0.33 per task. New cost record for AutomationBench-AA ≥ 30%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-01-27: Kimi K2.5 (Reasoning) (new model, AutomationBench-AA 21.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2026-01-27-kimi-k2-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2026-01-27/kimi-k2-5</id>
+    <updated>2026-01-27T00:00:00Z</updated>
+    <summary>Kimi K2.5 (Reasoning): now the cheapest way to reach AutomationBench-AA 6.5% to 21.7% at $0.096 per task, taking it from GPT-5. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-07: GPT-5 (high) (new model, AutomationBench-AA 26.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-08-07-gpt-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-08-07/gpt-5</id>
+    <updated>2025-08-07T00:00:00Z</updated>
+    <summary>GPT-5 (high): pushed the AutomationBench-AA ceiling from 2.2% to 26.5%, at $0.26 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-07: GPT-5 mini (high) (new model, AutomationBench-AA 6.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-08-07-gpt-5-mini.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-08-07/gpt-5-mini</id>
+    <updated>2025-08-07T00:00:00Z</updated>
+    <summary>GPT-5 mini (high): pushed the AutomationBench-AA ceiling from 2.2% to 6.5%, at $0.036 per task, taking it from Qwen3 235B A22B 2507, which left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-05: gpt-oss-120b (low) (new model, AutomationBench-AA 1.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-08-05-gpt-oss-120b.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-08-05/gpt-oss-120b-low</id>
+    <updated>2025-08-05T00:00:00Z</updated>
+    <summary>gpt-oss-120b (low): now the cheapest way to reach AutomationBench-AA 0.2% to 1.0% at $0.020 per task, taking it from GPT-4.1 nano and DeepSeek V3; DeepSeek V3 left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-07-25: Qwen3 235B A22B 2507 (Reasoning) (new model, AutomationBench-AA 2.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-07-25-qwen3-235b-a22b-2507.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-07-25/qwen3-235b-a22b-instruct-2507-reasoning</id>
+    <updated>2025-07-25T00:00:00Z</updated>
+    <summary>Qwen3 235B A22B 2507 (Reasoning): now the cheapest way to reach AutomationBench-AA 1.2% to 2.2% at $0.064 per task, taking it from Gemini 2.5 Pro and GPT-4.1 mini, both of which left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-06-05: Gemini 2.5 Pro (new model, AutomationBench-AA 2.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-06-05-gemini-2-5-pro.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-06-05/gemini-2-5-pro</id>
+    <updated>2025-06-05T00:00:00Z</updated>
+    <summary>Gemini 2.5 Pro: pushed the AutomationBench-AA ceiling from 1.8% to 2.2%, at $0.22 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-04-14: GPT-4.1 mini (new model, AutomationBench-AA 1.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-04-14-gpt-4-1-mini.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-04-14/gpt-4-1-mini</id>
+    <updated>2025-04-14T00:00:00Z</updated>
+    <summary>GPT-4.1 mini: pushed the AutomationBench-AA ceiling from 1.2% to 1.8%, at $0.064 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-04-14: GPT-4.1 nano (new model, AutomationBench-AA 1.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-04-14-gpt-4-1-nano.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-04-14/gpt-4-1-nano</id>
+    <updated>2025-04-14T00:00:00Z</updated>
+    <summary>GPT-4.1 nano: now the cheapest way to reach AutomationBench-AA 0.6% to 1.2% at $0.035 per task, taking it from Mistral Small 3.1, which left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-04-05: Llama 4 Scout (new model, AutomationBench-AA 0.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-04-05-llama-4-scout.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-04-05/llama-4-scout</id>
+    <updated>2025-04-05T00:00:00Z</updated>
+    <summary>Llama 4 Scout: now the cheapest way to reach AutomationBench-AA 0.0% to 0.2% at $0.011 per task, taking it from DeepSeek V3. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-03-17: Mistral Small 3.1 (new model, AutomationBench-AA 1.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2025-03-17-mistral-small-3-1.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2025-03-17/mistral-small-3-1</id>
+    <updated>2025-03-17T00:00:00Z</updated>
+    <summary>Mistral Small 3.1: pushed the AutomationBench-AA ceiling from 0.6% to 1.2%, at $0.044 per task. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2024-12-26: DeepSeek V3 (Dec '24) (new model, AutomationBench-AA 0.6%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/agentic/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/agentic/2024-12-26-deepseek-v3.png" />
+    <id>https://llm-frontier.catalystneuro.com/agentic/advance/2024-12-26/deepseek-v3</id>
+    <updated>2024-12-26T00:00:00Z</updated>
+    <summary>DeepSeek V3 (Dec '24): now the cheapest way to reach AutomationBench-AA 0.0% to 0.6% at $0.025 per task. Open weights.</summary>
+  </entry>
+</feed>

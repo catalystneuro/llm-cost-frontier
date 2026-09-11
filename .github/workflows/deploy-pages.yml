@@ -37,13 +37,17 @@ jobs:
           cp -r site/* _site/
           cp build/llm-frontier.json _site/data/llm-frontier.json
           cp build/feed.xml _site/feed.xml
+          cp build/feed-*.xml _site/ 2>/dev/null || true
           cp -r build/images _site/images
           # Cache-bust the script and styles so a redeploy is never viewed
           # through a stale cached copy against fresh data.
           v="${GITHUB_SHA::8}"
           sed -i "s|src=\"js/llm-frontier-dashboard.js\"|src=\"js/llm-frontier-dashboard.js?v=$v\"|" _site/index.html
           sed -i "s|href=\"style.css\"|href=\"style.css?v=$v\"|" _site/index.html
-          sed -i "s|href=\"../style.css\"|href=\"../style.css?v=$v\"|" _site/methodology/index.html
+          for f in _site/*/index.html; do
+            sed -i "s|href=\"../style.css\"|href=\"../style.css?v=$v\"|" "$f"
+            sed -i "s|src=\"../js/llm-frontier-dashboard.js\"|src=\"../js/llm-frontier-dashboard.js?v=$v\"|" "$f"
+          done
       - name: Include PR previews
         run: |
           if git fetch origin previews 2>/dev/null; then

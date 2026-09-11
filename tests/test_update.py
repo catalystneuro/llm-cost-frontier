@@ -608,6 +608,37 @@ def test_backfilled_rows_are_not_frontier_events():
     assert all(not (x["model"] == "A" and x["date"] == "2026-02-10") for x in advs)
 
 
+def test_metric_pages_stay_in_sync_with_the_template():
+    from llm_cost_frontier import pages
+    for path, content in pages.generate().items():
+        assert path.exists(), f"{path} missing; run python -m llm_cost_frontier.pages"
+        assert path.read_text() == content, (
+            f"{path} is stale; site/index.html changed without re-running "
+            "python -m llm_cost_frontier.pages")
+
+
+def test_capability_feed_speaks_the_metric():
+    import tempfile
+    from pathlib import Path as P
+    from llm_cost_frontier.update import CAPABILITIES, write_feed
+    cap = CAPABILITIES[0]
+    out = {"updated": "2026-09-11", "advances": [],
+           "cap_advances": {cap["key"]: [dict(
+               date="2026-09-03", model="M (high)", base="M", variant="high", slug="m-high",
+               creator="X", intelligence_index=89.9, cost_per_task=1.72, previous_cost=None,
+               kind="new model", open_weights=False, owns_from=80.0, owns_to=89.9,
+               records=[80], taken_from=[], ceiling_from=None, displaced=[])]}}
+    with tempfile.TemporaryDirectory() as td:
+        fp = P(td) / f"feed-{cap['key']}.xml"
+        write_feed(out, fp, "https://example.com", cap=cap)
+        t = fp.read_text()
+    assert f"LLM Frontier: {cap['metric']} advances" in t
+    assert f"https://example.com/feed-{cap['key']}.xml" in t
+    assert f"{cap['key']}/advance/2026-09-03/m-high" in t
+    assert f"{cap['metric']} 89.9%" in t
+    assert f"New cost record for {cap['metric']} \u2265 80%" in t
+
+
 def test_check_live_set_guards():
     from llm_cost_frontier.update import check_live_set
     history = {"models": {f"m{i}": model(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}}

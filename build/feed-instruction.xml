@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>LLM Frontier: IFBench advances</title>
+  <link href="https://llm-frontier.catalystneuro.com/instruction/" />
+  <link rel="self" href="https://llm-frontier.catalystneuro.com/feed-instruction.xml" />
+  <id>https://llm-frontier.catalystneuro.com/feed-instruction.xml</id>
+  <updated>2026-09-11T06:00:00Z</updated>
+  <author><name>CatalystNeuro</name></author>
+  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of IFBench, through a release or a price change.</subtitle>
+  <entry>
+    <title>2026-06-01: MiniMax-M3 (new model, IFBench 82.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-06-01-minimax-m3.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-06-01/minimax-m3</id>
+    <updated>2026-06-01T00:00:00Z</updated>
+    <summary>MiniMax-M3: pushed the IFBench ceiling from 81.3% to 82.9%, at $0.14 per task, taking it from Grok 4.3, which left the frontier. New cost record for IFBench ≥ 80%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-30: Grok 4.3 (high) (new model, IFBench 81.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-04-30-grok-4-3.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-04-30/grok-4-3</id>
+    <updated>2026-04-30T00:00:00Z</updated>
+    <summary>Grok 4.3 (high): pushed the IFBench ceiling from 79.9% to 81.3%, at $0.15 per task. New cost record for IFBench ≥ 80%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-22: MiMo-V2.5-Pro (new model, IFBench 79.9%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-04-22-mimo-v2-5-pro.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-04-22/mimo-v2-5-pro</id>
+    <updated>2026-04-22T00:00:00Z</updated>
+    <summary>MiMo-V2.5-Pro: pushed the IFBench ceiling from 78.8% to 79.9%, at $0.034 per task, taking it from Qwen3.5 397B A17B, Gemini 3.1 Flash-Lite, and GPT-5 mini, all of which left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-04-22: MiMo-V2.5 (new model, IFBench 67.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-04-22-mimo-v2-5.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-04-22/mimo-v2-5-0424</id>
+    <updated>2026-04-22T00:00:00Z</updated>
+    <summary>MiMo-V2.5: now the cheapest way to reach IFBench 0.0% to 67.1% at $0.010 per task, taking it from NVIDIA Nemotron 3 Nano 30B A3B, gpt-oss-120b, and Llama 4 Scout; gpt-oss-120b and Llama 4 Scout left the frontier. New cost record for IFBench ≥ 60%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-03-03: Gemini 3.1 Flash-Lite (new model, IFBench 77.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-03-03-gemini-3-1-flash-lite.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-03-03/gemini-3-1-flash-lite-preview</id>
+    <updated>2026-03-03T00:00:00Z</updated>
+    <summary>Gemini 3.1 Flash-Lite: now the cheapest way to reach IFBench 75.4% to 77.2% at $0.043 per task, taking it from Qwen3.5 397B A17B, Gemini 3.1 Pro Preview, and Qwen3.5 122B A10B; Gemini 3.1 Pro Preview and Qwen3.5 122B A10B left the frontier. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-24: Qwen3.5 122B A10B (Reasoning) (new model, IFBench 75.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-02-24-qwen3-5-122b-a10b.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-02-24/qwen3-5-122b-a10b</id>
+    <updated>2026-02-24T00:00:00Z</updated>
+    <summary>Qwen3.5 122B A10B (Reasoning): now the cheapest way to reach IFBench 75.4% to 75.7% at $0.25 per task, taking it from Gemini 3.1 Pro Preview. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-19: Gemini 3.1 Pro Preview (new model, IFBench 77.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-02-19-gemini-3-1-pro-preview.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-02-19/gemini-3-1-pro-preview</id>
+    <updated>2026-02-19T00:00:00Z</updated>
+    <summary>Gemini 3.1 Pro Preview: now the cheapest way to reach IFBench 75.4% to 77.1% at $0.33 per task, taking it from Qwen3.5 397B A17B. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2026-02-16: Qwen3.5 397B A17B (Reasoning) (new model, IFBench 78.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2026-02-16-qwen3-5-397b-a17b.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2026-02-16/qwen3-5-397b-a17b</id>
+    <updated>2026-02-16T00:00:00Z</updated>
+    <summary>Qwen3.5 397B A17B (Reasoning): pushed the IFBench ceiling from 75.4% to 78.8%, at $0.36 per task. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-12-15: NVIDIA Nemotron 3 Nano 30B A3B (Reasoning) (new model, IFBench 71.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-12-15-nvidia-nemotron-3-nano-30b-a3b.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-12-15/nvidia-nemotron-3-nano-30b-a3b-reasoning</id>
+    <updated>2025-12-15T00:00:00Z</updated>
+    <summary>NVIDIA Nemotron 3 Nano 30B A3B (Reasoning): now the cheapest way to reach IFBench 58.3% to 71.1% at $0.025 per task, taking it from GPT-5 mini and gpt-oss-20b; gpt-oss-20b left the frontier. New cost record for IFBench ≥ 70%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-07: GPT-5 mini (high) (new model, IFBench 75.4%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-08-07-gpt-5-mini.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-08-07/gpt-5-mini</id>
+    <updated>2025-08-07T00:00:00Z</updated>
+    <summary>GPT-5 mini (high): pushed the IFBench ceiling from 69.0% to 75.4%, at $0.036 per task, taking it from gpt-oss-120b. New cost record for IFBench ≥ 70%. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-05: gpt-oss-120b (high) (new model, IFBench 69.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-08-05-gpt-oss-120b.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-08-05/gpt-oss-120b</id>
+    <updated>2025-08-05T00:00:00Z</updated>
+    <summary>gpt-oss-120b (high): pushed the IFBench ceiling from 51.2% to 69.0%, at $0.073 per task. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-05: gpt-oss-20b (high) (new model, IFBench 65.1%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-08-05-gpt-oss-20b.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-08-05/gpt-oss-20b</id>
+    <updated>2025-08-05T00:00:00Z</updated>
+    <summary>gpt-oss-20b (high): pushed the IFBench ceiling from 51.2% to 65.1%, at $0.025 per task. New cost record for IFBench ≥ 60%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-08-05: gpt-oss-120b (low) (new model, IFBench 58.3%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-08-05-gpt-oss-120b.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-08-05/gpt-oss-120b-low</id>
+    <updated>2025-08-05T00:00:00Z</updated>
+    <summary>gpt-oss-120b (low): pushed the IFBench ceiling from 51.2% to 58.3%, at $0.020 per task, taking it from Qwen3 235B A22B 2507 and Llama 4 Maverick, both of which left the frontier. New cost record for IFBench ≥ 50%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-07-25: Qwen3 235B A22B 2507 (Reasoning) (new model, IFBench 51.2%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-07-25-qwen3-235b-a22b-2507.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-07-25/qwen3-235b-a22b-instruct-2507-reasoning</id>
+    <updated>2025-07-25T00:00:00Z</updated>
+    <summary>Qwen3 235B A22B 2507 (Reasoning): pushed the IFBench ceiling from 48.7% to 51.2%, at $0.064 per task, taking it from Gemini 2.5 Pro, which left the frontier. New cost record for IFBench ≥ 50%. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-06-05: Gemini 2.5 Pro (new model, IFBench 48.7%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-06-05-gemini-2-5-pro.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-06-05/gemini-2-5-pro</id>
+    <updated>2025-06-05T00:00:00Z</updated>
+    <summary>Gemini 2.5 Pro: pushed the IFBench ceiling from 43.0% to 48.7%, at $0.22 per task. Proprietary.</summary>
+  </entry>
+  <entry>
+    <title>2025-04-05: Llama 4 Maverick (new model, IFBench 43.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-04-05-llama-4-maverick.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-04-05/llama-4-maverick</id>
+    <updated>2025-04-05T00:00:00Z</updated>
+    <summary>Llama 4 Maverick: pushed the IFBench ceiling from 41.0% to 43.0%, at $0.036 per task, taking it from DeepSeek V3 0324, which left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-04-05: Llama 4 Scout (new model, IFBench 39.5%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-04-05-llama-4-scout.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-04-05/llama-4-scout</id>
+    <updated>2025-04-05T00:00:00Z</updated>
+    <summary>Llama 4 Scout: now the cheapest way to reach IFBench 0.0% to 39.5% at $0.011 per task, taking it from DeepSeek V3 0324 and DeepSeek V3; DeepSeek V3 left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-03-25: DeepSeek V3 0324 (new model, IFBench 41.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-03-25-deepseek-v3-0324.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-03-25/deepseek-v3-0324</id>
+    <updated>2025-03-25T00:00:00Z</updated>
+    <summary>DeepSeek V3 0324: pushed the IFBench ceiling from 39.0% to 41.0%, at $0.048 per task, taking it from DeepSeek R1, which left the frontier. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2025-01-20: DeepSeek R1 (Jan '25) (new model, IFBench 39.0%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2025-01-20-deepseek-r1.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2025-01-20/deepseek-r1-0120</id>
+    <updated>2025-01-20T00:00:00Z</updated>
+    <summary>DeepSeek R1 (Jan '25): pushed the IFBench ceiling from 34.8% to 39.0%, at $0.32 per task. Open weights.</summary>
+  </entry>
+  <entry>
+    <title>2024-12-26: DeepSeek V3 (Dec '24) (new model, IFBench 34.8%)</title>
+    <link href="https://llm-frontier.catalystneuro.com/instruction/#advances" />
+    <link rel="enclosure" type="image/png" href="https://llm-frontier.catalystneuro.com/images/advances/instruction/2024-12-26-deepseek-v3.png" />
+    <id>https://llm-frontier.catalystneuro.com/instruction/advance/2024-12-26/deepseek-v3</id>
+    <updated>2024-12-26T00:00:00Z</updated>
+    <summary>DeepSeek V3 (Dec '24): now the cheapest way to reach IFBench 0.0% to 34.8% at $0.025 per task. Open weights.</summary>
+  </entry>
+</feed>
