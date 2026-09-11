@@ -546,10 +546,11 @@
   function switchEra(i) {
     ERA_VIEW = i;
     if (i < ERAS.length && !eraHasTime(i)) AXIS = 'cost';  // this archive has no time measurements
+    advPage = 1;
     hideTip();
     anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
     syncHash();
-    renderEraNav(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable();
+    renderEraNav(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
   }
   function renderEraNav() {
     var nav = document.getElementById('pfc-era-nav');
@@ -595,10 +596,11 @@
       b.addEventListener('click', function () {
         if (AXIS === t[1]) return;
         AXIS = t[1];
+        advPage = 1;
         hideTip();
         anim.stage = 1e9;
         syncHash();
-        renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable();
+        renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances();
       });
       nav.append(b);
     });
@@ -680,7 +682,7 @@
     if (!SEL) return;
     chip.replaceChildren();
     var facts = null, action = null;
-    var showCostAxis = ['Show on the cost axis', function () { AXIS = 'cost'; syncHash(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); }];
+    var showCostAxis = ['Show on the cost axis', function () { AXIS = 'cost'; advPage = 1; syncHash(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }];
     if (SEL_KIND === 'creator') {
       chip.append(el('span', 'pfc-chip-name', SEL));
       var fleet = models.filter(function (mm) { return mm.creator === SEL; });
@@ -1063,18 +1065,21 @@
   function advanceLine(a, withVariant) {
     var text = el('div', 'pfc-adv-body');
     if (withVariant && a.variant) { var v = el('span', 'pfc-adv-variant'); v.textContent = a.variant + ': '; text.append(v); }
+    var timeAxis = isTimeAxis();
+    var fmtA = timeAxis ? fmtTime : fmt$;
+    var superl = timeAxis ? 'fastest' : 'cheapest';
     var term = CAP < 0 ? 'index' : metricName();
     var span = a.owns_to.toFixed(1) === a.owns_from.toFixed(1) ? term + ' ' + fmtScore(a.owns_to) : term + ' ' + fmtScore(a.owns_from) + ' to ' + fmtScore(a.owns_to);
     var ceiling = CAP < 0 ? 'the intelligence ceiling' : 'the ' + metricName() + ' ceiling';
     var s1 = a.kind === 'price change' && a.previous_cost
-      ? 'price moved from ' + fmt$(a.previous_cost) + ' to ' + fmt$(a.cost_per_task) + ' per task; now the cheapest way to reach ' + span
+      ? (timeAxis ? 'speed' : 'price') + ' moved from ' + fmtA(a.previous_cost) + ' to ' + fmtA(a.cost_per_task) + ' per task; now the ' + superl + ' way to reach ' + span
       : (a.ceiling_from !== null && a.ceiling_from !== undefined)
-        ? 'pushed ' + ceiling + ' from ' + fmtScore(a.ceiling_from) + ' to ' + fmtScore(a.owns_to) + ', at ' + fmt$(a.cost_per_task) + ' per task'
-        : 'now the cheapest way to reach ' + span + ' at ' + fmt$(a.cost_per_task) + ' per task';
+        ? 'pushed ' + ceiling + ' from ' + fmtScore(a.ceiling_from) + ' to ' + fmtScore(a.owns_to) + ', at ' + fmtA(a.cost_per_task) + ' per task'
+        : 'now the ' + superl + ' way to reach ' + span + ' at ' + fmtA(a.cost_per_task) + ' per task';
     s1 += takenClause(a.taken_from || [], a.displaced || []) + '. ';
     if (!(withVariant && a.variant)) s1 = s1.charAt(0).toUpperCase() + s1.slice(1);
     text.append(s1);
-    if (a.records && a.records.length) { var r = el('span', 'pfc-adv-rec'); r.textContent = 'New cost record for ' + joinAnd(a.records.map(function (t) { return (CAP < 0 ? 'index' : metricName()) + ' ' + tierLabel(t); })) + '. '; text.append(r); }
+    if (a.records && a.records.length) { var r = el('span', 'pfc-adv-rec'); r.textContent = 'New ' + (timeAxis ? 'speed' : 'cost') + ' record for ' + joinAnd(a.records.map(function (t) { return (CAP < 0 ? 'index' : metricName()) + ' ' + tierLabel(t); })) + '. '; text.append(r); }
     return text;
   }
   function slugify(name) {
@@ -1086,18 +1091,21 @@
     var single = list.length === 1 && !list[0].variant;
     var head = el('div', 'pfc-adv-head'); head.append(nameLink(single ? list[0].model : list[0].base, null, list[0].model));
     var kinds = []; list.forEach(function (a) { if (kinds.indexOf(a.kind) < 0) kinds.push(a.kind); });
-    kinds.forEach(function (k) { head.append(el('span', 'pfc-adv-kind', k)); });
+    kinds.forEach(function (k) { head.append(el('span', 'pfc-adv-kind', isTimeAxis() && k === 'price change' ? 'speed change' : k)); });
     if (list[0].open_weights) head.append(el('span', 'pfc-adv-kind pfc-adv-open', 'open weights'));
     // The pipeline renders one shareable card image per base model per day,
     // named by the same date and slug this derives; capability advances get
-    // their cards under a per-metric subdirectory.
-    var card = document.createElement('a');
-    card.className = 'pfc-adv-kind pfc-adv-card';
-    card.textContent = 'chart card';
-    card.href = BASE + 'images/advances/' + (CAP < 0 ? '' : capMeta().key + '/') + list[0].date + '-' + slugify(list[0].base || list[0].model) + '.png';
-    card.target = '_blank';
-    card.rel = 'noopener';
-    head.append(card);
+    // their cards under a per-metric subdirectory. Cards exist for the cost
+    // view only.
+    if (!isTimeAxis()) {
+      var card = document.createElement('a');
+      card.className = 'pfc-adv-kind pfc-adv-card';
+      card.textContent = 'chart card';
+      card.href = BASE + 'images/advances/' + (CAP < 0 ? '' : capMeta().key + '/') + list[0].date + '-' + slugify(list[0].base || list[0].model) + '.png';
+      card.target = '_blank';
+      card.rel = 'noopener';
+      head.append(card);
+    }
     item.append(head);
     list.forEach(function (a) { item.append(advanceLine(a, !single)); });
     return item;
@@ -1106,13 +1114,23 @@
   function renderAdvances() {
     var box = document.getElementById('pfc-advances');
     if (!box || !DATA.advances) return;
+    var timeAxis = isTimeAxis();
+    var isArch = ERAS.length > 0 && ERA_VIEW < ERAS.length;
     var lead = document.getElementById('pfc-adv-lead');
     if (lead) {
       if (advLeadDefault === null) advLeadDefault = lead.innerHTML;
-      if (CAP < 0) lead.innerHTML = advLeadDefault;
+      if (timeAxis) lead.textContent = 'Each entry is a date on which a model became the fastest way to reach some level of ' + (CAP < 0 ? 'the Intelligence Index' : metricName()) + '. ' + (isArch ? 'Archive entries use only the speeds measured in that era.' : 'Speeds are the latest measured values, so dates before a model\u2019s first speed measurement are approximate.') + ' The Atom feed covers cost advances on the Overall view only.';
+      else if (CAP < 0) lead.innerHTML = advLeadDefault;
       else lead.textContent = 'Each entry is a date on which a model became the cheapest way to reach some level of ' + metricName() + ', through a release or a price change, derived from release dates, observed prices, and the latest measured scores. The Atom feed covers the Overall view only.';
     }
-    var list = CAP < 0 ? DATA.advances : ((DATA.cap_advances || {})[capMeta().key] || []);
+    var list;
+    if (timeAxis) {
+      list = isArch
+        ? (CAP < 0 ? ((DATA.era_time_advances || [])[ERA_VIEW] || []) : (((DATA.era_cap_time_advances || {})[capMeta().key] || [])[ERA_VIEW] || []))
+        : (CAP < 0 ? (DATA.time_advances || []) : ((DATA.cap_time_advances || {})[capMeta().key] || []));
+    } else {
+      list = CAP < 0 ? DATA.advances : ((DATA.cap_advances || {})[capMeta().key] || []);
+    }
     var days = [], byDay = {};
     list.forEach(function (a) {
       if (!byDay[a.date]) { byDay[a.date] = []; days.push(a.date); }

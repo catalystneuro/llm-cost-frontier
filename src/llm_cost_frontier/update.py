@@ -777,9 +777,10 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
     # measurements are current-era.
     cap_tiers, cap_tier_cost, cap_tier_summary, cap_advances = {}, {}, {}, {}
     cap_tier_cost_rebased, cap_tier_summary_rebased = {}, {}
-    cap_tier_time, cap_tier_time_summary = {}, {}
+    cap_tier_time, cap_tier_time_summary, cap_time_advances = {}, {}, {}
     tmodels = time_models(models, eras or [])
     tier_time = tier_records(tmodels, [], TIERS)
+    time_advances = frontier_advances(tmodels, [], tier_time)
     for c in CAPABILITIES:
         cm = capability_models(models, c["key"])
         current = [m for m in cm.values() if model_era(m, eras) == current_era]
@@ -800,12 +801,19 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         recs_t = tier_records(cmt, [], tiers)
         cap_tier_time[c["key"]] = recs_t
         cap_tier_time_summary[c["key"]] = tier_summary(recs_t)
+        cap_time_advances[c["key"]] = frontier_advances(cmt, [], recs_t)
     era_tier_time, era_cap_tier_time = [], {k: [] for k in cap_tiers}
+    era_time_advances, era_cap_time_advances = [], {k: [] for k in cap_tiers}
     for e in range(len(eras or [])):
         etm = era_time_models(models, eras or [], e)
-        era_tier_time.append(tier_records(etm, [], TIERS))
+        recs_e = tier_records(etm, [], TIERS)
+        era_tier_time.append(recs_e)
+        era_time_advances.append(frontier_advances(etm, [], recs_e))
         for k, tiers_k in cap_tiers.items():
-            era_cap_tier_time[k].append(tier_records(capability_models(etm, k), [], tiers_k))
+            cet = capability_models(etm, k)
+            recs_ek = tier_records(cet, [], tiers_k)
+            era_cap_tier_time[k].append(recs_ek)
+            era_cap_time_advances[k].append(frontier_advances(cet, [], recs_ek))
     return dict(
         advances=advances,
         cap_advances=cap_advances,
@@ -832,6 +840,10 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         cap_tier_time_summary=cap_tier_time_summary,
         era_tier_time=era_tier_time,
         era_cap_tier_time=era_cap_tier_time,
+        time_advances=time_advances,
+        cap_time_advances=cap_time_advances,
+        era_time_advances=era_time_advances,
+        era_cap_time_advances=era_cap_time_advances,
         price_events=events,
         counts=dict(total=len(rows), live=sum(1 for m in models.values() if not m["retired"]), retired=sum(1 for m in models.values() if m["retired"])),
     )

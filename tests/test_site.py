@@ -103,6 +103,11 @@ def test_axis_toggle_switches_to_time_and_archives_force_cost(browser, site_url)
         assert page.evaluate("location.hash") == "#index-time"
         assert page.locator("#pfc-records-title").inner_text().startswith("Speed Records")
         assert "time per task" in page.locator("#pfc-records-lead").inner_text()
+        # The advances section follows the axis: fastest-way entries, no cards.
+        assert "fastest way" in page.locator("#pfc-adv-lead").inner_text()
+        assert page.locator("#pfc-advances .pfc-adv-day").count() > 0
+        assert page.locator("#pfc-advances .pfc-adv-card").count() == 0
+        assert "fastest way to reach" in page.locator("#pfc-advances .pfc-adv-body").first.inner_text()
         # Switching to an archive era keeps the time axis when that era has
         # backfilled measurements; without them it falls back to cost.
         import json
