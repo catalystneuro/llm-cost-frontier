@@ -80,13 +80,16 @@ CAPABILITIES = [
 ]
 
 
-def fetch_payload(url: str) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (catalystneuro.com llm-frontier updater)"})
-    html = urllib.request.urlopen(req, timeout=120).read().decode("utf-8")
+def flight_payload(html: str) -> str:
     chunks = re.findall(r'self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)', html)
     if not chunks:
         raise RuntimeError("no Next.js payload found on page; the site layout may have changed")
     return "".join(json.loads('"' + c + '"') for c in chunks)
+
+
+def fetch_payload(url: str) -> str:
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (catalystneuro.com llm-frontier updater)"})
+    return flight_payload(urllib.request.urlopen(req, timeout=120).read().decode("utf-8"))
 
 
 def parse_object_at(s: str, start: int) -> dict:
@@ -189,6 +192,7 @@ def merge(history: dict, live: dict, today: str) -> dict:
             open_weights=rec["open_weights"],
             capabilities=rec.get("capabilities") or prev.get("capabilities") or {},
             time_per_task=tpt or prev.get("time_per_task"),
+            **({"time_history": prev["time_history"]} if prev.get("time_history") else {}),
             speed_tps=rec.get("speed_tps") or prev.get("speed_tps"),
             ttft=rec.get("ttft") or prev.get("ttft"),
             retired=False,
@@ -446,6 +450,8 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
             state[slug] = (cost, iq)
             rebase = ev_era > 0 and seen_era.get(slug, -1) < ev_era and models[slug]["release_date"] < (eras or [])[ev_era - 1]["start"]
             seen_era[slug] = ev_era
+            if prev is not None and prev == (cost, iq) and not note:
+                continue  # a time-only observation row is not a frontier event
             if rebase or (mass and prev is not None):
                 continue
             changed[slug] = ("price change" if note and ("cut" in note or "change" in note) else "new model", prev[0] if prev else None)
@@ -556,8 +562,8 @@ def rebased_models(models: dict, eras: list) -> dict:
         robs = []
         if old and old[-1][1] > 0:
             last_old = old[-1][1]
-            robs += [[d, round(anchor * c / last_old, 6), cur_iq] for d, c, _iq in old]
-        robs += [[d, c, cur_iq] for d, c, _iq in settled_obs]
+            robs += [[o[0], round(anchor * o[1] / last_old, 6), cur_iq] for o in old]
+        robs += [[o[0], o[1], cur_iq] for o in settled_obs]
         if not robs:
             robs = [[m["release_date"], cur_cost, cur_iq]]
         mm = dict(m)
@@ -576,7 +582,10 @@ def time_models(models: dict, eras: list) -> dict:
     out = {}
     for slug, m in base.items():
         t_latest = models[slug].get("time_per_task")
-        dated = {o[0]: o[3] for o in (models[slug].get("observations") or []) if len(o) > 3 and o[3]}
+        # Times measured under an earlier index composition belong to that
+        # era's archive; only current-era measurements feed the current basis.
+        dated = {d: t for d, t in dated_times(models[slug]).items()
+                 if era_index(d, eras) == len(eras or [])}
         if not t_latest and not dated:
             continue
         robs = []
@@ -592,6 +601,96 @@ def time_models(models: dict, eras: list) -> dict:
     return out
 
 
+def era_time_models(models: dict, eras: list, era: int) -> dict:
+    """Models with dated time measurements in one archived era, the time
+    standing in the cost column and the score in effect on each date kept.
+    Rows exist only at measurement dates, and the release date moves to the
+    first measurement, so era speed records begin when measuring began
+    instead of pretending to reach back before it."""
+    out = {}
+    for slug, m in models.items():
+        obs = sorted(m.get("observations") or [[m.get("last_seen", m["release_date"]), m["cost_per_task"], m["intelligence_index"]]])
+        def iq_at(date):
+            v = obs[0][2]
+            for o in obs:
+                if o[0] > date:
+                    break
+                v = o[2]
+            return v
+        robs = [[d, round(t, 2), iq_at(d)] for d, t in sorted(dated_times(m).items())
+                if era_index(d, eras) == era]
+        if not robs:
+            continue
+        mm = dict(m)
+        mm["observations"] = robs
+        mm["release_date"] = robs[0][0]
+        mm["cost_per_task"] = robs[-1][1]
+        mm["intelligence_index"] = robs[-1][2]
+        out[slug] = mm
+    return out
+
+
+def dated_times(m: dict) -> dict:
+    """All dated time-per-task measurements for a model: the fourth element
+    of observation rows, plus the separately stored time_history rows for
+    dates the cost history has no row on (backfilled from archived
+    snapshots, which must not disturb the cost timeline)."""
+    out = {d: t for d, t in m.get("time_history") or []}
+    for o in m.get("observations") or []:
+        if len(o) > 3 and o[3]:
+            out[o[0]] = o[3]
+    return out
+
+
+def backfill_time_series(history: dict, series: dict, cutoff: str) -> int:
+    """Fold dated time-per-task measurements harvested from archived
+    snapshots of the source into the history. `series` maps date ->
+    {slug: seconds}. A date with an observation row gets its time recorded
+    on that row; other dates go to the model's time_history, so the cost
+    timeline that advances and price events derive from is never touched.
+    A model's first value is kept and later values only when they moved by
+    more than 20%, the same threshold the live updater uses; dates at or
+    after `cutoff` (the current era) are never touched, and dates that
+    already carry a time keep it, so re-runs are idempotent. Returns the
+    number of measurements written."""
+    by_model = {}
+    for date in sorted(series):
+        if date >= cutoff:
+            continue
+        for slug, tpt in (series[date] or {}).items():
+            if slug in history["models"] and tpt:
+                by_model.setdefault(slug, []).append((date, float(tpt)))
+    written = 0
+    for slug, points in by_model.items():
+        m = history["models"][slug]
+        obs = sorted([list(o) for o in m.get("observations") or []])
+        by_date = {o[0]: o for o in obs}
+        extra = {d: t for d, t in m.get("time_history") or []}
+        last_t = None
+        for date, tpt in points:
+            row = by_date.get(date)
+            if row is not None and len(row) > 3 and row[3]:
+                last_t = row[3]
+                continue
+            if date in extra:
+                last_t = extra[date]
+                continue
+            if last_t and abs(tpt - last_t) / last_t <= 0.2:
+                continue
+            if date < m["release_date"]:
+                continue
+            last_t = tpt
+            if row is not None:
+                row.append(round(tpt, 2))
+            else:
+                extra[date] = round(tpt, 2)
+            written += 1
+        m["observations"] = obs
+        if extra:
+            m["time_history"] = sorted([d, t] for d, t in extra.items())
+    return written
+
+
 def capability_models(models: dict, key: str) -> dict:
     """The models measured on one capability, with the capability score standing
     in for the intelligence index so the frontier machinery applies unchanged.
@@ -604,7 +703,7 @@ def capability_models(models: dict, key: str) -> dict:
             continue
         mm = dict(m)
         mm["intelligence_index"] = v
-        mm["observations"] = [[d, c, v] for d, c, _iq in (m.get("observations") or [])]
+        mm["observations"] = [[o[0], o[1], v] + list(o[3:]) for o in (m.get("observations") or [])]
         out[slug] = mm
     return out
 
@@ -649,7 +748,19 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
     current_era = len(eras or [])
     rows = []
     for slug, m in sorted(models.items(), key=lambda kv: (kv[1]["release_date"], kv[1]["name"])):
-        changes = [[d, round(c, 6), iq] + ([t] if t else []) for d, c, iq, t, _n in cost_changes(slug, m, events)]
+        # Change rows carry a time only on dates it was actually measured;
+        # cost_changes forward-fills times, which must not cross era
+        # boundaries, so the dashboard forward-fills within an era itself.
+        # Backfilled measurements on dates without a change row are added as
+        # display-only rows carrying the cost and index then in effect.
+        real_t = dated_times(m)
+        cc = cost_changes(slug, m, events)
+        changes = [[d, round(c, 6), iq] + ([real_t[d]] if real_t.get(d) else []) for d, c, iq, _t, _n in cc]
+        for d in sorted(set(real_t) - {r[0] for r in changes}):
+            eff = [r for r in cc if r[0] <= d]
+            if eff:
+                changes.append([d, round(eff[-1][1], 6), eff[-1][2], real_t[d]])
+        changes.sort(key=lambda r: r[0])
         caps = m.get("capabilities") or {}
         row = [m["name"], m["creator"], m["release_date"], m["intelligence_index"], m["cost_per_task"], int(m["retired"]), int(m["open_weights"]),
                changes if len(changes) > 1 else 0,
@@ -689,6 +800,12 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         recs_t = tier_records(cmt, [], tiers)
         cap_tier_time[c["key"]] = recs_t
         cap_tier_time_summary[c["key"]] = tier_summary(recs_t)
+    era_tier_time, era_cap_tier_time = [], {k: [] for k in cap_tiers}
+    for e in range(len(eras or [])):
+        etm = era_time_models(models, eras or [], e)
+        era_tier_time.append(tier_records(etm, [], TIERS))
+        for k, tiers_k in cap_tiers.items():
+            era_cap_tier_time[k].append(tier_records(capability_models(etm, k), [], tiers_k))
     return dict(
         advances=advances,
         cap_advances=cap_advances,
@@ -713,6 +830,8 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         tier_time_summary=tier_summary(tier_time),
         cap_tier_time=cap_tier_time,
         cap_tier_time_summary=cap_tier_time_summary,
+        era_tier_time=era_tier_time,
+        era_cap_tier_time=era_cap_tier_time,
         price_events=events,
         counts=dict(total=len(rows), live=sum(1 for m in models.values() if not m["retired"]), retired=sum(1 for m in models.values() if m["retired"])),
     )

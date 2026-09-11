@@ -103,12 +103,20 @@ def test_axis_toggle_switches_to_time_and_archives_force_cost(browser, site_url)
         assert page.evaluate("location.hash") == "#index-time"
         assert page.locator("#pfc-records-title").inner_text().startswith("Speed Records")
         assert "time per task" in page.locator("#pfc-records-lead").inner_text()
-        # An archive era has no time measurements: it hides the toggle and
-        # falls back to the cost axis.
+        # Switching to an archive era keeps the time axis when that era has
+        # backfilled measurements; without them it falls back to cost.
+        import json
+        data = json.loads((REPO / "build/llm-frontier.json").read_text())
+        ett = (data.get("era_tier_time") or [{}])[0]
+        has_time = any(ett.get(t) for t in ett)
         page.locator("#pfc-era-nav button").first.click()
-        page.wait_for_selector("#pfc-frontier svg text:text('Cost per task (log)')")
-        assert page.locator("#pfc-axis-nav").is_hidden()
-        assert page.locator("#pfc-records-title").inner_text().startswith("Cost Records")
+        if has_time:
+            page.wait_for_selector("#pfc-records svg text:text('measurements ended')")
+            assert page.locator("#pfc-records-title").inner_text().startswith("Speed Records")
+        else:
+            page.wait_for_selector("#pfc-frontier svg text:text('Cost per task (log)')")
+            assert page.locator("#pfc-axis-nav").is_hidden()
+            assert page.locator("#pfc-records-title").inner_text().startswith("Cost Records")
         assert errors == []
     finally:
         ctx.close()
@@ -162,6 +170,48 @@ def test_creator_search_lights_the_fleet(browser, site_url):
         assert page.evaluate("location.hash").startswith("#index~")
         page.locator("#pfc-model-chip .pfc-chip-clear").click()
         page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring", state="detached")
+        assert errors == []
+    finally:
+        ctx.close()
+
+
+def test_archive_time_axis_when_backfilled(browser, site_url):
+    import json
+    data = json.loads((REPO / "build/llm-frontier.json").read_text())
+    ett = data.get("era_tier_time") or []
+    if not (ett and any((ett[0].get(t) or []) for t in ett[0])):
+        pytest.skip("no backfilled era time records")
+    ctx, page, errors = open_page(browser, site_url)
+    try:
+        # The archive era keeps the toggle and shows its own speed records.
+        page.locator("#pfc-era-nav button").first.click()
+        page.wait_for_selector("#pfc-records svg text:text('measurements ended')")
+        toggle = page.locator("#pfc-axis-nav button", has_text="Time per task")
+        assert toggle.count() == 1
+        toggle.click()
+        page.wait_for_selector("#pfc-frontier svg text:text('Time per task (log)')")
+        assert page.locator("#pfc-records-title").inner_text().startswith("Speed Records")
+        assert page.evaluate("location.hash").endswith("-time")
+        assert errors == []
+    finally:
+        ctx.close()
+
+
+def test_clicking_a_point_selects_the_model(browser, site_url):
+    ctx, page, errors = open_page(browser, site_url)
+    try:
+        # Click the current frontier's top-right dot: some model gets selected.
+        dot = page.locator("#pfc-frontier svg path[data-current='1'] ~ circle").last
+        pos = dot.bounding_box()
+        page.mouse.click(pos["x"] + pos["width"] / 2, pos["y"] + pos["height"] / 2)
+        page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring")
+        assert not page.locator("#pfc-model-chip").is_hidden()
+        # Clicking empty space clears the selection. The chip's appearance can
+        # reflow the page, so measure the chart only now.
+        box = page.locator("#pfc-frontier svg").bounding_box()
+        page.mouse.click(box["x"] + box["width"] * 0.15, box["y"] + 10)
+        page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring", state="detached")
+        assert page.locator("#pfc-model-chip").is_hidden()
         assert errors == []
     finally:
         ctx.close()

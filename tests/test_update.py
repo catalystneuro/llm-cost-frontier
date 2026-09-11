@@ -531,6 +531,83 @@ def test_time_models_project_onto_the_time_axis():
     assert [(r[0], r[1]) for r in recs] == [("2026-01-01", 60.0)]
 
 
+def test_backfill_time_series_records_times_and_respects_cutoff():
+    from llm_cost_frontier.update import backfill_time_series, dated_times
+    m = model("M", "2026-07-01", 50.0, 1.0,
+              obs=[["2026-07-01", 1.0, 50.0], ["2026-08-15", 0.8, 50.0], ["2026-09-11", 0.8, 45.0, 200.0]])
+    history = {"updated": "2026-09-11", "models": {"m": m}}
+    series = {
+        "2026-07-10": {"m": 100.0},   # no row that day: goes to time_history
+        "2026-07-20": {"m": 105.0},   # within 20% of the last record: skipped
+        "2026-08-15": {"m": 140.0},   # annotates the existing row
+        "2026-09-06": {"m": 90.0},    # at/after the cutoff: never touched
+    }
+    n = backfill_time_series(history, series, cutoff="2026-09-05")
+    m = history["models"]["m"]
+    assert n == 2
+    # The cost timeline gained no rows; only the annotation and the side record.
+    assert [o[0] for o in m["observations"]] == ["2026-07-01", "2026-08-15", "2026-09-11"]
+    assert m["observations"][1] == ["2026-08-15", 0.8, 50.0, 140.0]
+    assert m["time_history"] == [["2026-07-10", 100.0]]
+    assert dated_times(m) == {"2026-07-10": 100.0, "2026-08-15": 140.0, "2026-09-11": 200.0}
+    # A second run writes nothing.
+    assert backfill_time_series(history, series, cutoff="2026-09-05") == 0
+
+
+def test_backfill_never_disturbs_the_price_event_timeline():
+    from llm_cost_frontier.update import backfill_time_series
+    events = [{"slug_prefix": "m", "cut_date": "2026-07-30", "multiplier_before": 5.0}]
+    m = model("M", "2026-06-01", 50.0, 1.0, obs=[["2026-08-19", 1.0, 50.0]])
+    history = {"updated": "2026-09-11", "models": {"m": m}}
+    before = cost_changes("m", m, events)
+    n = backfill_time_series(history, {"2026-07-08": {"m": 60.0}}, "2026-09-05")
+    assert n == 1
+    m = history["models"]["m"]
+    assert m["time_history"] == [["2026-07-08", 60.0]]
+    # The reconstructed price timeline is identical: the hand-recorded cut
+    # keeps its date and the launch price stays backdated to release.
+    assert cost_changes("m", m, events) == before
+
+
+def test_era_time_models_scopes_times_to_one_era():
+    from llm_cost_frontier.update import era_time_models
+    m = model("M", "2026-02-01", 50.0, 1.0,
+              obs=[["2026-02-01", 1.0, 55.0], ["2026-07-10", 1.0, 55.0, 100.0],
+                   ["2026-08-15", 0.8, 55.0, 140.0], ["2026-09-11", 0.8, 45.0, 200.0]])
+    m["time_history"] = [["2026-07-20", 130.0]]
+    out = era_time_models({"m": m}, ERAS, 0)
+    assert out["m"]["observations"] == [["2026-07-10", 100.0, 55.0], ["2026-07-20", 130.0, 55.0], ["2026-08-15", 140.0, 55.0]]
+    # Era records begin when measuring began, not at the model's release.
+    assert out["m"]["release_date"] == "2026-07-10"
+    assert out["m"]["intelligence_index"] == 55.0
+    # A model with no era measurements is absent.
+    assert era_time_models({"m": model("N", "2026-02-01", 50.0, 1.0)}, ERAS, 0) == {}
+
+
+def test_time_models_ignore_old_era_measurements():
+    from llm_cost_frontier.update import time_models
+    m = model("M", "2026-02-01", 50.0, 1.0,
+              obs=[["2026-02-01", 1.0, 55.0], ["2026-07-10", 1.0, 55.0, 100.0], ["2026-09-12", 0.8, 50.0]])
+    m["time_per_task"] = None
+    # Only a v4.1 time exists: the model has no time on the current basis.
+    assert time_models({"m": m}, ERAS) == {}
+    # With a current-era time, the old-era measurement still never leaks in.
+    m2 = model("M", "2026-02-01", 50.0, 1.0,
+               obs=[["2026-02-01", 1.0, 55.0], ["2026-07-10", 1.0, 55.0, 100.0], ["2026-09-12", 0.8, 50.0, 300.0]])
+    m2["time_per_task"] = 300.0
+    tm = time_models({"m": m2}, ERAS)
+    assert all(o[1] == 300.0 for o in tm["m"]["observations"])
+
+
+def test_backfilled_rows_are_not_frontier_events():
+    a = model("A", "2026-01-01", 50.0, 1.0, obs=[["2026-01-01", 1.0, 50.0], ["2026-02-10", 1.0, 50.0, 90.0]])
+    b = model("B", "2026-02-10", 48.0, 2.0)
+    models = {"a": a, "b": b}
+    records = tier_records(models, [])
+    advs = frontier_advances(models, [], records)
+    assert all(not (x["model"] == "A" and x["date"] == "2026-02-10") for x in advs)
+
+
 def test_check_live_set_guards():
     from llm_cost_frontier.update import check_live_set
     history = {"models": {f"m{i}": model(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}}
