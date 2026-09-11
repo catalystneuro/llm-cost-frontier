@@ -142,6 +142,31 @@ def test_model_search_highlights_and_clears(browser, site_url):
         ctx.close()
 
 
+def test_creator_search_lights_the_fleet(browser, site_url):
+    import json
+    from collections import Counter
+    data = json.loads((REPO / "build/llm-frontier.json").read_text())
+    n_eras = len(data.get("eras") or [])
+    counts = Counter(r[1] for r in data["models"]
+                     if (r[9] if r[9] is not None else n_eras) == n_eras)
+    creator = counts.most_common(1)[0][0]
+    ctx, page, errors = open_page(browser, site_url)
+    try:
+        page.fill("#pfc-model-search", creator)
+        page.dispatch_event("#pfc-model-search", "change")
+        page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring")
+        # Many models light up, not one.
+        assert page.locator("#pfc-frontier svg .pfc-sel-ring").count() > 1
+        chip = page.locator("#pfc-model-chip").inner_text()
+        assert creator in chip and "models in this view" in chip
+        assert page.evaluate("location.hash").startswith("#index~")
+        page.locator("#pfc-model-chip .pfc-chip-clear").click()
+        page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring", state="detached")
+        assert errors == []
+    finally:
+        ctx.close()
+
+
 def test_era_archive_view(browser, site_url):
     ctx, page, errors = open_page(browser, site_url)
     try:
