@@ -131,6 +131,18 @@ a.site-title, .site-title a { color: var(--navy); text-decoration: none; }
 .pfc-eranav { display: inline-flex; border: 1px solid var(--card-border); border-radius: 9px; overflow: hidden; margin: 0.2rem 0 0; background: var(--surface); box-shadow: inset 0 1px 3px rgba(16, 22, 66, 0.05); }
 .pfc-eranav[hidden] { display: none; }
 .pfc-navrow { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.pfc-model-find input { font: inherit; font-size: 0.78rem; padding: 0.34rem 0.75rem; border: 1px solid var(--card-border); border-radius: 9px; background: var(--surface); color: var(--navy); width: 12.5rem; box-shadow: inset 0 1px 3px rgba(16, 22, 66, 0.05); }
+.pfc-model-find input::placeholder { color: var(--ink-soft); }
+.pfc-model-find input:focus { outline: none; border-color: var(--blue-600); box-shadow: 0 0 0 2px rgba(42, 120, 214, 0.18); }
+.pfc-model-chip { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.78rem; padding: 0.3rem 0.4rem 0.3rem 0.8rem; border: 1px solid var(--blue-600); border-radius: 9px; background: var(--blue-50); color: var(--navy); max-width: 100%; }
+.pfc-model-chip[hidden] { display: none; }
+.pfc-model-chip .pfc-chip-name { font-weight: 600; }
+.pfc-model-chip .pfc-chip-facts { color: var(--ink-soft); }
+.pfc-model-chip button { font: inherit; font-size: 0.78rem; border: 0; background: transparent; color: var(--blue-600); cursor: pointer; padding: 0.1rem 0.35rem; }
+.pfc-model-chip button:hover { color: var(--navy); }
+.pfc-model-chip .pfc-chip-clear { font-size: 0.9rem; line-height: 1; }
+.pfc-name-link { cursor: pointer; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--blue-600); text-underline-offset: 2px; }
+.pfc-name-link:hover { color: var(--blue-600); }
 .pfc-tt-speed { color: var(--ink-soft); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.72rem; }
 .pfc-eranav button { font: inherit; font-size: 0.78rem; padding: 0.34rem 0.85rem; background: transparent; color: var(--ink-soft); border: 0; cursor: pointer; }
 .pfc-eranav button + button { border-left: 1px solid var(--card-border); }
