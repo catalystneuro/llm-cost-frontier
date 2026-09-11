@@ -39,7 +39,8 @@ SNAPSHOT_MONTHS = 2
 # A price change on a model already on the frontier is only reported as an
 # advance when it moved by at least this much, so sub-cent wiggles from
 # nightly cost measurement don't flood the advances list and the feed.
-MIN_PRICE_MOVE = 0.02
+MIN_PRICE_MOVE = 0.02      # a price change on the frontier is news at 2 cents...
+MIN_PRICE_MOVE_REL = 0.20  # ...or at 20%, so cheap models' cuts still register
 # A date on which the measured cost moved by more than 10% for many models at
 # once is a re-measurement of the evaluation suite, not a wave of price
 # changes, and produces no price-change advances. September 7, 2026, when 129
@@ -457,7 +458,13 @@ def frontier_advances(models: dict, events: list, records: dict, eras: list = No
             changed[slug] = ("price change" if note and ("cut" in note or "change" in note) else "new model", prev[0] if prev else None)
         prev_front = current
         new_front = pareto(state)
-        entered = [s for s in new_front if s in changed and (s not in current or (changed[s][0] == "price change" and changed[s][1] is not None and changed[s][1] - state[s][0] >= MIN_PRICE_MOVE))]
+        def news_move(s):
+            prev_cost = changed[s][1]
+            if changed[s][0] != "price change" or prev_cost is None:
+                return False
+            drop = prev_cost - state[s][0]
+            return drop >= MIN_PRICE_MOVE or (prev_cost > 0 and drop / prev_cost >= MIN_PRICE_MOVE_REL)
+        entered = [s for s in new_front if s in changed and (s not in current or news_move(s))]
         # A model "leaves the frontier" only when none of its reasoning variants remains on it.
         remaining_bases = {base_of(o) for o in new_front}
         left_bases = {}

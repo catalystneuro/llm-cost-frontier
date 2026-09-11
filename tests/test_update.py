@@ -608,6 +608,21 @@ def test_backfilled_rows_are_not_frontier_events():
     assert all(not (x["model"] == "A" and x["date"] == "2026-02-10") for x in advs)
 
 
+def test_cheap_end_price_cuts_register_as_advances():
+    # A one-cent absolute move is invisible under the flat threshold, but a
+    # 33% cut on a cheap frontier model is news; a 2% wiggle still is not.
+    a = model("A", "2026-01-01", 50.0, 0.03,
+              obs=[["2026-01-01", 0.03, 50.0], ["2026-02-01", 0.02, 50.0]])
+    models = {"a": a}
+    advs = frontier_advances(models, [], tier_records(models, []))
+    assert any(x["kind"] == "price change" and x["date"] == "2026-02-01" for x in advs)
+    b = model("B", "2026-01-01", 50.0, 0.03,
+              obs=[["2026-01-01", 0.03, 50.0], ["2026-02-01", 0.0295, 50.0]])
+    models = {"b": b}
+    advs = frontier_advances(models, [], tier_records(models, []))
+    assert not any(x["kind"] == "price change" for x in advs)
+
+
 def test_check_live_set_guards():
     from llm_cost_frontier.update import check_live_set
     history = {"models": {f"m{i}": model(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}}
