@@ -21,9 +21,10 @@
   var ERAS = [];   // index era boundaries [date, note]; scores are only comparable within an era
   var ERA_VIEW = 0; // which era the Overall frontier chart shows; defaults to the current era
   var AXIS = 'cost'; // x-axis of the current view: measured cost, or measured time per task
-  var SEL = null;    // name of the highlighted model, set from the search box or a name click
+  var SEL = null;      // name of the highlighted model or creator
+  var SEL_KIND = 'model'; // 'model' rings one point; 'creator' lights up a lab's whole fleet
 
-  var models = [], retiredByName = {}, openByName = {}, modelsByName = {};
+  var models = [], retiredByName = {}, openByName = {}, modelsByName = {}, creators = {};
   var lastDrawnView = null;
   function capMeta() { return CAP >= 0 ? CAPS[CAP] : null; }
   function curTiers() { return CAP < 0 ? TIERS : ((DATA.cap_tiers || {})[capMeta().key] || []); }
@@ -131,8 +132,11 @@
                era: m[9] != null ? m[9] : (d.eras || []).length,
                time: m[10] != null ? m[10] : null, tps: m[11] != null ? m[11] : null, ttft: m[12] != null ? m[12] : null };
     });
-    retiredByName = {}; openByName = {}; modelsByName = {};
-    models.forEach(function (m) { retiredByName[m.name] = m.retired; openByName[m.name] = m.open; modelsByName[m.name] = m; });
+    retiredByName = {}; openByName = {}; modelsByName = {}; creators = {};
+    models.forEach(function (m) {
+      retiredByName[m.name] = m.retired; openByName[m.name] = m.open; modelsByName[m.name] = m;
+      creators[m.creator] = (creators[m.creator] || 0) + 1;
+    });
     anim.stage = SNAPS.length - 1;
   }
 
@@ -266,7 +270,7 @@
     });
     if (!ms.length) {
       box.append(el('p', 'pfc-lead', 'No current-era measurements for this metric yet.'));
-      renderModelChip(false);
+      renderModelChip(0);
       return;
     }
     var allS = ms.map(viewScore), allC = ms.map(viewCost);
@@ -321,15 +325,16 @@
     // is always the darkest, however few snapshots the era has.
     var cOff = Math.max(0, C.snap.length - SNAPS.length);
     function snapColor(i) { return C.snap[Math.min(C.snap.length - 1, i + cOff)]; }
-    var selShown = SEL != null && ms.some(function (m) { return m.name === SEL; });
+    var selCount = SEL == null ? 0 : ms.filter(selMatches).length;
+    var selShown = selCount > 0;
     ms.forEach(function (m) {
       var sv = viewScore(m), cv = viewCost(m);
       var x = X(cv), y = Y(sv);
       var wi = windowIndex(m.date);
-      var isSel = SEL === m.name;
+      var isSel = selMatches(m);
       var g = svgEl('g', { opacity: isSel ? 1 : selShown ? 0.15 : 0.45 });
-      dot(g, x, y, isSel ? 5 : 3.5, snapColor(wi), m.open);
-      if (isSel) {
+      dot(g, x, y, isSel ? (SEL_KIND === 'model' ? 5 : 4.5) : 3.5, snapColor(wi), m.open);
+      if (isSel && SEL_KIND === 'model') {
         g.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
         var anchor = x < M.l + 70 ? 'start' : x > W - M.r - 70 ? 'end' : 'middle';
         var lx = anchor === 'start' ? x + 13 : anchor === 'end' ? x - 13 : x;
@@ -337,6 +342,8 @@
         var nl = svgEl('text', { x: lx, y: ly, 'text-anchor': anchor, 'font-size': 11, 'font-weight': 600, fill: C.ink, 'class': 'pfc-sel-label' });
         nl.textContent = m.name;
         g.append(nl);
+      } else if (isSel) {
+        g.append(svgEl('circle', { cx: x, cy: y, r: 8, fill: 'none', stroke: C.ink, 'stroke-width': 1.2, 'class': 'pfc-sel-ring' }));
       }
       svg.append(g);
       anim.groups[wi].push(g);
@@ -383,7 +390,7 @@
       fr.forEach(function (p) {
         var x = X(p.mcost), y = Y(p.iq);
         dot(sg, x, y, 4, color, p.open);
-        if (SEL === p.name) sg.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
+        if (selMatchesName(p.name)) sg.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
         pts.push({ x: x, y: y, snap: i, key: p.name, snapLabel: snapLabel, rows: function (labels) {
           var d1 = el('div', 'pfc-tt-name'); d1.textContent = p.name;
           var d2 = el('div', 'pfc-tt-row');
@@ -411,7 +418,7 @@
         cur.classList.add('pfc-draw-in');
       }
     }
-    renderModelChip(selShown);
+    renderModelChip(selCount);
     attachHover(box, svg, pts);
     var ctl = el('div', 'pfc-controls');
     var stageLabel = el('span', 'pfc-stage'); stageLabel.id = 'pfc-frontier-stage';
@@ -472,7 +479,8 @@
     if (tilde >= 0) {
       var slug = h.slice(tilde + 1);
       h = h.slice(0, tilde);
-      for (var nm in modelsByName) if (slugify(nm) === slug) { SEL = nm; break; }
+      for (var cn in creators) if (slugify(cn) === slug) { SEL = cn; SEL_KIND = 'creator'; break; }
+      if (!SEL) for (var nm in modelsByName) if (slugify(nm) === slug) { SEL = nm; SEL_KIND = 'model'; break; }
     }
     if (!h || h === 'advances' || h === 'index') return;
     if (/-time$/.test(h)) {
@@ -567,11 +575,23 @@
   // names it, and the selection survives tab, era, and axis switches so a
   // model can be followed across every view. Set from the search box or by
   // clicking a model name anywhere on the page; shareable as #view~slug.
-  function setModel(name) {
-    SEL = name && modelsByName[name] ? name : null;
+  function setSel(kind, name) {
+    var known = kind === 'creator' ? creators[name] : modelsByName[name];
+    SEL = name && known ? name : null;
+    SEL_KIND = SEL ? kind : 'model';
     hideTip();
     syncHash();
     renderFrontier(); renderRecords();
+  }
+  function setModel(name) { setSel('model', name); }
+  function selMatches(m) {
+    return SEL != null && (SEL_KIND === 'model' ? SEL === m.name : SEL === m.creator);
+  }
+  function selMatchesName(name) {
+    if (SEL == null) return false;
+    if (SEL_KIND === 'model') return SEL === name;
+    var m = modelsByName[name];
+    return !!m && m.creator === SEL;
   }
   function nameLink(name, cls, target) {
     var sp = el('span', cls || null, name);
@@ -592,6 +612,12 @@
     var list = document.getElementById('pfc-model-list');
     if (!input || !list || input.dataset.wired) return;
     input.dataset.wired = '1';
+    Object.keys(creators).sort().forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c;
+      o.label = 'all ' + creators[c] + ' models';
+      list.append(o);
+    });
     models.slice().sort(function (a, b) { return a.name < b.name ? -1 : 1; }).forEach(function (m) {
       var o = document.createElement('option');
       o.value = m.name;
@@ -600,11 +626,12 @@
     });
     var apply = function () {
       var v = input.value.trim();
-      if (modelsByName[v]) { if (v !== SEL) setModel(v); }
+      if (creators[v]) { if (v !== SEL || SEL_KIND !== 'creator') setSel('creator', v); }
+      else if (modelsByName[v]) { if (v !== SEL || SEL_KIND !== 'model') setModel(v); }
       else if (!v && SEL) setModel(null);
     };
     input.addEventListener('change', apply);
-    input.addEventListener('input', function () { if (modelsByName[input.value.trim()]) apply(); });
+    input.addEventListener('input', function () { var v = input.value.trim(); if (modelsByName[v] || creators[v]) apply(); });
     input.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') { input.value = ''; setModel(null); } });
   }
   // The chip names the selection and, when the current view cannot contain
@@ -617,14 +644,47 @@
     chip.hidden = !SEL;
     if (!SEL) return;
     chip.replaceChildren();
+    var facts = null, action = null;
+    var showCostAxis = ['Show on the cost axis', function () { AXIS = 'cost'; syncHash(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); }];
+    if (SEL_KIND === 'creator') {
+      chip.append(el('span', 'pfc-chip-name', SEL));
+      var fleet = models.filter(function (mm) { return mm.creator === SEL; });
+      if (shown) {
+        facts = shown + ' of ' + fleet.length + ' models in this view';
+      } else if (CAP >= 0 && !fleet.some(function (mm) { return score(mm) != null; })) {
+        facts = 'no models measured on ' + metricName();
+      } else if (isTimeAxis() && !fleet.some(function (mm) { return mm.time != null; })) {
+        facts = 'no measured speeds';
+        action = showCostAxis;
+      } else if (ERAS.length && ERA_VIEW === ERAS.length) {
+        var last = Math.max.apply(null, fleet.map(function (mm) { return mm.era; }));
+        facts = 'no models measured under the current index';
+        if (last < ERAS.length) action = ['View the ' + (eraShortLabel(last) || 'archive') + ' archive', function () { switchEra(last); }];
+      } else {
+        facts = 'no models measured under index ' + (eraShortLabel(ERA_VIEW) || 'this era');
+        action = ['View the current index', function () { switchEra(ERAS.length); }];
+      }
+      chip.append(el('span', 'pfc-chip-facts', facts));
+      if (action) {
+        var cb = document.createElement('button');
+        cb.type = 'button'; cb.textContent = action[0];
+        cb.addEventListener('click', action[1]);
+        chip.append(cb);
+      }
+      var cx = document.createElement('button');
+      cx.type = 'button'; cx.className = 'pfc-chip-clear'; cx.textContent = '\u00d7';
+      cx.setAttribute('aria-label', 'Clear the highlight');
+      cx.addEventListener('click', function () { setModel(null); });
+      chip.append(cx);
+      return;
+    }
     var m = modelsByName[SEL];
     chip.append(el('span', 'pfc-chip-name', m.name));
-    var facts = null, action = null;
     if (CAP >= 0 && score(m) == null) {
       facts = 'not measured on ' + metricName();
     } else if (isTimeAxis() && m.time == null) {
       facts = 'no measured speed';
-      action = ['Show on the cost axis', function () { AXIS = 'cost'; syncHash(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); }];
+      action = showCostAxis;
     } else if (!shown && ERAS.length && ERA_VIEW === ERAS.length && m.era < ERAS.length) {
       facts = 'not measured under the current index';
       action = ['View the ' + (eraShortLabel(m.era) || 'archive') + ' archive', function () { switchEra(m.era); }];
@@ -845,7 +905,7 @@
       recs.forEach(function (r) {
         var x = X(r[0]), y = Y(r[1]);
         dot(svg, x, y, 4, color, !!openByName[r[2]]);
-        if (SEL === r[2]) svg.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
+        if (selMatchesName(r[2])) svg.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
         pts.push({ x: x, y: y, rows: function () {
           var d1 = el('div', 'pfc-tt-name'); d1.textContent = r[2];
           var d2 = el('div', 'pfc-tt-row');
@@ -1061,7 +1121,7 @@
   window.addEventListener('hashchange', function () {
     if (!DATA) return;
     if ((location.hash || '') === hashFor()) return;
-    CAP = -1; ERA_VIEW = ERAS.length; AXIS = 'cost'; SEL = null;
+    CAP = -1; ERA_VIEW = ERAS.length; AXIS = 'cost'; SEL = null; SEL_KIND = 'model';
     applyHash();
     advPage = 1;
     hideTip();
