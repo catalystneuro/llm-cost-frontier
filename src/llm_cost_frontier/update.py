@@ -882,46 +882,58 @@ def xml_escape(t: str) -> str:
     return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
 
 
-def describe(a: dict) -> str:
+def describe(a: dict, cap: dict | None = None) -> str:
+    term = cap["metric"] if cap else "index"
+    pct = "%" if cap and cap["percent"] else ""
+    ceiling = f"the {cap['metric']} ceiling" if cap else "the intelligence ceiling"
     cost = f"${a['cost_per_task']:.4f}" if a["cost_per_task"] < 0.01 else f"${a['cost_per_task']:.3f}" if a["cost_per_task"] < 0.1 else f"${a['cost_per_task']:.2f}"
     if f"{a['owns_to']:.1f}" == f"{a['owns_from']:.1f}":
-        span = f"index {a['owns_to']:.1f}"
+        span = f"{term} {a['owns_to']:.1f}{pct}"
     else:
-        span = f"index {a['owns_from']:.1f} to {a['owns_to']:.1f}"
+        span = f"{term} {a['owns_from']:.1f}{pct} to {a['owns_to']:.1f}{pct}"
     if a["kind"] == "price change" and a["previous_cost"]:
         parts = [f"{a['model']}: price moved from ${a['previous_cost']:.3f} to {cost} per task; now the cheapest way to reach {span}."]
     elif a.get("ceiling_from") is not None:
-        parts = [f"{a['model']}: pushed the intelligence ceiling from {a['ceiling_from']:.1f} to {a['owns_to']:.1f}, at {cost} per task."]
+        parts = [f"{a['model']}: pushed {ceiling} from {a['ceiling_from']:.1f}{pct} to {a['owns_to']:.1f}{pct}, at {cost} per task."]
     else:
         parts = [f"{a['model']}: now the cheapest way to reach {span} at {cost} per task."]
     parts[0] = parts[0][:-1] + taken_clause(a.get("taken_from") or [], a.get("displaced") or []) + "."
     if a["records"]:
-        parts.append("New cost record for " + join_and([f"index \u2265 {t}" for t in a["records"]]) + ".")
+        parts.append("New cost record for " + join_and([f"{term} \u2265 {t}{pct}" for t in a["records"]]) + ".")
     parts.append("Open weights." if a["open_weights"] else "Proprietary.")
     return " ".join(parts)
 
 
-def write_feed(out: dict, feed_path: Path, site: str) -> None:
-    entries = out["advances"][:FEED_ENTRIES]
+def write_feed(out: dict, feed_path: Path, site: str, cap: dict | None = None) -> None:
+    """The Atom feed of frontier advances; with a capability, that metric's
+    own feed, served beside its page (feed-<key>.xml)."""
+    key = cap["key"] if cap else None
+    entries = (out["cap_advances"].get(key, []) if cap else out["advances"])[:FEED_ENTRIES]
     updated = out["updated"] + "T06:00:00Z"
+    page = f"{site}/{key}/" if cap else f"{site}/"
+    self_name = f"feed-{key}.xml" if cap else "feed.xml"
+    what = cap["metric"] if cap else "frontier"
+    measure = cap["metric"] if cap else "the Artificial Analysis Intelligence Index"
+    pct = "%" if cap and cap["percent"] else ""
     lines = ['<?xml version="1.0" encoding="utf-8"?>', '<feed xmlns="http://www.w3.org/2005/Atom">',
-             "  <title>LLM Frontier: frontier advances</title>",
-             f'  <link href="{site}/" />',
-             f'  <link rel="self" href="{site}/feed.xml" />',
-             f"  <id>{site}/feed.xml</id>",
+             f"  <title>LLM Frontier: {what} advances</title>",
+             f'  <link href="{page}" />',
+             f'  <link rel="self" href="{site}/{self_name}" />',
+             f"  <id>{site}/{self_name}</id>",
              f"  <updated>{updated}</updated>",
              "  <author><name>CatalystNeuro</name></author>",
-             "  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of the Artificial Analysis Intelligence Index, through a release or a price change.</subtitle>"]
+             f"  <subtitle>Each entry is a date on which a model became the cheapest way to reach some level of {measure}, through a release or a price change.</subtitle>"]
     for a in entries:
-        title = f"{a['date']}: {a['model']} ({'price change' if a['kind'] == 'price change' else 'new model'}, index {a['intelligence_index']:.1f})"
+        term = cap["metric"] if cap else "index"
+        title = f"{a['date']}: {a['model']} ({'price change' if a['kind'] == 'price change' else 'new model'}, {term} {a['intelligence_index']:.1f}{pct})"
         # The advance's social card, rendered per (date, base model) group.
-        card = f"{site}/images/advances/{a['date']}-{slugify(a['base'])}.png"
+        card = f"{site}/images/advances/{key + '/' if cap else ''}{a['date']}-{slugify(a['base'])}.png"
         lines += ["  <entry>", f"    <title>{xml_escape(title)}</title>",
-                  f'    <link href="{site}/#advances" />',
+                  f'    <link href="{page}#advances" />',
                   f'    <link rel="enclosure" type="image/png" href="{card}" />',
-                  f"    <id>{site}/advance/{a['date']}/{a['slug']}</id>",
+                  f"    <id>{site}/{key + '/' if cap else ''}advance/{a['date']}/{a['slug']}</id>",
                   f"    <updated>{a['date']}T00:00:00Z</updated>",
-                  f"    <summary>{xml_escape(describe(a))}</summary>", "  </entry>"]
+                  f"    <summary>{xml_escape(describe(a, cap))}</summary>", "  </entry>"]
     lines.append("</feed>")
     feed_path.parent.mkdir(parents=True, exist_ok=True)
     feed_path.write_text("\n".join(lines) + "\n")
@@ -982,7 +994,9 @@ def main(argv=None):
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(out, separators=(",", ":")) + "\n")
     write_feed(out, args.feed, args.site)
-    print(f"wrote {args.out} and {args.feed} ({out['counts']}) as of {out['updated']}")
+    for c in CAPABILITIES:
+        write_feed(out, args.feed.parent / f"feed-{c['key']}.xml", args.site, cap=c)
+    print(f"wrote {args.out}, {args.feed}, and {len(CAPABILITIES)} capability feeds ({out['counts']}) as of {out['updated']}")
     for t, s in out["tier_summary"].items():
         if s:
             print(f"  index >= {t}: {s['collapse']}x from {s['first_date']} to {s['last_date']}, halving ~{s['halving_days']} d")

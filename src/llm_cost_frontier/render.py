@@ -410,19 +410,40 @@ def render_group(group: list, models: dict, timeline: list, path: Path, eras: li
     save(fig, path)
 
 
-def render_current(out: dict, models: dict, timeline: list, path: Path, eras: list = None):
+def render_current(out: dict, models: dict, timeline: list, path: Path, eras: list = None, cap: dict = None):
+    """The site's social card: the current frontier picture. With a
+    capability, that metric's own card for its page."""
     state = state_at(timeline, out["updated"], models=models, eras=eras)
     front = pareto(state)
     live = sum(1 for m in models.values() if not m["retired"])
-    summary = (f"The cheapest way to reach each level of the Artificial Analysis "
-               f"Intelligence Index, across {live} live models.")
-    s50 = (out.get("tier_summary") or {}).get("50")
-    if s50 and s50.get("halving_days"):
-        first = dt.date.fromisoformat(s50["first_date"])
-        summary += (f" Index ≥ 50 cost has fallen {s50['collapse']:g}x since "
-                    f"{first.strftime('%B %Y')}, halving about every {s50['halving_days']} days.")
-    fig, ax = new_figure(f"Updated {long_date(out['updated'])}", "The LLM Frontier", wrap(summary))
-    draw_chart(ax, state, models, front, y_min=10 if out["updated"] > Y_MIN_10_AFTER else 0)
+    if cap:
+        summary = f"The cheapest way to reach each level of {cap['metric']}, across {live} measured models."
+        summaries = (out.get("cap_tier_summary") or {}).get(cap["key"]) or {}
+        pct = "%" if cap["percent"] else ""
+        # The headline stat comes from the tier with the longest record, so a
+        # tier crossed two weeks ago cannot put a 5-day halving on the card.
+        def span(t):
+            r = summaries[t]
+            return (dt.date.fromisoformat(r["last_date"]) - dt.date.fromisoformat(r["first_date"])).days
+        candidates = [t for t in summaries if summaries.get(t) and summaries[t].get("halving_days")]
+        top_tier = max(candidates, key=span) if candidates else None
+        if top_tier:
+            top = summaries[top_tier]
+            first = dt.date.fromisoformat(top["first_date"])
+            summary += (f" {cap['metric']} ≥ {top_tier}{pct} cost has fallen {top['collapse']:g}x since "
+                        f"{first.strftime('%B %Y')}, halving about every {top['halving_days']} days.")
+        title = f"LLM Frontier: {cap['label']}"
+    else:
+        summary = (f"The cheapest way to reach each level of the Artificial Analysis "
+                   f"Intelligence Index, across {live} live models.")
+        s50 = (out.get("tier_summary") or {}).get("50")
+        if s50 and s50.get("halving_days"):
+            first = dt.date.fromisoformat(s50["first_date"])
+            summary += (f" Index ≥ 50 cost has fallen {s50['collapse']:g}x since "
+                        f"{first.strftime('%B %Y')}, halving about every {s50['halving_days']} days.")
+        title = "The LLM Frontier"
+    fig, ax = new_figure(f"Updated {long_date(out['updated'])}", title, wrap(summary))
+    draw_chart(ax, state, models, front, y_min=10 if not cap and out["updated"] > Y_MIN_10_AFTER else 0)
     save(fig, path)
 
 
@@ -484,9 +505,13 @@ def main(argv=None):
                 continue
             render_group(group, mset, tl, path, eras)
             rendered += 1
+    for met, mset, advs, outdir in metric_sets[1:]:
+        METRIC = met
+        c = next(cc for cc in CAPABILITIES if cc["key"] == met["key"])
+        render_current(out, mset, price_timeline(mset, events), args.out / f"{met['key']}-card.png", eras, cap=c)
     METRIC = dict(INDEX_METRIC)
     render_current(out, models, timeline, args.out / "frontier-card.png", eras)
-    print(f"rendered {rendered} advance cards ({skipped} already existed) and frontier-card.png in {args.out}")
+    print(f"rendered {rendered} advance cards ({skipped} already existed) and {len(metric_sets)} summary cards in {args.out}")
     return 0
 
 

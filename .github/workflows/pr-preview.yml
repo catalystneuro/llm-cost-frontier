@@ -47,6 +47,7 @@ jobs:
           cp -r site/* preview/
           cp build/llm-frontier.json preview/data/llm-frontier.json
           cp build/feed.xml preview/feed.xml
+          cp build/feed-*.xml preview/ 2>/dev/null || true
           cp build/images/frontier-card.png preview/images/frontier-card.png
       - name: Update the previews branch
         run: |

@@ -83,7 +83,8 @@ a.site-title, .site-title a { color: var(--navy); text-decoration: none; }
 .pfc-btn { font: inherit; font-size: 0.78rem; font-weight: 600; padding: 0.28rem 0.8rem; border: 1px solid var(--card-border); border-radius: 7px; background: var(--surface); color: var(--navy); cursor: pointer; min-width: 4.2rem; transition: border-color 120ms ease, box-shadow 120ms ease; }
 .pfc-btn:hover { border-color: var(--blue-600); box-shadow: 0 1px 6px rgba(16, 22, 66, 0.1); }
 .pfc-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 0.9rem; }
-.pfc-tab { font: inherit; font-size: 0.82rem; font-weight: 500; padding: 0.32rem 0.85rem; border: 1px solid var(--card-border); border-radius: 999px; background: var(--surface); color: var(--ink-muted); cursor: pointer; transition: border-color 120ms ease, color 120ms ease, box-shadow 120ms ease; }
+a.pfc-tab { text-decoration: none; }
+.pfc-tab { display: inline-block; font: inherit; font-size: 0.82rem; font-weight: 500; padding: 0.32rem 0.85rem; border: 1px solid var(--card-border); border-radius: 999px; background: var(--surface); color: var(--ink-muted); cursor: pointer; transition: border-color 120ms ease, color 120ms ease, box-shadow 120ms ease; }
 .pfc-tab:hover { border-color: var(--blue-600); color: var(--navy); box-shadow: 0 1px 6px rgba(16, 22, 66, 0.08); }
 .pfc-tab[aria-selected="true"] { background: var(--navy); border-color: var(--navy); color: #fff; box-shadow: 0 2px 8px -2px rgba(16, 22, 66, 0.4); }
 .pfc-cap-wrap { margin-top: 0.4rem; margin-bottom: 2rem; }
