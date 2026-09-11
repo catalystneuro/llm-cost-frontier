@@ -4,6 +4,10 @@
 (function () {
   'use strict';
   var BASE = location.pathname.replace(/[^/]*$/, '');
+  // PR previews live under /previews/pr-N/ on the production host and do
+  // not carry the card images; SITE_ROOT points shared assets at the real
+  // site, which serves them for every preview.
+  var SITE_ROOT = BASE.replace(/previews\/[^/]+\/$/, '');
   var DATA_URL = BASE + 'data/llm-frontier.json';
   var DATA = null;
 
@@ -1101,7 +1105,7 @@
       var card = document.createElement('a');
       card.className = 'pfc-adv-kind pfc-adv-card';
       card.textContent = 'chart card';
-      card.href = BASE + 'images/advances/' + (CAP < 0 ? '' : capMeta().key + '/') + list[0].date + '-' + slugify(list[0].base || list[0].model) + '.png';
+      card.href = SITE_ROOT + 'images/advances/' + (CAP < 0 ? '' : capMeta().key + '/') + list[0].date + '-' + slugify(list[0].base || list[0].model) + '.png';
       card.target = '_blank';
       card.rel = 'noopener';
       head.append(card);
