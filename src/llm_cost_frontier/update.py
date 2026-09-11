@@ -66,7 +66,7 @@ CAPABILITIES = [
     dict(key="agentic", url="https://artificialanalysis.ai/evaluations/automationbench-aa", field="automationBenchPartialScore", label="Agentic Tool Use", metric="AutomationBench-AA", percent=True,
          blurb="Score on AutomationBench-AA, Artificial Analysis's benchmark of tool calling and multi-step task completion, which replaced their Agentic Index in September 2026. Relevant for models that orchestrate tools and workflows rather than answer single prompts."),
     dict(key="longcontext", url="https://artificialanalysis.ai/evaluations/artificial-analysis-long-context-reasoning", field="lcr", label="Long Context", metric="AA-LCR", percent=True,
-         blurb="Accuracy on Artificial Analysis's long context reasoning suite, which requires answers grounded in roughly 100k tokens of source material. Relevant for document analysis, retrieval pipelines, and codebase-scale prompts."),
+         blurb="Accuracy on AA-LCR, Artificial Analysis's long context reasoning suite, which requires answers grounded in roughly 100k tokens of source material. Relevant for document analysis, retrieval pipelines, and codebase-scale prompts."),
     dict(key="instruction", url="https://artificialanalysis.ai/evaluations/ifbench", field="ifbench", label="Instruction Following", metric="IFBench", percent=True,
          blurb="Accuracy on IFBench, which checks precise compliance with constraints on the output. Relevant for structured output, templated generation, and any pipeline that parses what the model returns."),
     dict(key="knowledge", url="https://artificialanalysis.ai/evaluations/omniscience", field="omniscience", label="Factual Recall", metric="AA Omniscience", percent=False,

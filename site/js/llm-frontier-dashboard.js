@@ -787,14 +787,17 @@
       a.href = url; a.textContent = label;
       return a;
     }
-    if (!c) {
-      p.innerHTML = leadDefault;
-      p.append(' Read about ', evalLink('https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index', 'the Intelligence Index'), ' at Artificial Analysis.');
-      return;
-    }
+    if (!c) { p.innerHTML = leadDefault; return; }
     var n = models.filter(function (m) { return score(m) != null; }).length;
-    p.textContent = c.blurb + ' Measured for ' + n + ' of ' + models.length + ' tracked models.';
-    if (c.url) p.append(' Read about ', evalLink(c.url, c.metric), ' at Artificial Analysis.');
+    p.replaceChildren();
+    // Link the blurb's first mention of the metric to its evaluation page.
+    var txt = c.blurb;
+    var cands = [c.metric, c.metric.replace(/^AA[ -]/, ''), c.metric.replace(/-AA$/, '')];
+    var hit = null, at = -1;
+    for (var i = 0; i < cands.length && at < 0; i++) { at = txt.indexOf(cands[i]); if (at >= 0) hit = cands[i]; }
+    if (c.url && at >= 0) p.append(txt.slice(0, at), evalLink(c.url, hit), txt.slice(at + hit.length));
+    else p.append(txt);
+    p.append(' Measured for ' + n + ' of ' + models.length + ' tracked models.');
   }
   function renderCapTable() {
     var wrap = document.getElementById('pfc-cap-table-wrap');
