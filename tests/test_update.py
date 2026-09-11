@@ -188,11 +188,11 @@ def test_cost_changes_applies_price_events_before_the_cut():
     events = [{"slug_prefix": "alpha", "cut_date": "2026-02-15", "multiplier_before": 5.0}]
     m = model("Alpha", "2026-01-01", 40.0, 1.0)
     assert cost_changes("alpha", m, events) == [
-        ["2026-01-01", 5.0, 40.0, "at launch price"],
-        ["2026-02-15", 1.0, 40.0, "price cut (released 2026-01-01)"],
+        ["2026-01-01", 5.0, 40.0, None, "at launch price"],
+        ["2026-02-15", 1.0, 40.0, None, "price cut (released 2026-01-01)"],
     ]
     late = model("Alpha 2", "2026-03-01", 40.0, 1.0)
-    assert cost_changes("alpha-2", late, events) == [["2026-03-01", 1.0, 40.0, None]]
+    assert cost_changes("alpha-2", late, events) == [["2026-03-01", 1.0, 40.0, None, None]]
 
 
 def test_cost_changes_dates_observed_changes():
@@ -200,7 +200,7 @@ def test_cost_changes_dates_observed_changes():
               obs=[["2026-01-01", 0.5, 50.0], ["2026-06-01", 0.4, 50.0]])
     changes = cost_changes("m", m, [])
     assert [c[:2] for c in changes] == [["2026-01-01", 0.5], ["2026-06-01", 0.4]]
-    assert "price change observed" in changes[1][3]
+    assert "price change observed" in changes[1][4]
 
 
 def test_cost_changes_records_index_moves_without_cost_moves():
@@ -208,7 +208,7 @@ def test_cost_changes_records_index_moves_without_cost_moves():
               obs=[["2026-01-01", 0.5, 50.0], ["2026-09-05", 0.5, 45.0]])
     changes = cost_changes("m", m, [])
     assert [(c[0], c[2]) for c in changes] == [("2026-01-01", 50.0), ("2026-09-05", 45.0)]
-    assert changes[1][3] is None  # an index move alone is not a price change
+    assert changes[1][4] is None  # an index move alone is not a price change
 
 
 def test_price_timeline_is_sorted_by_date():
@@ -492,6 +492,45 @@ def test_rebased_models_scale_history_onto_the_current_basis():
     assert [(r[0], r[1]) for r in recs] == [("2026-02-01", 0.15)]  # continuous, no reset
 
 
+def test_time_rides_observations_and_big_moves_append():
+    history = {"updated": "2026-09-01", "models": {"m": model("M", "2026-01-01", 50.0, 1.0)}}
+    live = live_record("M", "2026-01-01", 50.0, 0.8)
+    live["time_per_task"] = 120.0
+    merge(history, {"m": live}, "2026-09-02")
+    m = history["models"]["m"]
+    assert m["observations"][-1] == ["2026-09-02", 0.8, 50.0, 120.0]
+    assert m["time_per_task"] == 120.0
+    # A 25% speedup with unchanged price and score appends its own row.
+    live2 = live_record("M", "2026-01-01", 50.0, 0.8)
+    live2["time_per_task"] = 90.0
+    merge(history, {"m": live2}, "2026-09-03")
+    m = history["models"]["m"]
+    assert m["observations"][-1] == ["2026-09-03", 0.8, 50.0, 90.0]
+    # A small wiggle does not.
+    live3 = live_record("M", "2026-01-01", 50.0, 0.8)
+    live3["time_per_task"] = 95.0
+    merge(history, {"m": live3}, "2026-09-04")
+    assert history["models"]["m"]["observations"][-1][0] == "2026-09-03"
+
+
+def test_time_models_project_onto_the_time_axis():
+    from llm_cost_frontier.update import time_models
+    models = {
+        "a": model("A", "2026-01-01", 45.0, 1.0),
+        "b": model("B", "2026-02-01", 50.0, 2.0,
+                   obs=[["2026-02-01", 2.0, 50.0], ["2026-06-01", 2.0, 50.0, 300.0]]),
+    }
+    models["a"]["time_per_task"] = 60.0
+    models["b"]["time_per_task"] = 300.0
+    tm = time_models(models, [])
+    # A has no dated times: its latest time stands across its life.
+    assert [o[1] for o in tm["a"]["observations"]] == [60.0]
+    # B's dated time is used from its date; earlier rows fall back to it.
+    assert [o[1] for o in tm["b"]["observations"]] == [300.0, 300.0]
+    recs = tier_records(tm, [], tiers=[40])["40"]
+    assert [(r[0], r[1]) for r in recs] == [("2026-01-01", 60.0)]
+
+
 def test_check_live_set_guards():
     from llm_cost_frontier.update import check_live_set
     history = {"models": {f"m{i}": model(f"M{i}", "2026-01-01", 50.0, 1.0) for i in range(100)}}
@@ -555,7 +594,7 @@ def test_build_output_shape():
     names = [r[0] for r in out["models"]]
     assert names == ["Alpha", "Beta", "Gamma"]  # sorted by release date
     for row in out["models"]:
-        assert len(row) == 10
+        assert len(row) == 13
         assert len(row[8]) == len(CAPABILITIES)
         assert row[9] == 0  # no eras declared
     alpha, gamma = out["models"][0], out["models"][2]
