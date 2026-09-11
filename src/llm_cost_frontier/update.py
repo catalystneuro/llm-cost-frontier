@@ -58,24 +58,24 @@ SETTLE_DAYS = 7
 # measured for only a small fraction of models (LiveCodeBench, AIME) are left
 # out. The blurb is shown on the dashboard when the capability's tab is active.
 CAPABILITIES = [
-    dict(key="coding", field="terminalbenchV21", label="Coding", metric="Terminal-Bench 2.1", percent=True,
+    dict(key="coding", url="https://artificialanalysis.ai/evaluations/terminalbench-v2-1", field="terminalbenchV21", label="Coding", metric="Terminal-Bench 2.1", percent=True,
          blurb="Completion rate on Terminal-Bench 2.1: real software engineering tasks run agentically in a terminal. The axis to watch when picking a model for a coding assistant or an autonomous software agent."),
     # agenticIndex was removed when AA recomposed the index (v4.3, September
     # 2026); AutomationBench-AA is its successor for tool use and multi-step
     # task completion. The key stays "agentic" so the tab and links carry over.
-    dict(key="agentic", field="automationBenchPartialScore", label="Agentic Tool Use", metric="AutomationBench-AA", percent=True,
+    dict(key="agentic", url="https://artificialanalysis.ai/evaluations/automationbench-aa", field="automationBenchPartialScore", label="Agentic Tool Use", metric="AutomationBench-AA", percent=True,
          blurb="Score on AutomationBench-AA, Artificial Analysis's benchmark of tool calling and multi-step task completion, which replaced their Agentic Index in September 2026. Relevant for models that orchestrate tools and workflows rather than answer single prompts."),
-    dict(key="longcontext", field="lcr", label="Long Context", metric="AA-LCR", percent=True,
+    dict(key="longcontext", url="https://artificialanalysis.ai/evaluations/artificial-analysis-long-context-reasoning", field="lcr", label="Long Context", metric="AA-LCR", percent=True,
          blurb="Accuracy on Artificial Analysis's long context reasoning suite, which requires answers grounded in roughly 100k tokens of source material. Relevant for document analysis, retrieval pipelines, and codebase-scale prompts."),
-    dict(key="instruction", field="ifbench", label="Instruction Following", metric="IFBench", percent=True,
+    dict(key="instruction", url="https://artificialanalysis.ai/evaluations/ifbench", field="ifbench", label="Instruction Following", metric="IFBench", percent=True,
          blurb="Accuracy on IFBench, which checks precise compliance with constraints on the output. Relevant for structured output, templated generation, and any pipeline that parses what the model returns."),
-    dict(key="knowledge", field="omniscience", label="Factual Recall", metric="AA Omniscience", percent=False,
+    dict(key="knowledge", url="https://artificialanalysis.ai/evaluations/omniscience", field="omniscience", label="Factual Recall", metric="AA Omniscience", percent=False,
          blurb="Artificial Analysis's Omniscience index: factual recall with hallucinated answers penalized, on a scale from -100 to 100, where zero means as many hallucinated answers as correct ones. Relevant for question answering and customer-facing assistants, where a made-up answer is worse than no answer."),
-    dict(key="science", field="gpqa", label="Scientific Reasoning", metric="GPQA Diamond", percent=True,
+    dict(key="science", url="https://artificialanalysis.ai/evaluations/gpqa-diamond", field="gpqa", label="Scientific Reasoning", metric="GPQA Diamond", percent=True,
          blurb="Accuracy on GPQA Diamond, graduate-level science questions written to resist lookup. Relevant for research assistance and technical question answering."),
-    dict(key="knowledgework", field="gdpvalNormalized", label="Knowledge Work", metric="GDPval-AA", percent=True,
+    dict(key="knowledgework", url="https://artificialanalysis.ai/evaluations/gdpval-aa", field="gdpvalNormalized", label="Knowledge Work", metric="GDPval-AA", percent=True,
          blurb="Artificial Analysis's automated grading of GDPval deliverables: documents, spreadsheets, slides, and analysis drawn from real occupational tasks. Relevant for office work products beyond chat."),
-    dict(key="multimodal", field="mmmuPro", label="Multimodal", metric="MMMU-Pro", percent=True,
+    dict(key="multimodal", url="https://artificialanalysis.ai/evaluations/mmmu-pro", field="mmmuPro", label="Multimodal", metric="MMMU-Pro", percent=True,
          blurb="Accuracy on MMMU-Pro, college-level problems that require reading images, diagrams, and figures. Relevant for applications with visual input."),
 ]
 
@@ -826,7 +826,7 @@ def build_output(history: dict, events: list, overrides: dict | None = None, era
         source="Artificial Analysis (artificialanalysis.ai), measured cost per Intelligence Index task",
         snapshots=snapshots(today),
         tiers=TIERS,
-        capabilities=[{k: c[k] for k in ("key", "label", "metric", "percent", "blurb")} for c in CAPABILITIES],
+        capabilities=[{k: c[k] for k in ("key", "label", "metric", "percent", "blurb", "url")} for c in CAPABILITIES],
         models=rows,
         tier_cost=records,
         tier_summary=tier_summary(records, eras=eras),

@@ -778,9 +778,19 @@
     if (!p) return;
     if (leadDefault === null) leadDefault = p.innerHTML;
     var c = capMeta();
-    if (!c) { p.innerHTML = leadDefault; return; }
+    function evalLink(url, label) {
+      var a = document.createElement('a');
+      a.href = url; a.textContent = label;
+      return a;
+    }
+    if (!c) {
+      p.innerHTML = leadDefault;
+      p.append(' Read about ', evalLink('https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index', 'the Intelligence Index'), ' at Artificial Analysis.');
+      return;
+    }
     var n = models.filter(function (m) { return score(m) != null; }).length;
     p.textContent = c.blurb + ' Measured for ' + n + ' of ' + models.length + ' tracked models.';
+    if (c.url) p.append(' Read about ', evalLink(c.url, c.metric), ' at Artificial Analysis.');
   }
   function renderCapTable() {
     var wrap = document.getElementById('pfc-cap-table-wrap');
