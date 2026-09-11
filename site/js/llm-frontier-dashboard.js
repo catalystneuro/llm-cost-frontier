@@ -95,20 +95,37 @@
     return (s >= 10 ? s.toFixed(0) : s.toFixed(1)) + 's';
   }
   function fmtVal(v) { return isTimeAxis() ? fmtTime(v) : fmt$(v); }
-  // Time per task in effect on a date: dated measurements from the change
-  // history where they exist, else the latest measured value. Speeds are only
-  // measured going forward, so early dates lean on the latest value.
-  function timeAt(m, date) {
-    var v = null;
+  // Time per task in effect on a date, within one era's view: dated
+  // measurements from the change history where they exist, forward-filled
+  // within the era. Before a model's first measurement, the current view
+  // leans on its latest value and an archive view on its first era value;
+  // times are never carried across an era boundary, since a recomposition
+  // changes the task mix they are measured on.
+  function timeAt(m, date, view) {
+    var v = null, first = null;
     if (m.hist) for (var i = 0; i < m.hist.length; i++) {
-      if (m.hist[i][0] > date) break;
-      if (m.hist[i].length > 3 && m.hist[i][3] != null) v = m.hist[i][3];
+      var h = m.hist[i];
+      if (h.length > 3 && h[3] != null && eraOfDate(h[0]) === view) {
+        if (first == null) first = h[3];
+        if (h[0] <= date) v = h[3];
+      }
     }
-    return v != null ? v : m.time;
+    if (v != null) return v;
+    if (view === ERAS.length) return m.time != null ? m.time : first;
+    return first;
   }
-  function timeMeasuredBy(m, date) {
+  function timeMeasuredBy(m, date, view) {
     if (!m || !m.hist) return false;
-    for (var i = 0; i < m.hist.length; i++) if (m.hist[i][0] <= date && m.hist[i].length > 3 && m.hist[i][3] != null) return true;
+    for (var i = 0; i < m.hist.length; i++) {
+      var h = m.hist[i];
+      if (h[0] <= date && h.length > 3 && h[3] != null && eraOfDate(h[0]) === view) return true;
+    }
+    return false;
+  }
+  function eraHasTime(e) {
+    var recs = (DATA.era_tier_time || [])[e];
+    if (!recs) return false;
+    for (var t in recs) if ((recs[t] || []).length) return true;
     return false;
   }
   // One quiet line of speed facts for a model's tooltip.
@@ -174,7 +191,7 @@
   function hideTip() { tt.style.display = 'none'; }
 
   function attachHover(box, svg, points) {
-    svg.addEventListener('pointermove', function (ev) {
+    function nearest(ev) {
       var r = svg.getBoundingClientRect();
       var sx = svg.viewBox.baseVal.width / r.width;
       var mx = (ev.clientX - r.left) * sx, my = (ev.clientY - r.top) * sx;
@@ -184,6 +201,18 @@
         var d = Math.hypot(p.x - mx, p.y - my);
         if (d < bd) { bd = d; best = p; }
       });
+      return { best: best, dist: bd, visible: visible, sx: sx };
+    }
+    // Clicking a point highlights its model; clicking empty chart clears.
+    svg.addEventListener('click', function (ev) {
+      var n = nearest(ev);
+      if (n.best && n.dist <= 40 && n.best.key && modelsByName[n.best.key]) {
+        if (SEL !== n.best.key || SEL_KIND !== 'model') setSel('model', n.best.key);
+      } else if (SEL) setModel(null);
+    });
+    svg.addEventListener('pointermove', function (ev) {
+      var n = nearest(ev);
+      var best = n.best, bd = n.dist, visible = n.visible, sx = n.sx;
       if (!best || bd > 40) { hideTip(); return; }
       var group = visible.filter(function (p) { return Math.hypot(p.x - best.x, p.y - best.y) < 3; });
       var rows = [], seen = {}, order = [];
@@ -253,9 +282,9 @@
     if (anim.stage >= SNAPS.length) anim.stage = SNAPS.length - 1;
     anim.groups = SNAPS.map(function () { return []; });
     var viewEnd = SNAPS[SNAPS.length - 1][0];
-    var timeAxis = isTimeAxis() && eraView === ERAS.length;
+    var timeAxis = isTimeAxis() && (eraView === ERAS.length || eraHasTime(eraView));
     function viewScore(m) { return CAP < 0 ? iqAt(m, viewEnd) : score(m); }
-    function viewCost(m) { return timeAxis ? m.time : costAt(m, viewEnd); }
+    function viewCost(m) { return timeAxis ? timeAt(m, viewEnd, eraView) : costAt(m, viewEnd); }
     var W = Math.max(320, Math.min(880, box.clientWidth)), H = 440;
     var M = { l: 56, r: 16, t: 12, b: 42 };
     var svg = frame(box, W, H, M, (CAP < 0 ? 'Intelligence Index' : metricName()) + ' versus ' + (timeAxis ? 'time' : 'cost') + ' per task with Pareto frontier lines every two months');
@@ -264,7 +293,7 @@
     var isCur = ERAS.length > 0 && eraView === ERAS.length;
     var ms = models.filter(function (m) {
       if (CAP >= 0 && score(m) == null) return false;
-      if (timeAxis && m.time == null) return false;
+      if (timeAxis && timeAt(m, viewEnd, eraView) == null) return false;
       if (isCur) return m.era === ERAS.length;
       return m.era >= eraView && measuredBy(m, viewEnd);
     });
@@ -277,7 +306,13 @@
     ms.forEach(function (m) {
       (m.hist || []).forEach(function (h) {
         if (h[0] > viewEnd) return;
-        if (isCur) { allC.push(timeAxis ? timeAt(m, h[0]) : basisCostAt(m, h[0])); return; }
+        if (timeAxis) {
+          var tv = timeAt(m, h[0], eraView);
+          if (tv != null) allC.push(tv);
+          if (!isCur && eraOfDate(h[0]) === eraView && CAP < 0 && h.length > 2 && h[2] != null) allS.push(h[2]);
+          return;
+        }
+        if (isCur) { allC.push(basisCostAt(m, h[0])); return; }
         if (eraOfDate(h[0]) !== eraView) return;
         allC.push(h[1]);
         if (CAP < 0 && h.length > 2 && h[2] != null) allS.push(h[2]);
@@ -355,7 +390,7 @@
         var d4 = el('div', 'pfc-tt-row'); var kd = el('span', 'pfc-tt-key'); kd.style.borderTopColor = snapColor(wi);
         d4.append(kd, 'in the ' + SNAPS[wi][1].replace('today', 'current') + ' window');
         var rows = [d1, d2, d3, d4];
-        var sp = speedFacts(m); if (sp) rows.splice(3, 0, sp);
+        var sp = isCur && speedFacts(m); if (sp) rows.splice(3, 0, sp);
         return rows;
       }});
     });
@@ -367,8 +402,8 @@
       var sub = ms.filter(function (m) {
         return isCur ? m.date <= snapDate : measuredBy(m, snapDate);
       }).map(function (m) {
-        var c = timeAxis ? timeAt(m, snapDate) : isCur ? basisCostAt(m, snapDate) : costAt(m, snapDate);
-        var e = timeAxis ? (snapDate < viewEnd && !timeMeasuredBy(m, snapDate)) : est;
+        var c = timeAxis ? timeAt(m, snapDate, eraView) : isCur ? basisCostAt(m, snapDate) : costAt(m, snapDate);
+        var e = timeAxis ? (snapDate < viewEnd && !timeMeasuredBy(m, snapDate, eraView)) : est;
         return { name: m.name, creator: m.creator, date: m.date, iq: CAP < 0 ? (isCur ? viewScore(m) : iqAt(m, snapDate)) : score(m), mcost: c, retired: m.retired, open: m.open, current: viewCost(m), est: e, m: m };
       });
       var fr = sub.filter(function (p) {
@@ -396,10 +431,10 @@
           var d2 = el('div', 'pfc-tt-row');
           var kd = el('span', 'pfc-tt-key'); kd.style.borderTopColor = color;
           var s = el('span', 'pfc-tt-val'); s.textContent = (p.est ? '≈' : '') + (timeAxis ? fmtTime(p.mcost) : fmt$(p.mcost));
-          d2.append(kd, s, ' at ' + (CAP < 0 ? 'Index ' + p.iq.toFixed(1) : metricName() + ' ' + fmtScore(p.iq)) + (Math.abs(p.current - p.mcost) > 1e-9 ? (timeAxis ? ' (speed then; ' + fmtTime(p.current) + ' now)' : ' (price then; ' + fmt$(p.current) + (viewEnd === DATA.updated ? ' now)' : ' at era end)')) : '') + (p.est ? (timeAxis ? ' · at its latest measured speed' : ' · estimated from its price history') : ''));
+          d2.append(kd, s, ' at ' + (CAP < 0 ? 'Index ' + p.iq.toFixed(1) : metricName() + ' ' + fmtScore(p.iq)) + (Math.abs(p.current - p.mcost) > 1e-9 ? (timeAxis ? ' (speed then; ' + fmtTime(p.current) + ' now)' : ' (price then; ' + fmt$(p.current) + (viewEnd === DATA.updated ? ' now)' : ' at era end)')) : '') + (p.est ? (timeAxis ? ' · at its nearest measured speed' : ' · estimated from its price history') : ''));
           var d3 = el('div', null, 'Pareto frontier as of: ' + (labels && labels.length ? labels.join('; ') : snapLabel) + ' \u00b7 ' + (p.open ? 'open weights' : 'proprietary') + ' \u00b7 released ' + p.date + (p.retired ? ' \u00b7 retired' : ''));
           var rows = [d1, d2, d3];
-          var sp = p.m && speedFacts(p.m); if (sp) rows.push(sp);
+          var sp = isCur && p.m && speedFacts(p.m); if (sp) rows.push(sp);
           return rows;
         }});
       });
@@ -462,7 +497,7 @@
     var sel = SEL ? '~' + slugify(SEL) : '';
     if (ERAS.length && ERA_VIEW < ERAS.length && DATA.era_snapshots) {
       var snaps = DATA.era_snapshots[ERA_VIEW];
-      return '#' + key + '-through-' + snaps[snaps.length - 1][0] + sel;
+      return '#' + key + '-through-' + snaps[snaps.length - 1][0] + (isTimeAxis() ? '-time' : '') + sel;
     }
     if (isTimeAxis()) return '#' + key + '-time' + sel;
     if (CAP >= 0) return '#' + key + sel;
@@ -489,7 +524,7 @@
       for (var j = 0; j < CAPS.length; j++) if (CAPS[j].key === base) { CAP = j; AXIS = 'time'; return; }
     }
     for (var i = 0; i < CAPS.length; i++) if (CAPS[i].key === h) { CAP = i; return; }
-    var m = h.match(/^([a-z]+)-through-(\d{4}-\d{2}-\d{2})$/);
+    var m = h.match(/^([a-z]+)-through-(\d{4}-\d{2}-\d{2})(-time)?$/);
     if (m && DATA.era_snapshots) {
       var cap = -1;
       if (m[1] !== 'index') {
@@ -498,7 +533,7 @@
       }
       for (var e = 0; e < ERAS.length; e++) {
         var snaps = DATA.era_snapshots[e];
-        if (snaps[snaps.length - 1][0] === m[2]) { CAP = cap; ERA_VIEW = e; return; }
+        if (snaps[snaps.length - 1][0] === m[2]) { CAP = cap; ERA_VIEW = e; if (m[3]) AXIS = 'time'; return; }
       }
     }
   }
@@ -510,7 +545,7 @@
   // not, so the earlier frontier history is an archive too.
   function switchEra(i) {
     ERA_VIEW = i;
-    if (i < ERAS.length) AXIS = 'cost';  // no time measurements in the archives
+    if (i < ERAS.length && !eraHasTime(i)) AXIS = 'cost';  // this archive has no time measurements
     hideTip();
     anim.stage = 1e9;  // renderFrontier clamps to the view's last stage
     syncHash();
@@ -548,7 +583,7 @@
     var nav = document.getElementById('pfc-axis-nav');
     if (!nav) return;
     var isCurView = !ERAS.length || ERA_VIEW === ERAS.length;
-    var show = isCurView && models.some(function (m) { return m.time != null; });
+    var show = isCurView ? models.some(function (m) { return m.time != null; }) : eraHasTime(ERA_VIEW);
     nav.hidden = !show;
     if (!show) { AXIS = 'cost'; return; }
     nav.replaceChildren();
@@ -653,7 +688,7 @@
         facts = shown + ' of ' + fleet.length + ' models in this view';
       } else if (CAP >= 0 && !fleet.some(function (mm) { return score(mm) != null; })) {
         facts = 'no models measured on ' + metricName();
-      } else if (isTimeAxis() && !fleet.some(function (mm) { return mm.time != null; })) {
+      } else if (isTimeAxis() && !fleet.some(function (mm) { return timeAt(mm, DATA.updated, ERA_VIEW) != null; })) {
         facts = 'no measured speeds';
         action = showCostAxis;
       } else if (ERAS.length && ERA_VIEW === ERAS.length) {
@@ -679,11 +714,13 @@
       return;
     }
     var m = modelsByName[SEL];
+    var eraEnd = ERAS.length && ERA_VIEW < ERAS.length && DATA.era_snapshots
+      ? DATA.era_snapshots[ERA_VIEW][DATA.era_snapshots[ERA_VIEW].length - 1][0] : DATA.updated;
     chip.append(el('span', 'pfc-chip-name', m.name));
     if (CAP >= 0 && score(m) == null) {
       facts = 'not measured on ' + metricName();
-    } else if (isTimeAxis() && m.time == null) {
-      facts = 'no measured speed';
+    } else if (isTimeAxis() && timeAt(m, eraEnd, ERA_VIEW) == null) {
+      facts = ERAS.length && ERA_VIEW < ERAS.length ? 'no measured speed in this era' : 'no measured speed';
       action = showCostAxis;
     } else if (!shown && ERAS.length && ERA_VIEW === ERAS.length && m.era < ERAS.length) {
       facts = 'not measured under the current index';
@@ -692,7 +729,7 @@
       facts = 'not measured under index ' + (eraShortLabel(ERA_VIEW) || 'this era');
       action = ['View the current index', function () { switchEra(ERAS.length); }];
     } else {
-      var v = isTimeAxis() ? m.time : m.mcost;
+      var v = isTimeAxis() ? timeAt(m, eraEnd, ERA_VIEW) : m.mcost;
       facts = m.creator + ' \u00b7 ' + (CAP < 0 ? 'Index ' + m.iq.toFixed(1) : metricName() + ' ' + fmtScore(score(m))) + ' at ' + fmtVal(v) + (m.retired ? ' \u00b7 retired' : '');
     }
     chip.append(el('span', 'pfc-chip-facts', facts));
@@ -796,7 +833,7 @@
     // view shows only that era's actual measured records.
     var isCur = ERAS.length > 0 && ERA_VIEW === ERAS.length;
     var isArch = ERAS.length > 0 && ERA_VIEW < ERAS.length;
-    var timeAxis = isTimeAxis() && !isArch;
+    var timeAxis = isTimeAxis() && (!isArch || eraHasTime(ERA_VIEW));
     var title = document.getElementById('pfc-records-title');
     if (title) title.textContent = (timeAxis ? 'Speed' : 'Cost') + ' Records by Capability Tier';
     var lead = document.getElementById('pfc-records-lead');
@@ -809,11 +846,13 @@
     var tiers = curTiers();
     var tierCost = curTierCost();
     if (timeAxis) {
-      tierCost = CAP < 0 ? (DATA.tier_time || {}) : ((DATA.cap_tier_time || {})[capMeta().key] || {});
+      tierCost = isArch
+        ? (CAP < 0 ? ((DATA.era_tier_time || [])[ERA_VIEW] || {}) : (((DATA.era_cap_tier_time || {})[capMeta().key] || [])[ERA_VIEW] || {}))
+        : (CAP < 0 ? (DATA.tier_time || {}) : ((DATA.cap_tier_time || {})[capMeta().key] || {}));
     } else if (isCur && DATA.tier_cost_rebased) {
       tierCost = CAP < 0 ? DATA.tier_cost_rebased : ((DATA.cap_tier_cost_rebased || {})[capMeta().key] || tierCost);
     }
-    if (isArch) {
+    if (isArch && !timeAxis) {
       var clipped = {};
       tiers.forEach(function (t) {
         clipped[t] = (tierCost[t] || []).filter(function (r) { return eraOfDate(r[0]) === ERA_VIEW; });
@@ -906,14 +945,14 @@
         var x = X(r[0]), y = Y(r[1]);
         dot(svg, x, y, 4, color, !!openByName[r[2]]);
         if (selMatchesName(r[2])) svg.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
-        pts.push({ x: x, y: y, rows: function () {
+        pts.push({ x: x, y: y, key: r[2], rows: function () {
           var d1 = el('div', 'pfc-tt-name'); d1.textContent = r[2];
           var d2 = el('div', 'pfc-tt-row');
           var kd = el('span', 'pfc-tt-key'); kd.style.borderTopColor = color;
-          var est = timeAxis ? !timeMeasuredBy(modelsByName[r[2]], r[0]) && r[0] < DATA.updated
+          var est = timeAxis ? (!isArch && !timeMeasuredBy(modelsByName[r[2]], r[0], ERAS.length) && r[0] < DATA.updated)
                              : isCur && ERAS.length && r[0] < ERAS[ERAS.length - 1][0];
           var s = el('span', 'pfc-tt-val'); s.textContent = (est ? '≈' : '') + (timeAxis ? fmtTime(r[1]) : fmt$(r[1]));
-          d2.append(kd, s, ' new record, ' + (CAP < 0 ? 'Index' : metricName()) + ' ' + tierLabel(tier) + (est ? (timeAxis ? ' · at its latest measured speed' : ' · estimated from price history') : ''));
+          d2.append(kd, s, ' new record, ' + (CAP < 0 ? 'Index' : metricName()) + ' ' + tierLabel(tier) + (est ? (timeAxis ? ' · at its nearest measured speed' : ' · estimated from price history') : ''));
           var d3 = el('div', null, (r[4] ? r[4] + ' \u00b7 ' : 'released ' + r[0] + ' \u00b7 ') + (CAP < 0 ? 'Index ' + r[3].toFixed(1) : metricName() + ' ' + fmtScore(r[3])) + (openByName[r[2]] ? ' \u00b7 open weights' : ' \u00b7 proprietary') + (retiredByName[r[2]] ? ' \u00b7 retired' : ''));
           return [d1, d2, d3];
         }});
@@ -957,28 +996,33 @@
     }
     var isCur = ERAS.length > 0 && ERA_VIEW === ERAS.length;
     var isArch = ERAS.length > 0 && ERA_VIEW < ERAS.length;
-    var timeAxis = isTimeAxis() && !isArch;
-    var summary = curTierSummary();
-    if (timeAxis) {
-      summary = CAP < 0 ? (DATA.tier_time_summary || {}) : ((DATA.cap_tier_time_summary || {})[capMeta().key] || {});
-    } else if (isCur && DATA.tier_summary_rebased) {
-      summary = CAP < 0 ? DATA.tier_summary_rebased : ((DATA.cap_tier_summary_rebased || {})[capMeta().key] || summary);
-    }
-    if (isArch) {
-      // Summaries for an archived era come from that era's actual records.
-      var tc = curTierCost();
-      summary = {};
+    var timeAxis = isTimeAxis() && (!isArch || eraHasTime(ERA_VIEW));
+    // An archived era's summaries are computed from its actual records.
+    function summarize(byTier, clipToEra) {
+      var out = {};
       curTiers().forEach(function (t) {
-        var recs = (tc[t] || []).filter(function (r) { return eraOfDate(r[0]) === ERA_VIEW; });
-        if (!recs.length) { summary[t] = null; return; }
+        var recs = byTier[t] || [];
+        if (clipToEra) recs = recs.filter(function (r) { return eraOfDate(r[0]) === ERA_VIEW; });
+        if (!recs.length) { out[t] = null; return; }
         var f = recs[0], l = recs[recs.length - 1];
         var days = (Date.parse(l[0]) - Date.parse(f[0])) / 86400000;
         var ratio = f[1] / l[1];
-        summary[t] = { first_date: f[0], first_model: f[2], first_cost: f[1],
-                       last_date: l[0], last_model: l[2], last_cost: l[1],
-                       collapse: Math.round(ratio * 10) / 10,
-                       halving_days: ratio > 1 && days ? Math.round(days / (Math.log(ratio) / Math.LN2)) : null };
+        out[t] = { first_date: f[0], first_model: f[2], first_cost: f[1],
+                   last_date: l[0], last_model: l[2], last_cost: l[1],
+                   collapse: Math.round(ratio * 10) / 10,
+                   halving_days: ratio > 1 && days ? Math.round(days / (Math.log(ratio) / Math.LN2)) : null };
       });
+      return out;
+    }
+    var summary = curTierSummary();
+    if (timeAxis && isArch) {
+      summary = summarize(CAP < 0 ? ((DATA.era_tier_time || [])[ERA_VIEW] || {}) : (((DATA.era_cap_tier_time || {})[capMeta().key] || [])[ERA_VIEW] || {}), false);
+    } else if (timeAxis) {
+      summary = CAP < 0 ? (DATA.tier_time_summary || {}) : ((DATA.cap_tier_time_summary || {})[capMeta().key] || {});
+    } else if (isArch) {
+      summary = summarize(curTierCost(), true);
+    } else if (isCur && DATA.tier_summary_rebased) {
+      summary = CAP < 0 ? DATA.tier_summary_rebased : ((DATA.cap_tier_summary_rebased || {})[capMeta().key] || summary);
     }
     curTiers().slice().reverse().forEach(function (t) {
       var s = summary[t];
