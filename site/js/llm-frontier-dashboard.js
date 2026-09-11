@@ -21,6 +21,7 @@
   var ERAS = [];   // index era boundaries [date, note]; scores are only comparable within an era
   var ERA_VIEW = 0; // which era the Overall frontier chart shows; defaults to the current era
   var AXIS = 'cost'; // x-axis of the current view: measured cost, or measured time per task
+  var SEL = null;    // name of the highlighted model, set from the search box or a name click
 
   var models = [], retiredByName = {}, openByName = {}, modelsByName = {};
   var lastDrawnView = null;
@@ -265,6 +266,7 @@
     });
     if (!ms.length) {
       box.append(el('p', 'pfc-lead', 'No current-era measurements for this metric yet.'));
+      renderModelChip(false);
       return;
     }
     var allS = ms.map(viewScore), allC = ms.map(viewCost);
@@ -319,12 +321,23 @@
     // is always the darkest, however few snapshots the era has.
     var cOff = Math.max(0, C.snap.length - SNAPS.length);
     function snapColor(i) { return C.snap[Math.min(C.snap.length - 1, i + cOff)]; }
+    var selShown = SEL != null && ms.some(function (m) { return m.name === SEL; });
     ms.forEach(function (m) {
       var sv = viewScore(m), cv = viewCost(m);
       var x = X(cv), y = Y(sv);
       var wi = windowIndex(m.date);
-      var g = svgEl('g', { opacity: 0.45 });
-      dot(g, x, y, 3.5, snapColor(wi), m.open);
+      var isSel = SEL === m.name;
+      var g = svgEl('g', { opacity: isSel ? 1 : selShown ? 0.15 : 0.45 });
+      dot(g, x, y, isSel ? 5 : 3.5, snapColor(wi), m.open);
+      if (isSel) {
+        g.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
+        var anchor = x < M.l + 70 ? 'start' : x > W - M.r - 70 ? 'end' : 'middle';
+        var lx = anchor === 'start' ? x + 13 : anchor === 'end' ? x - 13 : x;
+        var ly = y < M.t + 30 ? y + 24 : y - 15;
+        var nl = svgEl('text', { x: lx, y: ly, 'text-anchor': anchor, 'font-size': 11, 'font-weight': 600, fill: C.ink, 'class': 'pfc-sel-label' });
+        nl.textContent = m.name;
+        g.append(nl);
+      }
       svg.append(g);
       anim.groups[wi].push(g);
       pts.push({ x: x, y: y, snap: wi, key: m.name, rows: function () {
@@ -370,6 +383,7 @@
       fr.forEach(function (p) {
         var x = X(p.mcost), y = Y(p.iq);
         dot(sg, x, y, 4, color, p.open);
+        if (SEL === p.name) sg.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
         pts.push({ x: x, y: y, snap: i, key: p.name, snapLabel: snapLabel, rows: function (labels) {
           var d1 = el('div', 'pfc-tt-name'); d1.textContent = p.name;
           var d2 = el('div', 'pfc-tt-row');
@@ -397,6 +411,7 @@
         cur.classList.add('pfc-draw-in');
       }
     }
+    renderModelChip(selShown);
     attachHover(box, svg, pts);
     var ctl = el('div', 'pfc-controls');
     var stageLabel = el('span', 'pfc-stage'); stageLabel.id = 'pfc-frontier-stage';
@@ -437,12 +452,14 @@
   // ---- shareable view state in the URL hash ----
   function hashFor() {
     var key = CAP >= 0 ? CAPS[CAP].key : 'index';
+    var sel = SEL ? '~' + slugify(SEL) : '';
     if (ERAS.length && ERA_VIEW < ERAS.length && DATA.era_snapshots) {
       var snaps = DATA.era_snapshots[ERA_VIEW];
-      return '#' + key + '-through-' + snaps[snaps.length - 1][0];
+      return '#' + key + '-through-' + snaps[snaps.length - 1][0] + sel;
     }
-    if (isTimeAxis()) return '#' + key + '-time';
-    return CAP >= 0 ? '#' + key : '';
+    if (isTimeAxis()) return '#' + key + '-time' + sel;
+    if (CAP >= 0) return '#' + key + sel;
+    return sel ? '#index' + sel : '';
   }
   function syncHash() {
     var h = hashFor();
@@ -451,7 +468,13 @@
   }
   function applyHash() {
     var h = (location.hash || '').replace(/^#/, '');
-    if (!h || h === 'advances') return;
+    var tilde = h.indexOf('~');
+    if (tilde >= 0) {
+      var slug = h.slice(tilde + 1);
+      h = h.slice(0, tilde);
+      for (var nm in modelsByName) if (slugify(nm) === slug) { SEL = nm; break; }
+    }
+    if (!h || h === 'advances' || h === 'index') return;
     if (/-time$/.test(h)) {
       var base = h.replace(/-time$/, '');
       if (base === 'index') { AXIS = 'time'; return; }
@@ -538,6 +561,94 @@
     });
   }
 
+  // ---- finding one model on the charts ----
+  // One model can be highlighted at a time: its points get a ring and a
+  // label while the rest of the scatter recedes, a chip above the figures
+  // names it, and the selection survives tab, era, and axis switches so a
+  // model can be followed across every view. Set from the search box or by
+  // clicking a model name anywhere on the page; shareable as #view~slug.
+  function setModel(name) {
+    SEL = name && modelsByName[name] ? name : null;
+    hideTip();
+    syncHash();
+    renderFrontier(); renderRecords();
+  }
+  function nameLink(name, cls, target) {
+    var sp = el('span', cls || null, name);
+    var t = target || name;
+    if (modelsByName[t]) {
+      sp.classList.add('pfc-name-link');
+      sp.setAttribute('role', 'button');
+      sp.setAttribute('tabindex', '0');
+      sp.title = 'Highlight ' + t + ' on the charts';
+      var go = function () { setModel(t); document.getElementById('pfc-frontier').scrollIntoView({ behavior: 'smooth', block: 'nearest' }); };
+      sp.addEventListener('click', go);
+      sp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(); } });
+    }
+    return sp;
+  }
+  function renderSearch() {
+    var input = document.getElementById('pfc-model-search');
+    var list = document.getElementById('pfc-model-list');
+    if (!input || !list || input.dataset.wired) return;
+    input.dataset.wired = '1';
+    models.slice().sort(function (a, b) { return a.name < b.name ? -1 : 1; }).forEach(function (m) {
+      var o = document.createElement('option');
+      o.value = m.name;
+      o.label = m.creator;
+      list.append(o);
+    });
+    var apply = function () {
+      var v = input.value.trim();
+      if (modelsByName[v]) { if (v !== SEL) setModel(v); }
+      else if (!v && SEL) setModel(null);
+    };
+    input.addEventListener('change', apply);
+    input.addEventListener('input', function () { if (modelsByName[input.value.trim()]) apply(); });
+    input.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') { input.value = ''; setModel(null); } });
+  }
+  // The chip names the selection and, when the current view cannot contain
+  // the model, says why and offers the view that can.
+  function renderModelChip(shown) {
+    var chip = document.getElementById('pfc-model-chip');
+    if (!chip) return;
+    var input = document.getElementById('pfc-model-search');
+    if (input && input.value.trim() !== (SEL || '')) input.value = SEL || '';
+    chip.hidden = !SEL;
+    if (!SEL) return;
+    chip.replaceChildren();
+    var m = modelsByName[SEL];
+    chip.append(el('span', 'pfc-chip-name', m.name));
+    var facts = null, action = null;
+    if (CAP >= 0 && score(m) == null) {
+      facts = 'not measured on ' + metricName();
+    } else if (isTimeAxis() && m.time == null) {
+      facts = 'no measured speed';
+      action = ['Show on the cost axis', function () { AXIS = 'cost'; syncHash(); renderAxisNav(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); }];
+    } else if (!shown && ERAS.length && ERA_VIEW === ERAS.length && m.era < ERAS.length) {
+      facts = 'not measured under the current index';
+      action = ['View the ' + (eraShortLabel(m.era) || 'archive') + ' archive', function () { switchEra(m.era); }];
+    } else if (!shown && ERAS.length && ERA_VIEW < ERAS.length) {
+      facts = 'not measured under index ' + (eraShortLabel(ERA_VIEW) || 'this era');
+      action = ['View the current index', function () { switchEra(ERAS.length); }];
+    } else {
+      var v = isTimeAxis() ? m.time : m.mcost;
+      facts = m.creator + ' \u00b7 ' + (CAP < 0 ? 'Index ' + m.iq.toFixed(1) : metricName() + ' ' + fmtScore(score(m))) + ' at ' + fmtVal(v) + (m.retired ? ' \u00b7 retired' : '');
+    }
+    chip.append(el('span', 'pfc-chip-facts', facts));
+    if (action) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.textContent = action[0];
+      b.addEventListener('click', action[1]);
+      chip.append(b);
+    }
+    var x = document.createElement('button');
+    x.type = 'button'; x.className = 'pfc-chip-clear'; x.textContent = '\u00d7';
+    x.setAttribute('aria-label', 'Clear the model highlight');
+    x.addEventListener('click', function () { setModel(null); });
+    chip.append(x);
+  }
+
   // ---- capability tabs ----
   var leadDefault = null;
   function renderTabs() {
@@ -602,7 +713,7 @@
       var tr = document.createElement('tr');
       tr.append(cell('≥ ' + t + (c.percent ? '%' : ''), 'pfc-td-tier'));
       var w = el('div', 'pfc-ev');
-      var a1 = el('div', 'pfc-ev-top'); a1.textContent = best.name;
+      var a1 = el('div', 'pfc-ev-top'); a1.append(nameLink(best.name));
       var a2 = el('div', 'pfc-ev-model'); a2.textContent = best.creator + ' · ' + (best.open ? 'open weights' : 'proprietary');
       w.append(a1, a2);
       tr.append(cell(w));
@@ -734,6 +845,7 @@
       recs.forEach(function (r) {
         var x = X(r[0]), y = Y(r[1]);
         dot(svg, x, y, 4, color, !!openByName[r[2]]);
+        if (SEL === r[2]) svg.append(svgEl('circle', { cx: x, cy: y, r: 9.5, fill: 'none', stroke: C.ink, 'stroke-width': 1.5, 'class': 'pfc-sel-ring' }));
         pts.push({ x: x, y: y, rows: function () {
           var d1 = el('div', 'pfc-tt-name'); d1.textContent = r[2];
           var d2 = el('div', 'pfc-tt-row');
@@ -780,7 +892,7 @@
     function event(date, model, cost) {
       var w = el('div', 'pfc-ev');
       var a = el('div', 'pfc-ev-top'); var c = el('span', 'pfc-ev-cost'); c.textContent = fmtVal(cost); a.append(c, ' \u00b7 ' + fmtDate(date));
-      var b = el('div', 'pfc-ev-model'); b.textContent = model;
+      var b = el('div', 'pfc-ev-model'); b.append(nameLink(model));
       w.append(a, b); return w;
     }
     var isCur = ERAS.length > 0 && ERA_VIEW === ERAS.length;
@@ -868,7 +980,7 @@
     // list: advances for one base model on one day, highest index first
     var item = el('div', 'pfc-adv-item');
     var single = list.length === 1 && !list[0].variant;
-    var head = el('div', 'pfc-adv-head'); head.textContent = single ? list[0].model : list[0].base;
+    var head = el('div', 'pfc-adv-head'); head.append(nameLink(single ? list[0].model : list[0].base, null, list[0].model));
     var kinds = []; list.forEach(function (a) { if (kinds.indexOf(a.kind) < 0) kinds.push(a.kind); });
     kinds.forEach(function (k) { head.append(el('span', 'pfc-adv-kind', k)); });
     if (list[0].open_weights) head.append(el('span', 'pfc-adv-kind pfc-adv-open', 'open weights'));
@@ -931,7 +1043,7 @@
       }
     }
   }
-  function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderAxisNav(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
+  function renderAll() { if (!DATA) return; renderTabs(); renderEraNav(); renderAxisNav(); renderSearch(); renderLead(); renderFrontier(); renderCapTable(); renderRecords(); renderTable(); renderAdvances(); }
   fetch(DATA_URL, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
     loadData(d);
     applyHash();
@@ -943,4 +1055,17 @@
   });
   var rt = null;
   window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(renderAll, 150); });
+  // Hash-only navigation (a shared link pasted over an open page, or the
+  // back button) re-applies the view state; syncHash uses replaceState, so
+  // the app's own updates never land here.
+  window.addEventListener('hashchange', function () {
+    if (!DATA) return;
+    if ((location.hash || '') === hashFor()) return;
+    CAP = -1; ERA_VIEW = ERAS.length; AXIS = 'cost'; SEL = null;
+    applyHash();
+    advPage = 1;
+    hideTip();
+    anim.stage = 1e9;
+    renderAll();
+  });
 })();

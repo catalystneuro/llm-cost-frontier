@@ -114,6 +114,34 @@ def test_axis_toggle_switches_to_time_and_archives_force_cost(browser, site_url)
         ctx.close()
 
 
+def test_model_search_highlights_and_clears(browser, site_url):
+    import json
+    import re
+    data = json.loads((REPO / "build/llm-frontier.json").read_text())
+    n_eras = len(data.get("eras") or [])
+    name = next(r[0] for r in data["models"]
+                if not r[5] and (r[9] if r[9] is not None else n_eras) == n_eras)
+    slug = re.sub(r"-+$|^-+", "", re.sub(r"[^a-z0-9]+", "-", name.lower()))
+    ctx, page, errors = open_page(browser, site_url)
+    try:
+        page.fill("#pfc-model-search", name)
+        page.dispatch_event("#pfc-model-search", "change")
+        page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring")
+        assert name in page.locator("#pfc-model-chip").inner_text()
+        assert page.evaluate("location.hash") == "#index~" + slug
+        # Clearing from the chip removes the ring and hides the chip.
+        page.locator("#pfc-model-chip .pfc-chip-clear").click()
+        page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring", state="detached")
+        assert page.locator("#pfc-model-chip").is_hidden()
+        # A deep link restores the highlight on load.
+        page.goto(site_url + "/#index~" + slug)
+        page.wait_for_selector("#pfc-frontier svg .pfc-sel-ring")
+        assert name in page.locator("#pfc-model-chip").inner_text()
+        assert errors == []
+    finally:
+        ctx.close()
+
+
 def test_era_archive_view(browser, site_url):
     ctx, page, errors = open_page(browser, site_url)
     try:
