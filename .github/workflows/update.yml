@@ -11,6 +11,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  issues: write
 
 concurrency:
   group: update-frontier-data
@@ -58,3 +59,45 @@ jobs:
       contents: read
       pages: write
       id-token: write
+
+  # A failed scheduled run would otherwise just turn Actions red silently
+  # while the dashboard goes stale. Failures open (or add to) a labeled
+  # issue; the next success closes it.
+  alert:
+    needs: [update, deploy]
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create pipeline-failure --repo ${{ github.repository }} \
+            --description "The scheduled update or deploy failed" --color d93f0b --force
+          url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          existing=$(gh issue list --repo ${{ github.repository }} --label pipeline-failure --state open --json number -q '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo ${{ github.repository }} --body "Another run failed: $url"
+          else
+            gh issue create --repo ${{ github.repository }} --label pipeline-failure \
+              --title "Scheduled update failed" \
+              --body "The scheduled update or its deploy failed: $url
+
+          Until this is fixed the dashboard serves its last good data and shows a staleness note. Common causes: the source page's layout changed (fetch_payload found no data), or check_live_set refused a suspicious fetch (a shrunken live set or a mass index shift needs an era declared in data/eras.json). This issue closes automatically on the next successful run."
+          fi
+
+  recover:
+    needs: [update, deploy]
+    if: success()
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          for n in $(gh issue list --repo ${{ github.repository }} --label pipeline-failure --state open --json number -q '.[].number'); do
+            gh issue close "$n" --repo ${{ github.repository }} --comment "Recovered: $url"
+          done

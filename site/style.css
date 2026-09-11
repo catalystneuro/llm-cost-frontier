@@ -171,3 +171,7 @@ a.site-title, .site-title a { color: var(--navy); text-decoration: none; }
 @keyframes pfc-draw { from { stroke-dashoffset: var(--pfc-len, 2000); } to { stroke-dashoffset: 0; } }
 .pfc-draw-in { animation: pfc-draw 900ms cubic-bezier(0.16, 1, 0.3, 1) both; }
 @media (prefers-reduced-motion: reduce) { .pfc-draw-in { animation: none; } }
+
+/* staleness note */
+.pfc-stale { border: 1px solid #e8c76e; background: #fdf6e3; color: #7a5d1a; border-radius: 8px; padding: 0.6rem 0.9rem; font-size: 0.9rem; margin: 1.2rem 0 0; }
+.pfc-stale[hidden] { display: none; }
